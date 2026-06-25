@@ -33,7 +33,7 @@
         transparent 85%,
         #0d0d0d 100%
       ),
-      radial-gradient(ellipse at 50% 50%, color-mix(in srgb, var(--accent) 40%, transparent) 0%, #0d0d0d 70%);
+      radial-gradient(ellipse at 50% 50%, rgba(192, 0, 24, 0.4) 0%, #0d0d0d 70%);
     z-index: 0;
   }
 
@@ -141,13 +141,13 @@
     <div id="right-panel" style="position:relative;display:flex;flex-direction:column;align-items:center;gap:12px;">
       <div class="color-btn" id="color-btn"></div>
       <div class="color-menu" id="color-menu">
-        <div class="color-option current" style="background:#c00018" data-accent="#c00018" data-bg="#2a0008" data-border="#c00018"></div>
-        <div class="color-option" style="background:#e05500" data-accent="#e05500" data-bg="#2a1000" data-border="#e05500"></div>
-        <div class="color-option" style="background:#d4c000" data-accent="#d4c000" data-bg="#2a2500" data-border="#d4c000"></div>
-        <div class="color-option" style="background:#008a3c" data-accent="#008a3c" data-bg="#001a0e" data-border="#008a3c"></div>
-        <div class="color-option" style="background:#0057c0" data-accent="#0057c0" data-bg="#00153a" data-border="#0057c0"></div>
-        <div class="color-option" style="background:#7a00c0" data-accent="#7a00c0" data-bg="#1a0030" data-border="#7a00c0"></div>
-        <div class="color-option" style="background:#444;border:2px solid #666" data-accent="#aaa" data-bg="#3a3a3a" data-border="#aaa"></div>
+        <div class="color-option current" style="background:#c00018" data-accent="#c00018" data-bg="#2a0008" data-border="#c00018" data-glow="rgba(192,0,24,0.4)"></div>
+        <div class="color-option" style="background:#e05500" data-accent="#e05500" data-bg="#2a1000" data-border="#e05500" data-glow="rgba(224,85,0,0.4)"></div>
+        <div class="color-option" style="background:#d4c000" data-accent="#d4c000" data-bg="#2a2500" data-border="#d4c000" data-glow="rgba(212,192,0,0.4)"></div>
+        <div class="color-option" style="background:#008a3c" data-accent="#008a3c" data-bg="#001a0e" data-border="#008a3c" data-glow="rgba(0,138,60,0.4)"></div>
+        <div class="color-option" style="background:#0057c0" data-accent="#0057c0" data-bg="#00153a" data-border="#0057c0" data-glow="rgba(0,87,192,0.4)"></div>
+        <div class="color-option" style="background:#7a00c0" data-accent="#7a00c0" data-bg="#1a0030" data-border="#7a00c0" data-glow="rgba(122,0,192,0.4)"></div>
+        <div class="color-option" style="background:#444;border:2px solid #666" data-accent="#aaa" data-bg="#3a3a3a" data-border="#aaa" data-glow="rgba(170,170,170,0.4)"></div>
       </div>
       <div id="fs-btn" style="width:40px;height:40px;border-radius:50%;background:#ffffff12;border:2px solid #ffffff20;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0.7;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
@@ -236,7 +236,7 @@ const DAYS = {
         { name: 'Blanke', start: 20, end: 21 },
         { name: 'Muerte b2b Stoned Level', start: 21, end: 22 },
         { name: 'Barely Alive b2b Kompany', start: 22, end: 23 },
-        { name: 'Midnight Tyrannosaur', start: 23, end: 25 },
+        { name: 'Midnight Tyrannosaur', start: 23, end: 24 },
       ]},
       { name: 'Church', sub: 'By Vision', acts: [
         { name: 'Groningen Soundsystem (BANOOZLED / DEETS / S.MAZE / SACHIKO / SEVEN-…)', start: 15, end: 17 },
@@ -246,7 +246,7 @@ const DAYS = {
         { name: 'Thys', start: 20, end: 21 },
         { name: 'Ivy Lab Farewell Tour', start: 21, end: 22 },
         { name: 'Zeke Beats', start: 22, end: 23 },
-        { name: 'Jon Casey', start: 23, end: 25 },
+        { name: 'Jon Casey', start: 23, end: 24 },
       ]},
       { name: 'Tunnel', sub: 'By Vissa', acts: [
         { name: 'Jetyx', start: 14, end: 15 },
@@ -316,7 +316,8 @@ const DAYS = {
         { name: 'Grooverider', start: 20, end: 21 },
         { name: 'DJ SS', start: 21, end: 22 },
         { name: 'Danny Byrd', start: 22, end: 23 },
-        { name: 'Bladerunner b2b DJ Hybrid', start: 23, end: 25 },
+        { name: 'Bladerunner b2b DJ Hybrid', start: 23, end: 24 },
+        { name: 'Matrix  Futurebound', start: 24, end: 25 },
       ]},
       { name: 'Tunnel', sub: 'By Hardstyle Daily', acts: [
         { name: 'ARK8', start: 15, end: 16.5 },
@@ -543,8 +544,7 @@ window.addEventListener('load', () => {
       document.body.style.setProperty('--accent', opt.dataset.accent);
       document.body.style.setProperty('--accent-bg', opt.dataset.bg);
       document.body.style.setProperty('--accent-border', opt.dataset.border);
-      document.querySelector('.bg-full').style.background = `linear-gradient(to bottom, #0d0d0d 0%, transparent 15%, transparent 85%, #0d0d0d 100%), radial-gradient(ellipse at 50% 50%, color-mix(in srgb, ${opt.dataset.accent} 40%, transparent) 0%, #0d0d0d 70%)`;
-      colorBtn.style.background = opt.dataset.accent;
+      document.querySelector('.bg-full').style.background = `linear-gradient(to bottom, #0d0d0d 0%, transparent 15%, transparent 85%, #0d0d0d 100%), radial-gradient(ellipse at 50% 50%, ${opt.dataset.glow} 0%, #0d0d0d 70%)`;      colorBtn.style.background = opt.dataset.accent;
       document.querySelectorAll('.color-option').forEach(o => o.classList.remove('current'));
       opt.classList.add('current');
       colorMenu.classList.remove('open');
