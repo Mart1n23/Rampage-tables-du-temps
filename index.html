@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0d0d0d">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700&family=Comic+Neue:wght@400;700&display=swap');
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   html {
@@ -16,12 +16,12 @@
     overflow: hidden;
   }
 
-  :root { --accent: #eb0028; --accent-bg: #2a0008; --accent-border: #eb0028; }
+  :root { --accent: #eb0028; --accent-bg: #4b000e; --accent-border: #eb0028; }
 
   body {
     background: transparent; color: #fff;
     font-family: 'Inter', sans-serif;
-    width: 100vw; height: 100vh;
+    width: 100vw; height: 100dvh;
     overflow: hidden; position: relative;
   }
 
@@ -50,16 +50,16 @@
 
   .content {
     position: relative; z-index: 1;
-    padding: 55px 55px 35px;
+    padding: 32px 55px 70px;
     height: 100%; display: flex; flex-direction: column;
   }
 
   .top-bar { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
 
   .color-btn {
-    width: 36px; height: 36px; border-radius: 50%;
+    width: 44px; height: 44px; border-radius: 50%;
     background: var(--accent); border: 2px solid #ffffff15;
-    cursor: pointer; flex-shrink: 0; margin-top: 8px; opacity: 0.6;
+    cursor: pointer; flex-shrink: 0; margin-top: -6px; opacity: 0.6;
   }
   .color-menu {
     position: absolute; right: 0; top: 52px;
@@ -71,7 +71,7 @@
   .color-option { width: 44px; height: 44px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; }
   .color-option:hover, .color-option.current { border-color: #fff; }
 
-  .label { font-size: 22px; letter-spacing: 5px; color: var(--accent); text-transform: uppercase; margin-bottom: 6px; }
+  .label { font-size: 22px; letter-spacing: 5px; color: var(--accent); text-transform: uppercase; margin-bottom: 6px; cursor: pointer; }
   .day-row { display: flex; align-items: flex-end; gap: 20px; }
   .day-item {
     font-family: 'Bebas Neue', sans-serif; line-height: 1;
@@ -116,8 +116,11 @@
     box-sizing: border-box;
   }
   .act.selected { background: var(--accent-bg); border-left: 3px solid var(--accent-border); }
+  .act.selected::before { content: ''; position: absolute; inset: 0; background: var(--accent); opacity: 0.15; border-radius: inherit; pointer-events: none; }
   .act.act-now { background: #2a2a2a; border-left: 4px solid var(--accent); border-top-color: var(--accent); }
   .act.act-past { opacity: 0.65; }
+  .easter-active .act { opacity: 0.75; }
+  .easter-active .act.act-past { opacity: 0.455; }
   .is-fullscreen .act-past { opacity: 1; }
   .is-fullscreen .act-now { background: #1c1c1c; border-left: 3px solid #444; border-top-color: #2a2a2a; }
   .is-fullscreen .act.selected { background: var(--accent-bg); border-left: 3px solid var(--accent-border); }
@@ -128,11 +131,26 @@
   .footer { margin-top: 12px; display: flex; justify-content: space-between; align-items: center; }
   .footer-text { font-size: 12px; letter-spacing: 3px; color: #ffffff18; text-transform: uppercase; }
   .red-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); }
+
+  .act-runescape.selected::before { background: #ffffff; opacity: 0.1; }
+  .runescape-active .act-runescape.selected::before,
+  .runescape-unlocked .act-runescape.selected::before { background: var(--accent); opacity: 0.15; }
+
+  .comic-sans, .comic-sans * { font-family: 'Comic Neue', 'Comic Sans MS', 'Comic Sans', cursive !important; }
+
+  img[id$="-img"] { opacity: 0; transition: opacity 0.6s; }
 </style>
 </head>
 <body>
 <div class="bg-full"></div>
 <div id="scaler">
+<img id="shrek-img" src="png/shrek.png" style="position:absolute;width:1080px;height:1920px;top:0;left:0;object-fit:cover;pointer-events:none;z-index:0;">
+<img id="alien-img" src="png/alien.png" style="position:absolute;width:1080px;height:1920px;top:0;left:0;object-fit:cover;pointer-events:none;z-index:0;">
+<img id="fr-img"    src="png/fr.png"    style="position:absolute;width:1080px;height:1920px;top:0;left:0;object-fit:cover;pointer-events:none;z-index:0;">
+<img id="en-img"    src="png/en.png"    style="position:absolute;width:1080px;height:1920px;top:0;left:0;object-fit:cover;pointer-events:none;z-index:0;">
+<img id="zh-img"    src="png/zh.png"    style="position:absolute;width:1080px;height:1920px;top:0;left:0;object-fit:cover;pointer-events:none;z-index:0;">
+<img id="disco-img"     src="png/disco.png"     style="position:absolute;width:1080px;height:1920px;top:0;left:0;object-fit:cover;pointer-events:none;z-index:0;">
+<img id="runescape-img" src="png/runescape.png" style="position:absolute;width:1080px;height:1920px;top:0;left:0;object-fit:cover;pointer-events:none;z-index:0;">
 <div class="content">
 
   <div class="top-bar">
@@ -146,20 +164,26 @@
       </div>
       <div class="day-date" id="current-date">02 JUILLET</div>
     </div>
-    <div id="right-panel" style="position:relative;display:flex;flex-direction:column;align-items:center;gap:12px;">
+    <div id="right-panel" style="position:relative;display:flex;flex-direction:column;align-items:center;gap:16px;">
       <div class="color-btn" id="color-btn"></div>
       <div class="color-menu" id="color-menu">
-        <div class="color-option current" style="background:#eb0028" data-accent="#eb0028" data-bg="#2a0008" data-border="#eb0028" data-glow="rgba(235,0,40,0.4)"></div>
-        <div class="color-option" style="background:#ff6a00" data-accent="#ff6a00" data-bg="#2a1000" data-border="#ff6a00" data-glow="rgba(255,106,0,0.4)"></div>
-        <div class="color-option" style="background:#f5d800" data-accent="#f5d800" data-bg="#2a2500" data-border="#f5d800" data-glow="rgba(245,216,0,0.4)"></div>
-        <div class="color-option" style="background:#00a848" data-accent="#00a848" data-bg="#001a0e" data-border="#00a848" data-glow="rgba(0,168,72,0.4)"></div>
-        <div class="color-option" style="background:#0066e0" data-accent="#0066e0" data-bg="#00153a" data-border="#0066e0" data-glow="rgba(0,102,224,0.4)"></div>
-        <div class="color-option" style="background:#9200e0" data-accent="#9200e0" data-bg="#1a0030" data-border="#9200e0" data-glow="rgba(146,0,224,0.4)"></div>
-        <div class="color-option" style="background:#444;border:2px solid #666" data-accent="#aaa" data-bg="#3a3a3a" data-border="#aaa" data-glow="rgba(170,170,170,0.4)"></div>
+        <div class="color-option current" style="background:#eb0028" data-accent="#eb0028" data-bg="#4b000e" data-border="#eb0028" data-glow="rgba(235,0,40,0.4)"></div>
+        <div class="color-option" style="background:#ff6a00" data-accent="#ff6a00" data-bg="#4b1c00" data-border="#ff6a00" data-glow="rgba(255,106,0,0.4)"></div>
+        <div class="color-option" style="background:#f5d800" data-accent="#f5d800" data-bg="#413800" data-border="#f5d800" data-glow="rgba(245,216,0,0.4)"></div>
+        <div class="color-option" style="background:#00a848" data-accent="#00a848" data-bg="#002d1b" data-border="#00a848" data-glow="rgba(0,168,72,0.4)"></div>
+        <div class="color-option" style="background:#0066e0" data-accent="#0066e0" data-bg="#001d50" data-border="#0066e0" data-glow="rgba(0,102,224,0.4)"></div>
+        <div class="color-option" style="background:#9200e0" data-accent="#9200e0" data-bg="#260045" data-border="#9200e0" data-glow="rgba(146,0,224,0.4)"></div>
+        <div class="color-option" style="background:#444;border:2px solid #666" data-accent="#aaa" data-bg="#333333" data-border="#aaa" data-glow="rgba(170,170,170,0.4)"></div>
       </div>
-      <div id="lang-btn" style="width:40px;height:40px;border-radius:50%;background:#ffffff12;border:2px solid #ffffff20;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0.7;font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px;color:#fff;">FR</div>
-      <div id="fs-btn" style="width:40px;height:40px;border-radius:50%;background:#ffffff12;border:2px solid #ffffff20;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0.7;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+      <div id="lang-btn" style="width:48px;height:48px;border-radius:50%;background:#ffffff12;border:2px solid #ffffff20;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0.7;font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;color:#fff;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;">FR</div>
+      <div style="position:relative;">
+        <div id="reset-label" style="display:none;position:absolute;right:128px;top:50%;transform:translateY(-50%);font-size:32px;color:#ff4444;letter-spacing:3px;font-family:'Bebas Neue',sans-serif;white-space:nowrap;">RESET?</div>
+        <div id="reset-btn" style="display:none;position:absolute;right:64px;top:0;width:48px;height:48px;border-radius:50%;background:#ffffff12;border:2px solid #ffffff20;cursor:pointer;flex-direction:row;align-items:center;justify-content:center;opacity:0.7;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        </div>
+        <div id="fs-btn" style="width:48px;height:48px;border-radius:50%;background:#ffffff12;border:2px solid #ffffff20;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0.7;">
+          <svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+        </div>
       </div>
     </div>
   </div>
@@ -172,7 +196,17 @@
 </div><!-- end .content -->
 </div><!-- end #scaler -->
 <script>
-let accentColor = '#eb0028', accentBg = '#2a0008', accentBorder = '#eb0028';
+let accentColor = '#eb0028', accentBg = '#4b000e', accentBorder = '#eb0028';
+
+const EASTER_EVENTS = {
+  shrek:     { img: 'shrek.png',     opacity: '0.50', accent: '#3d9e3d', bg: '#0d1f0d', border: '#3d9e3d', glow: 'rgba(61,158,61,0.4)',   comic: true,  triggers: [{h:0, m:0,  endH:0, endM:1}] },
+  alien:     { img: 'alien.png',     opacity: '0.70', accent: '#9200e0', bg: '#260045', border: '#9200e0', glow: 'rgba(146,0,224,0.4)', comic: true,  triggers: [{h:4, m:20, endH:4, endM:21},{h:16,m:20,endH:16,endM:21}] },
+  fr:        { img: 'fr.png',        opacity: '0.80', accent: '#0055a4', bg: '#001833', border: '#0055a4', glow: 'rgba(0,85,164,0.4)',   comic: false, triggers: [{h:1, m:11, endH:1, endM:12}] },
+  en:        { img: 'en.png',        opacity: '0.70', accent: '#cf142b', bg: '#3d0008', border: '#cf142b', glow: 'rgba(207,20,43,0.4)',  comic: false, triggers: [{h:2, m:22, endH:2, endM:23}] },
+  zh:        { img: 'zh.png',        opacity: '0.70', accent: '#eb0028', bg: '#4b000e', border: '#eb0028', glow: 'rgba(235,0,40,0.4)',   comic: false, triggers: [{h:3, m:33, endH:3, endM:34}] },
+  disco:     { img: 'disco.png',     opacity: '0.60', accent: '#ff69b4', bg: '#2d001a', border: '#ff69b4', glow: 'rgba(255,105,180,0.4)', comic: false, blackBg: true, activeDates: ['2026-07-04','2026-07-05','2026-07-06'], triggers: [{h:1, m:30, endH:4, endM:30}] },
+  runescape: { img: 'runescape.png', opacity: '0.80', accent: '#c8a94e', bg: '#3a2800', border: '#c8a94e', glow: 'rgba(200,169,78,0.4)',  comic: true, activeDates: ['2026-07-03'], triggers: [{h:16, m:0, endH:17, endM:0}] },
+};
 
 const DAYS = {
   jeudi: {
@@ -411,10 +445,13 @@ const DAYS = {
   }
 };
 
-// Time override (?t=YYYY-MM-DDTHH:MM)
+// getNow
 function getNow() {
   const p = new URLSearchParams(location.search).get('t');
-  return p ? new Date(p) : new Date();
+  if (!p) return new Date();
+  const normalized = p.split(':').length === 2 ? p + ':00' : p;
+  const d = new Date(normalized);
+  return isNaN(d) ? new Date() : d;
 }
 
 // Format hour
@@ -476,6 +513,7 @@ function addLongPress(div, nameSelector) {
         else favs = favs.filter(f => f !== div.id);
         localStorage.setItem('favs', JSON.stringify(favs));
       } catch(e) {}
+      updateResetBtn();
     }
   });
 }
@@ -521,6 +559,7 @@ function renderDay(dayKey) {
       span.style.top = topPx + 'px';
       axis.appendChild(span);
     }
+
     let favs = [];
     try { const s = JSON.parse(localStorage.getItem('favs')); if (Array.isArray(s)) favs = s; } catch(e) {}
 
@@ -558,7 +597,18 @@ function renderDay(dayKey) {
 
     updateNowLine();
     fitActNames();
+    updateResetBtn();
   });
+}
+
+// Reset favs
+function updateResetBtn() {
+  const btn = document.getElementById('reset-btn');
+  if (!btn) return;
+  try {
+    const favs = JSON.parse(localStorage.getItem('favs'));
+    btn.style.display = Array.isArray(favs) && favs.length > 0 ? 'flex' : 'none';
+  } catch(e) { btn.style.display = 'none'; }
 }
 
 // Fit act names
@@ -659,6 +709,7 @@ window.addEventListener('load', () => {
   const activeDayEl = document.querySelector(`.day-item[data-day="${todayKey}"]`);
   if (activeDayEl) document.getElementById('current-date').textContent = activeDayEl.dataset.dateFr;
   renderDay(todayKey);
+  if (localStorage.getItem('rs_unlocked')) document.body.classList.add('runescape-unlocked');
 
   // Now line interval
   setInterval(updateNowLine, 60000);
@@ -677,6 +728,12 @@ window.addEventListener('load', () => {
   const langBtn = document.getElementById('lang-btn');
   langBtn.addEventListener('click', e => {
     e.stopPropagation();
+    if (langDidLong) { langDidLong = false; return; }
+    if (manualLangEaster && easterActive === manualLangEaster) {
+      triggerEaster(manualLangEaster);
+      manualLangEaster = null;
+      return;
+    }
     lang = lang === 'fr' ? 'en' : lang === 'en' ? 'zh' : 'fr';
     langBtn.textContent = lang.toUpperCase();
     document.querySelectorAll('.day-item').forEach(el => {
@@ -688,6 +745,20 @@ window.addEventListener('load', () => {
       document.getElementById('current-date').textContent = active.dataset[dateKey];
     }
   });
+
+  let langPressTimer = null, langDidLong = false, manualLangEaster = null;
+  langBtn.addEventListener('contextmenu', e => e.preventDefault());
+  langBtn.addEventListener('pointerdown', e => {
+    langBtn.setPointerCapture(e.pointerId);
+    langDidLong = false;
+    langPressTimer = setTimeout(() => {
+      langDidLong = true;
+      manualLangEaster = lang;
+      triggerEaster(lang);
+    }, 5000);
+  });
+  langBtn.addEventListener('pointerup',     () => clearTimeout(langPressTimer));
+  langBtn.addEventListener('pointercancel', () => clearTimeout(langPressTimer));
 
   const colorBtn = document.getElementById('color-btn');
   const colorMenu = document.getElementById('color-menu');
@@ -707,7 +778,7 @@ window.addEventListener('load', () => {
       document.querySelectorAll('.sh-name').forEach(el => el.style.color = accentColor);
       document.querySelectorAll('.stage-header').forEach(el => el.style.borderTopColor = accentColor);
       document.querySelectorAll('.act.act-now').forEach(el => { el.style.borderLeftColor = accentColor; el.style.borderTopColor = accentColor; });
-      document.querySelectorAll('.act.selected').forEach(el => { el.style.background = accentBg; el.style.borderLeftColor = accentBorder; });
+      document.querySelectorAll('.act.selected').forEach(el => { const rr = el.querySelector('.act-name')?.textContent.trim() === 'RuneScape Rave' && !document.body.classList.contains('runescape-active') && !document.body.classList.contains('runescape-unlocked'); el.style.background = rr ? '#555' : accentBg; el.style.borderLeftColor = rr ? '#fff' : accentBorder; });
       const nl = document.getElementById('now-line');
       if (nl) { nl.style.background = accentColor; nl.style.boxShadow = `0 0 8px ${accentColor}`; }
       document.querySelectorAll('.color-option').forEach(o => o.classList.remove('current'));
@@ -719,13 +790,16 @@ window.addEventListener('load', () => {
   // Scale
   function applyScale() {
     const scaler = document.getElementById('scaler');
-    const scale = Math.min(window.innerWidth / 1080, window.innerHeight / 1920);
+    const vw = window.visualViewport ? window.visualViewport.width  : window.innerWidth;
+    const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    const scale = Math.min(vw / 1080, vh / 1920);
     scaler.style.transform = `scale(${scale})`;
-    scaler.style.left = ((window.innerWidth - 1080 * scale) / 2) + 'px';
-    scaler.style.top = ((window.innerHeight - 1920 * scale) / 2) + 'px';
+    scaler.style.left = ((vw - 1080 * scale) / 2) + 'px';
+    scaler.style.top  = ((vh - 1920 * scale) / 2) + 'px';
   }
   applyScale();
   window.addEventListener('resize', applyScale);
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', applyScale);
 
   // Fullscreen
   const fsBtn = document.getElementById('fs-btn');
@@ -749,6 +823,183 @@ window.addEventListener('load', () => {
       document.removeEventListener('click', exitOnClick);
     }
   });
+
+  // Reset favs
+  const resetBtn = document.getElementById('reset-btn');
+  const resetLabel = document.getElementById('reset-label');
+  let resetStep = 0, resetTimer = null;
+  const resetDeactivate = () => {
+    resetStep = 0;
+    resetBtn.style.borderColor = '#ffffff20';
+    resetBtn.style.background = '#ffffff12';
+    resetLabel.style.display = 'none';
+  };
+  updateResetBtn();
+  resetBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    clearTimeout(resetTimer);
+    if (resetStep === 0) {
+      resetStep = 1;
+      resetBtn.style.borderColor = '#ff4444';
+      resetBtn.style.background = '#ff000022';
+      resetLabel.textContent = 'RESET?';
+      resetLabel.style.display = 'block';
+      resetTimer = setTimeout(resetDeactivate, 5000);
+    } else if (resetStep === 1) {
+      resetStep = 2;
+      resetLabel.textContent = 'SURE?';
+      resetTimer = setTimeout(resetDeactivate, 5000);
+    } else {
+      resetDeactivate();
+      localStorage.removeItem('favs');
+      localStorage.removeItem('rs_unlocked');
+      document.body.classList.remove('runescape-unlocked');
+      document.querySelectorAll('.act.selected').forEach(el => {
+        el.classList.remove('selected');
+        el.style.background = '';
+        el.style.borderLeftColor = '';
+      });
+      resetBtn.style.display = 'none';
+    }
+  });
+
+  // Easter eggs
+  let easterActive = null;
+  let preEasterState = null;
+
+  function applyAccentToElements() {
+    document.documentElement.style.setProperty('--accent', accentColor);
+    document.documentElement.style.setProperty('--accent-bg', accentBg);
+    document.documentElement.style.setProperty('--accent-border', accentBorder);
+    colorBtn.style.background = accentColor;
+    document.querySelectorAll('.label').forEach(el => el.style.color = accentColor);
+    document.querySelectorAll('.red-dot').forEach(el => el.style.background = accentColor);
+    document.querySelectorAll('.sh-name').forEach(el => el.style.color = accentColor);
+    document.querySelectorAll('.stage-header').forEach(el => el.style.borderTopColor = accentColor);
+    document.querySelectorAll('.act.selected').forEach(el => { const rr = el.querySelector('.act-name')?.textContent.trim() === 'RuneScape Rave' && !document.body.classList.contains('runescape-active') && !document.body.classList.contains('runescape-unlocked'); el.style.background = rr ? '#555' : accentBg; el.style.borderLeftColor = rr ? '#fff' : accentBorder; });
+    const isFS = !!document.fullscreenElement;
+    document.querySelectorAll('.act.act-now').forEach(el => { el.style.borderLeftColor = isFS ? '' : accentColor; el.style.borderTopColor = isFS ? '' : accentColor; });
+    const nl = document.getElementById('now-line');
+    if (nl) { nl.style.background = accentColor; nl.style.boxShadow = `0 0 8px ${accentColor}`; }
+  }
+
+  function setEaster(mode) {
+    const wasActive = easterActive;
+    easterActive = easterActive === mode ? null : mode;
+    Object.entries(EASTER_EVENTS).forEach(([k, cfg]) => {
+      document.getElementById(k + '-img').style.opacity = easterActive === k ? cfg.opacity : '0';
+    });
+    document.body.classList.toggle('easter-active', easterActive !== null);
+    document.body.classList.toggle('runescape-active', easterActive === 'runescape');
+    if (easterActive === 'runescape') document.body.classList.add('runescape-unlocked');
+    if (easterActive) {
+      const cfg = EASTER_EVENTS[easterActive];
+      preEasterState = { accent: accentColor, bg: accentBg, border: accentBorder, bgFull: document.querySelector('.bg-full').style.background };
+      accentColor = cfg.accent; accentBg = cfg.bg; accentBorder = cfg.border;
+      document.querySelector('.bg-full').style.background = cfg.blackBg ? '#0d0d0d' : `linear-gradient(to bottom, #0d0d0d 0%, transparent 15%, transparent 85%, #0d0d0d 100%), radial-gradient(ellipse at 50% 50%, ${cfg.glow} 0%, #0d0d0d 70%)`;
+      applyAccentToElements();
+    } else if (wasActive && preEasterState) {
+      accentColor = preEasterState.accent; accentBg = preEasterState.bg; accentBorder = preEasterState.border;
+      document.querySelector('.bg-full').style.background = preEasterState.bgFull;
+      applyAccentToElements();
+      preEasterState = null;
+    }
+  }
+
+  const manuallyTriggered = new Set();
+  function triggerEaster(key) {
+    const wasActive = easterActive === key;
+    if (wasActive) manuallyTriggered.delete(key);
+    else manuallyTriggered.add(key);
+    setEaster(key);
+    const cfg = EASTER_EVENTS[key];
+    if (cfg.comic) document.getElementById('scaler').classList.toggle('comic-sans', !wasActive);
+  }
+
+  let shrekClicks = 0, shrekTimer;
+  let comicClicks = 0, comicTimer;
+  let runeClicks = 0, runeTimer;
+  const easterLabel = document.querySelector('.label');
+  const easterDate = document.getElementById('current-date');
+
+  document.addEventListener('pointerdown', (e) => {
+    if (e.target.closest('.label')) {
+      if (shrekClicks === 0) shrekTimer = setTimeout(() => shrekClicks = 0, 10000);
+      shrekClicks++;
+      easterLabel.style.color = '#fff';
+      setTimeout(() => easterLabel.style.color = accentColor, 200);
+      if (shrekClicks >= 5) { shrekClicks = 0; clearTimeout(shrekTimer); triggerEaster('shrek'); }
+    }
+    if (e.target.closest('#current-date')) {
+      if (comicClicks === 0) comicTimer = setTimeout(() => comicClicks = 0, 10000);
+      comicClicks++;
+      easterDate.style.color = '#fff';
+      setTimeout(() => easterDate.style.color = '', 200);
+      if (comicClicks >= 5) { comicClicks = 0; clearTimeout(comicTimer); triggerEaster('alien'); }
+    }
+  });
+
+  document.addEventListener('click', e => {
+    const act = e.target.closest('.act');
+    if (!act || act.querySelector('.act-name')?.textContent.trim() !== 'RuneScape Rave') return;
+    if (runeClicks === 0) runeTimer = setTimeout(() => runeClicks = 0, 10000);
+    runeClicks++;
+    if (runeClicks >= 3) {
+      runeClicks = 0; clearTimeout(runeTimer);
+      localStorage.setItem('rs_unlocked', '1');
+      document.body.classList.add('runescape-unlocked');
+      triggerEaster('runescape');
+    }
+  });
+
+  // Auto-activation
+  (() => {
+    const now = getNow();
+    const h = now.getHours(), m = now.getMinutes();
+    const nowMins = h * 60 + m;
+    const todayStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+    let exactKey = null, windowKey = null;
+    Object.entries(EASTER_EVENTS).forEach(([key, cfg]) => {
+      if (cfg.activeDates && !cfg.activeDates.includes(todayStr)) return;
+      const inWindow = cfg.triggers.some(t => nowMins >= t.h * 60 + t.m && nowMins < t.endH * 60 + (t.endM ?? 0));
+      if (!inWindow) return;
+      const isExact = cfg.triggers.some(t => t.h === h && t.m === m);
+      if (isExact) exactKey = key;
+      else windowKey = key;
+    });
+    const toActivate = exactKey ?? windowKey;
+    if (toActivate) {
+      setEaster(toActivate);
+      if (EASTER_EVENTS[toActivate].comic) document.getElementById('scaler').classList.add('comic-sans');
+    }
+  })();
+
+  // Reload
+  setInterval(() => {
+    const now = getNow();
+    const h = now.getHours(), m = now.getMinutes();
+    const nowMins = h * 60 + m;
+    const todayStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+    Object.entries(EASTER_EVENTS).forEach(([key, cfg]) => {
+      if (manuallyTriggered.has(key)) return;
+      if (cfg.activeDates && !cfg.activeDates.includes(todayStr)) return;
+      const isTrigger = cfg.triggers.some(t => t.h === h && t.m === m);
+      const isEnd     = cfg.triggers.some(t => h === t.endH && m === (t.endM ?? 0));
+      const inWindow  = cfg.triggers.some(t => nowMins >= t.h * 60 + t.m && nowMins < t.endH * 60 + (t.endM ?? 0));
+      if (!inWindow && !isEnd) {
+        sessionStorage.removeItem(`rs_${key}`);
+        sessionStorage.removeItem(`re_${key}`);
+        return;
+      }
+      if (isTrigger && !sessionStorage.getItem(`rs_${key}`)) {
+        sessionStorage.setItem(`rs_${key}`, '1');
+        location.reload();
+      } else if (isEnd && !sessionStorage.getItem(`re_${key}`)) {
+        sessionStorage.setItem(`re_${key}`, '1');
+        location.reload();
+      }
+    });
+  }, 1000);
 
   function exitOnClick(e) {
     if (!e.target.closest('.act') && !e.target.closest('.day-item')) {
