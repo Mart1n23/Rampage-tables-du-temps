@@ -40,7 +40,7 @@
     z-index: 0;
   }
 
-  /* Scaler: fixed 1080x1920, scaled to fit */
+  /* Scaler */
   #scaler {
     position: absolute;
     width: 1080px;
@@ -84,16 +84,16 @@
   .day-item.active { color: #fff; font-size: 90px; padding-bottom: 0; }
   .day-date { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: #ffffff44; letter-spacing: 6px; margin-top: 4px; margin-bottom: 12px; }
 
-  /* Stage header row */
+  /* Stage headers */
   .stage-row { display: grid; gap: 0 6px; margin-bottom: 6px; }
   .stage-header { border-top: 2px solid var(--accent); padding-top: 6px; }
   .sh-name { font-size: 21px; font-weight: 700; letter-spacing: 2px; color: var(--accent); text-transform: uppercase; }
   .sh-sub { font-size: 13px; color: #ffffff66; margin-top: 2px; }
 
-  /* Timeline: axis col + stage cols side by side */
+  /* Timeline */
   .timeline { flex: 1; display: grid; gap: 0 6px; position: relative; min-height: 0; }
 
-  /* Time axis */
+  /* Axis */
   .time-axis { position: relative; }
   .tick-label {
     position: absolute; right: 8px;
@@ -103,10 +103,10 @@
     transform: translateY(-50%);
   }
 
-  /* Each stage column is position:relative so acts can be absolute */
+  /* Stage column */
   .stage-col { position: relative; }
 
-  /* Acts positioned absolutely within their column */
+  /* Acts */
   .act {
     position: absolute; left: 0; right: 0;
     border-radius: 3px; padding: 10px 13px;
@@ -117,6 +117,12 @@
     box-sizing: border-box;
   }
   .act.selected { background: var(--accent-bg); border-left: 3px solid var(--accent-border); }
+  .act.act-now { background: #2a2a2a; border-left: 4px solid var(--accent); border-top-color: var(--accent); }
+  .act.act-past { opacity: 0.65; }
+  .is-fullscreen .act-past { opacity: 1; }
+  .is-fullscreen .act-now { background: #1c1c1c; border-left: 3px solid #444; border-top-color: #2a2a2a; }
+  .is-fullscreen .act.selected { background: var(--accent-bg); border-left: 3px solid var(--accent-border); }
+  .is-fullscreen #now-line { display: none; }
   .act-name { font-size: 25px; font-weight: 700; color: #fff; line-height: 1.3; }
   .act-time { font-size: 17px; color: #ffffff88; margin-top: 4px; }
 
@@ -134,10 +140,10 @@
     <div>
       <div class="label">Rampage Open Air 2026</div>
       <div class="day-row">
-        <div class="day-item active" data-day="jeudi"    data-date-fr="02 JUILLET" data-date-en="JULY 02" data-fr="JEUDI"    data-en="THURSDAY">JEUDI</div>
-        <div class="day-item"        data-day="vendredi" data-date-fr="03 JUILLET" data-date-en="JULY 03" data-fr="VENDREDI"  data-en="FRIDAY">VENDREDI</div>
-        <div class="day-item"        data-day="samedi"   data-date-fr="04 JUILLET" data-date-en="JULY 04" data-fr="SAMEDI"    data-en="SATURDAY">SAMEDI</div>
-        <div class="day-item"        data-day="dimanche" data-date-fr="05 JUILLET" data-date-en="JULY 05" data-fr="DIMANCHE"  data-en="SUNDAY">DIMANCHE</div>
+        <div class="day-item active" data-day="jeudi"    data-date-fr="02 JUILLET" data-date-en="JULY 02" data-date-zh="7月2日" data-fr="JEUDI"    data-en="THURSDAY" data-zh="周四">JEUDI</div>
+        <div class="day-item"        data-day="vendredi" data-date-fr="03 JUILLET" data-date-en="JULY 03" data-date-zh="7月3日" data-fr="VENDREDI"  data-en="FRIDAY"   data-zh="周五">VENDREDI</div>
+        <div class="day-item"        data-day="samedi"   data-date-fr="04 JUILLET" data-date-en="JULY 04" data-date-zh="7月4日" data-fr="SAMEDI"    data-en="SATURDAY" data-zh="周六">SAMEDI</div>
+        <div class="day-item"        data-day="dimanche" data-date-fr="05 JUILLET" data-date-en="JULY 05" data-date-zh="7月5日" data-fr="DIMANCHE"  data-en="SUNDAY"   data-zh="周日">DIMANCHE</div>
       </div>
       <div class="day-date" id="current-date">02 JUILLET</div>
     </div>
@@ -152,10 +158,10 @@
         <div class="color-option" style="background:#9200e0" data-accent="#9200e0" data-bg="#1a0030" data-border="#9200e0" data-glow="rgba(146,0,224,0.4)"></div>
         <div class="color-option" style="background:#444;border:2px solid #666" data-accent="#aaa" data-bg="#3a3a3a" data-border="#aaa" data-glow="rgba(170,170,170,0.4)"></div>
       </div>
+      <div id="lang-btn" style="width:40px;height:40px;border-radius:50%;background:#ffffff12;border:2px solid #ffffff20;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0.7;font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px;color:#fff;">FR</div>
       <div id="fs-btn" style="width:40px;height:40px;border-radius:50%;background:#ffffff12;border:2px solid #ffffff20;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0.7;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
       </div>
-      <div id="lang-btn" style="width:40px;height:40px;border-radius:50%;background:#ffffff12;border:2px solid #ffffff20;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0.7;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;color:#fff;">FR</div>
     </div>
   </div>
 
@@ -404,12 +410,20 @@ const DAYS = {
   }
 };
 
+// Time override (?t=YYYY-MM-DDTHH:MM)
+function getNow() {
+  const p = new URLSearchParams(location.search).get('t');
+  return p ? new Date(p) : new Date();
+}
+
+// Format hour
 function fmtH(h) {
   const hh = h >= 24 ? h - 24 : h;
   const mm = (h % 1 === 0.5) ? '30' : '00';
   return String(Math.floor(hh)).padStart(2,'0') + ':' + mm;
 }
 
+// Long press
 function addLongPress(div, nameSelector) {
   let timer = null, didLong = false;
   const start = () => {
@@ -442,6 +456,7 @@ function addLongPress(div, nameSelector) {
   div.addEventListener('click', () => { if (!didLong) div.classList.toggle('selected'); });
 }
 
+// Render day
 function renderDay(dayKey) {
   const day = DAYS[dayKey];
   const stageRow = document.getElementById('stage-row');
@@ -455,7 +470,7 @@ function renderDay(dayKey) {
   stageRow.style.gridTemplateColumns = day.gridCols;
   tl.style.gridTemplateColumns = day.gridCols;
 
-  // Stage headers
+  // Headers
   stageRow.appendChild(document.createElement('div'));
   day.stages.forEach(s => {
     const d = document.createElement('div');
@@ -468,9 +483,9 @@ function renderDay(dayKey) {
     const totalH = tl.clientHeight;
     const totalMin = (day.endHour - day.startHour) * 60;
     const pxPerMin = totalH / totalMin;
-    const GAP = 2; // small visual gap in pixels between adjacent acts
+    const GAP = 2;
 
-    // Tick labels on axis
+    // Ticks
     for (let h = day.startHour; h <= day.endHour; h++) {
       const minOffset = (h - day.startHour) * 60;
       const topPx = minOffset * pxPerMin;
@@ -481,7 +496,7 @@ function renderDay(dayKey) {
       axis.appendChild(span);
     }
 
-    // Stage columns — acts positioned absolutely by time
+    // Columns
     day.stages.forEach(s => {
       const col = document.createElement('div');
       col.className = 'stage-col';
@@ -494,6 +509,8 @@ function renderDay(dayKey) {
 
         const div = document.createElement('div');
         div.className = 'act';
+        div.dataset.start = a.start;
+        div.dataset.end = a.end;
         div.style.top = topPx + 'px';
         div.style.height = heightPx + 'px';
         div.innerHTML = `<div class="act-name">${a.name}</div><div class="act-time">${fmtH(a.start)} – ${fmtH(a.end)}</div>`;
@@ -503,36 +520,132 @@ function renderDay(dayKey) {
 
       tl.appendChild(col);
     });
+
+    updateNowLine();
+    fitActNames();
+  });
+}
+
+// Fit act names
+function fitActNames() {
+  document.querySelectorAll('.act-name').forEach(el => {
+    el.style.fontSize = '';
+    const maxW = el.parentElement.clientWidth - 26;
+    if (el.scrollWidth > maxW) {
+      const ratio = maxW / el.scrollWidth;
+      el.style.fontSize = Math.max(14, Math.floor(25 * ratio)) + 'px';
+    }
+  });
+}
+
+// Festival day
+function getCurrentFestivalDay() {
+  const now = getNow();
+  const d = new Date(now);
+  if (now.getHours() < 2) d.setDate(d.getDate() - 1);
+  if (d.getFullYear() !== 2026 || d.getMonth() !== 6) return null;
+  return { 2: 'jeudi', 3: 'vendredi', 4: 'samedi', 5: 'dimanche' }[d.getDate()] || null;
+}
+
+// Now line
+function updateNowLine() {
+  const tl = document.getElementById('tl');
+  const existing = document.getElementById('now-line');
+  const festivalDay = getCurrentFestivalDay();
+  const activeDay = document.querySelector('.day-item.active');
+
+  const dayOrder = ['jeudi', 'vendredi', 'samedi', 'dimanche'];
+  const festivalIdx = festivalDay ? dayOrder.indexOf(festivalDay) : -1;
+  const viewedIdx = activeDay ? dayOrder.indexOf(activeDay.dataset.day) : -1;
+
+  // Viewed day is before current festival day → gray all acts
+  if (festivalDay && viewedIdx < festivalIdx) {
+    if (existing) existing.remove();
+    document.querySelectorAll('.act').forEach(act => {
+      act.classList.add('act-past');
+      act.classList.remove('act-now');
+    });
+    return;
+  }
+
+  if (!festivalDay || !activeDay || activeDay.dataset.day !== festivalDay) {
+    if (existing) existing.remove();
+    return;
+  }
+
+  const day = DAYS[festivalDay];
+  const now = getNow();
+  let h = now.getHours() + now.getMinutes() / 60;
+  if (h < 2) h += 24;
+
+  if (h < day.startHour || h >= day.endHour) {
+    if (existing) existing.remove();
+    return;
+  }
+
+  const totalH = tl.clientHeight;
+  const totalMin = (day.endHour - day.startHour) * 60;
+  const topPx = ((h - day.startHour) * 60) / totalMin * totalH;
+
+  const line = existing || document.createElement('div');
+  line.id = 'now-line';
+  if (!existing) {
+    Object.assign(line.style, {
+      position: 'absolute', left: '0', right: '0',
+      height: '2px', background: 'var(--accent)',
+      boxShadow: '0 0 8px var(--accent)',
+      zIndex: '10', pointerEvents: 'none'
+    });
+    tl.appendChild(line);
+  }
+  line.style.top = topPx + 'px';
+
+  // Highlights
+  document.querySelectorAll('.act').forEach(act => {
+    const s = parseFloat(act.dataset.start);
+    const e = parseFloat(act.dataset.end);
+    act.classList.toggle('act-now', h >= s && h < e);
+    act.classList.toggle('act-past', h >= e);
   });
 }
 
 window.addEventListener('load', () => {
-  renderDay('jeudi');
-
   let lang = 'fr';
+
+  // Auto day
+  const todayKey = getCurrentFestivalDay() || 'jeudi';
+  document.querySelectorAll('.day-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.day === todayKey);
+  });
+  const activeDayEl = document.querySelector(`.day-item[data-day="${todayKey}"]`);
+  if (activeDayEl) document.getElementById('current-date').textContent = activeDayEl.dataset.dateFr;
+  renderDay(todayKey);
+
+  // Now line interval
+  setInterval(updateNowLine, 60000);
 
   document.querySelectorAll('.day-item').forEach(el => {
     el.addEventListener('click', () => {
       document.querySelectorAll('.day-item').forEach(d => d.classList.remove('active'));
       el.classList.add('active');
-      const dateKey = lang === 'fr' ? 'dateFr' : 'dateEn';
+      const dateKey = 'date' + lang.charAt(0).toUpperCase() + lang.slice(1);
       document.getElementById('current-date').textContent = el.dataset[dateKey];
       renderDay(el.dataset.day);
     });
   });
 
-  // Language toggle
+  // Language
   const langBtn = document.getElementById('lang-btn');
   langBtn.addEventListener('click', e => {
     e.stopPropagation();
-    lang = lang === 'fr' ? 'en' : 'fr';
+    lang = lang === 'fr' ? 'en' : lang === 'en' ? 'zh' : 'fr';
     langBtn.textContent = lang.toUpperCase();
     document.querySelectorAll('.day-item').forEach(el => {
       el.textContent = el.dataset[lang];
     });
     const active = document.querySelector('.day-item.active');
     if (active) {
-      const dateKey = lang === 'fr' ? 'dateFr' : 'dateEn';
+      const dateKey = 'date' + lang.charAt(0).toUpperCase() + lang.slice(1);
       document.getElementById('current-date').textContent = active.dataset[dateKey];
     }
   });
@@ -554,7 +667,7 @@ window.addEventListener('load', () => {
     });
   });
 
-  // Scale scaler to fit screen, bg-full covers everything
+  // Scale
   function applyScale() {
     const scaler = document.getElementById('scaler');
     const scale = Math.min(window.innerWidth / 1080, window.innerHeight / 1920);
@@ -577,6 +690,7 @@ window.addEventListener('load', () => {
 
   document.addEventListener('fullscreenchange', () => {
     const isFS = !!document.fullscreenElement;
+    document.body.classList.toggle('is-fullscreen', isFS);
     rightPanel.style.visibility = isFS ? 'hidden' : 'visible';
     applyScale();
     if (isFS) {
