@@ -457,9 +457,23 @@ function addLongPress(div, nameSelector) {
   div.addEventListener('click', () => {
     if (!didLong) {
       div.classList.toggle('selected');
-      const sel = div.classList.contains('selected');
-      div.style.background = sel ? accentBg : '';
-      div.style.borderLeftColor = sel ? accentBorder : '';
+      let favs = [];
+      try {
+        const localStorageFavs = JSON.parse(localStorage.getItem("favs"));
+        if(!Array.isArray(localStorageFavs)){
+          throw new Error(`localStorage entry 'favs' is not an array, defaulting to ${favs}`);
+        } 
+        favs = localStorageFavs;
+      } catch(e) {
+        console.error(e);
+      }
+      if(div.classList.contains("selected")){
+        favs.push(div.id);
+      } else {
+        favs = favs.filter((fav)=>(fav !== div.id))
+      }
+      console.log(favs)
+      localStorage.setItem("favs", JSON.stringify(favs));
     }
   });
 }
@@ -505,7 +519,16 @@ function renderDay(dayKey) {
       span.style.top = topPx + 'px';
       axis.appendChild(span);
     }
-
+    let favs = [];
+    try {
+      const localStorageFavs = JSON.parse(localStorage.getItem("favs"));
+      if(!Array.isArray(localStorageFavs)){
+        throw new Error(`localStorage entry 'favs' is not an array`);
+      } 
+      favs = localStorageFavs;  
+    } catch (e) {
+      console.error(e);
+    }
     // Columns
     day.stages.forEach(s => {
       const col = document.createElement('div');
@@ -518,7 +541,11 @@ function renderDay(dayKey) {
         const heightPx = durMin * pxPerMin - GAP;
 
         const div = document.createElement('div');
+        div.id = a.name;
         div.className = 'act';
+        if(favs.includes(div.id)){
+          ediv.classList.add("selected");
+        }
         div.dataset.start = a.start;
         div.dataset.end = a.end;
         div.style.top = topPx + 'px';
