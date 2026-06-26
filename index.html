@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0d0d0d">
@@ -13,11 +13,10 @@
   html {
     background: #0d0d0d;
     width: 100%; height: 100%;
+    overflow: hidden;
   }
 
-  :root {
-    --accent: #eb0028; --accent-bg: #2a0008; --accent-border: #eb0028;
-  }
+  :root { --accent: #eb0028; --accent-bg: #2a0008; --accent-border: #eb0028; }
 
   body {
     background: transparent; color: #fff;
@@ -173,6 +172,8 @@
 </div><!-- end .content -->
 </div><!-- end #scaler -->
 <script>
+let accentColor = '#eb0028', accentBg = '#2a0008', accentBorder = '#eb0028';
+
 const DAYS = {
   jeudi: {
     gridCols: '60px 1fr 1fr 1fr',
@@ -453,7 +454,14 @@ function addLongPress(div, nameSelector) {
   div.addEventListener('mouseup', cancel);
   div.addEventListener('touchend', cancel);
   div.addEventListener('mouseleave', cancel);
-  div.addEventListener('click', () => { if (!didLong) div.classList.toggle('selected'); });
+  div.addEventListener('click', () => {
+    if (!didLong) {
+      div.classList.toggle('selected');
+      const sel = div.classList.contains('selected');
+      div.style.background = sel ? accentBg : '';
+      div.style.borderLeftColor = sel ? accentBorder : '';
+    }
+  });
 }
 
 // Render day
@@ -475,7 +483,9 @@ function renderDay(dayKey) {
   day.stages.forEach(s => {
     const d = document.createElement('div');
     d.className = 'stage-header';
+    d.style.borderTopColor = accentColor;
     d.innerHTML = `<div class="sh-name">${s.name}</div>${s.sub ? `<div class="sh-sub">${s.sub}</div>` : ''}`;
+    d.querySelector('.sh-name').style.color = accentColor;
     stageRow.appendChild(d);
   });
 
@@ -601,11 +611,15 @@ function updateNowLine() {
   line.style.top = topPx + 'px';
 
   // Highlights
+  const isFS = !!document.fullscreenElement;
   document.querySelectorAll('.act').forEach(act => {
     const s = parseFloat(act.dataset.start);
     const e = parseFloat(act.dataset.end);
-    act.classList.toggle('act-now', h >= s && h < e);
+    const isNow = h >= s && h < e;
+    act.classList.toggle('act-now', isNow);
     act.classList.toggle('act-past', h >= e);
+    act.style.borderLeftColor = (isNow && !isFS) ? accentColor : '';
+    act.style.borderTopColor = (isNow && !isFS) ? accentColor : '';
   });
 }
 
@@ -623,6 +637,8 @@ window.addEventListener('load', () => {
 
   // Now line interval
   setInterval(updateNowLine, 60000);
+
+
 
   document.querySelectorAll('.day-item').forEach(el => {
     el.addEventListener('click', () => {
@@ -657,10 +673,20 @@ window.addEventListener('load', () => {
   document.querySelectorAll('.color-option').forEach(opt => {
     opt.addEventListener('click', e => {
       e.stopPropagation();
-      document.documentElement.style.setProperty('--accent', opt.dataset.accent);
-      document.documentElement.style.setProperty('--accent-bg', opt.dataset.bg);
-      document.documentElement.style.setProperty('--accent-border', opt.dataset.border);
-      document.querySelector('.bg-full').style.background = `linear-gradient(to bottom, #0d0d0d 0%, transparent 15%, transparent 85%, #0d0d0d 100%), radial-gradient(ellipse at 50% 50%, ${opt.dataset.glow} 0%, #0d0d0d 70%)`;      colorBtn.style.background = opt.dataset.accent;
+      accentColor = opt.dataset.accent; accentBg = opt.dataset.bg; accentBorder = opt.dataset.border;
+      document.documentElement.style.setProperty('--accent', accentColor);
+      document.documentElement.style.setProperty('--accent-bg', accentBg);
+      document.documentElement.style.setProperty('--accent-border', accentBorder);
+      document.querySelector('.bg-full').style.background = `linear-gradient(to bottom, #0d0d0d 0%, transparent 15%, transparent 85%, #0d0d0d 100%), radial-gradient(ellipse at 50% 50%, ${opt.dataset.glow} 0%, #0d0d0d 70%)`;
+      colorBtn.style.background = accentColor;
+      document.querySelectorAll('.label').forEach(el => el.style.color = accentColor);
+      document.querySelectorAll('.red-dot').forEach(el => el.style.background = accentColor);
+      document.querySelectorAll('.sh-name').forEach(el => el.style.color = accentColor);
+      document.querySelectorAll('.stage-header').forEach(el => el.style.borderTopColor = accentColor);
+      document.querySelectorAll('.act.act-now').forEach(el => { el.style.borderLeftColor = accentColor; el.style.borderTopColor = accentColor; });
+      document.querySelectorAll('.act.selected').forEach(el => { el.style.background = accentBg; el.style.borderLeftColor = accentBorder; });
+      const nl = document.getElementById('now-line');
+      if (nl) { nl.style.background = accentColor; nl.style.boxShadow = `0 0 8px ${accentColor}`; }
       document.querySelectorAll('.color-option').forEach(o => o.classList.remove('current'));
       opt.classList.add('current');
       colorMenu.classList.remove('open');
@@ -693,6 +719,7 @@ window.addEventListener('load', () => {
     document.body.classList.toggle('is-fullscreen', isFS);
     rightPanel.style.visibility = isFS ? 'hidden' : 'visible';
     applyScale();
+    updateNowLine();
     if (isFS) {
       document.addEventListener('click', exitOnClick);
     } else {
