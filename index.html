@@ -544,7 +544,7 @@ function renderDay(dayKey) {
         div.id = a.name;
         div.className = 'act';
         if(favs.includes(div.id)){
-          ediv.classList.add("selected");
+          div.classList.add("selected");
         }
         div.dataset.start = a.start;
         div.dataset.end = a.end;
