@@ -131,10 +131,10 @@
     <div>
       <div class="label">Rampage Open Air 2026</div>
       <div class="day-row">
-        <div class="day-item active" data-day="jeudi"    data-date-fr="02 JUILLET" data-date-en="JULY 02" data-fr="JEUDI"    data-en="THURSDAY">JEUDI</div>
-        <div class="day-item"        data-day="vendredi" data-date-fr="03 JUILLET" data-date-en="JULY 03" data-fr="VENDREDI"  data-en="FRIDAY">VENDREDI</div>
-        <div class="day-item"        data-day="samedi"   data-date-fr="04 JUILLET" data-date-en="JULY 04" data-fr="SAMEDI"    data-en="SATURDAY">SAMEDI</div>
-        <div class="day-item"        data-day="dimanche" data-date-fr="05 JUILLET" data-date-en="JULY 05" data-fr="DIMANCHE"  data-en="SUNDAY">DIMANCHE</div>
+        <div class="day-item active" id="jeudi"   >JEUDI</div>
+        <div class="day-item"        id="vendredi">VENDREDI</div>
+        <div class="day-item"        id="samedi"  >SAMEDI</div>
+        <div class="day-item"        id="dimanche">DIMANCHE</div>
       </div>
       <div class="day-date" id="current-date">02 JUILLET</div>
     </div>
@@ -502,6 +502,34 @@ function renderDay(dayKey) {
     });
   });
 }
+const dataSet = {
+  jeudi: {
+    "date-fr": "02 JUILLET",
+    "date-en":"JULY 02",
+    "fr": "JEUDI", 
+    "en": "THURSDAY"
+  }, 
+  vendredi: {
+    "date-fr": "03 JUILLET",
+    "date-en":"JULY 03",
+    "fr": "VENDREDI", 
+    "en": "FRIDAY"
+  },
+  samedi: {
+    "date-fr": "04 JUILLET",
+    "date-en":"JULY 04",
+    "fr": "SAMEDI", 
+    "en": "SATURDAY"
+  },
+  dimanche: {
+    "date-fr": "05 JUILLET",
+    "date-en":"JULY 05",
+    "fr": "DIMANCHE", 
+    "en": "SUNDAY"
+  }
+}
+  
+
 
 window.addEventListener('load', () => {
   renderDay('jeudi');
@@ -513,8 +541,8 @@ window.addEventListener('load', () => {
       document.querySelectorAll('.day-item').forEach(d => d.classList.remove('active'));
       el.classList.add('active');
       const dateKey = lang === 'fr' ? 'dateFr' : 'dateEn';
-      document.getElementById('current-date').textContent = el.dataset[dateKey];
-      renderDay(el.dataset.day);
+      document.getElementById('current-date').textContent = dataSet[el.id][dateKey];
+      renderDay(el.id);
     });
   });
 
@@ -525,7 +553,7 @@ window.addEventListener('load', () => {
     lang = lang === 'fr' ? 'en' : 'fr';
     langBtn.textContent = lang.toUpperCase();
     document.querySelectorAll('.day-item').forEach(el => {
-      el.textContent = el.dataset[lang];
+      el.textContent = dataSet[el.id][lang];
     });
     const active = document.querySelector('.day-item.active');
     if (active) {
