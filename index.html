@@ -21,7 +21,7 @@
   body {
     background: transparent; color: #fff;
     font-family: 'Inter', sans-serif;
-    width: 100vw; height: 100vh;
+    width: 100vw; height: 100dvh;
     overflow: hidden; position: relative;
   }
 
@@ -57,9 +57,9 @@
   .top-bar { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
 
   .color-btn {
-    width: 36px; height: 36px; border-radius: 50%;
+    width: 44px; height: 44px; border-radius: 50%;
     background: var(--accent); border: 2px solid #ffffff15;
-    cursor: pointer; flex-shrink: 0; margin-top: 8px; opacity: 0.6;
+    cursor: pointer; flex-shrink: 0; margin-top: -6px; opacity: 0.6;
   }
   .color-menu {
     position: absolute; right: 0; top: 52px;
@@ -164,7 +164,7 @@
       </div>
       <div class="day-date" id="current-date">02 JUILLET</div>
     </div>
-    <div id="right-panel" style="position:relative;display:flex;flex-direction:column;align-items:center;gap:12px;">
+    <div id="right-panel" style="position:relative;display:flex;flex-direction:column;align-items:center;gap:16px;">
       <div class="color-btn" id="color-btn"></div>
       <div class="color-menu" id="color-menu">
         <div class="color-option current" style="background:#eb0028" data-accent="#eb0028" data-bg="#4b000e" data-border="#eb0028" data-glow="rgba(235,0,40,0.4)"></div>
@@ -175,9 +175,15 @@
         <div class="color-option" style="background:#9200e0" data-accent="#9200e0" data-bg="#260045" data-border="#9200e0" data-glow="rgba(146,0,224,0.4)"></div>
         <div class="color-option" style="background:#444;border:2px solid #666" data-accent="#aaa" data-bg="#333333" data-border="#aaa" data-glow="rgba(170,170,170,0.4)"></div>
       </div>
-      <div id="lang-btn" style="width:40px;height:40px;border-radius:50%;background:#ffffff12;border:2px solid #ffffff20;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0.7;font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px;color:#fff;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;">FR</div>
-      <div id="fs-btn" style="width:40px;height:40px;border-radius:50%;background:#ffffff12;border:2px solid #ffffff20;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0.7;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+      <div id="lang-btn" style="width:48px;height:48px;border-radius:50%;background:#ffffff12;border:2px solid #ffffff20;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0.7;font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;color:#fff;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;">FR</div>
+      <div style="position:relative;">
+        <div id="reset-label" style="display:none;position:absolute;right:128px;top:50%;transform:translateY(-50%);font-size:32px;color:#ff4444;letter-spacing:3px;font-family:'Bebas Neue',sans-serif;white-space:nowrap;">RESET?</div>
+        <div id="reset-btn" style="display:none;position:absolute;right:64px;top:0;width:48px;height:48px;border-radius:50%;background:#ffffff12;border:2px solid #ffffff20;cursor:pointer;flex-direction:row;align-items:center;justify-content:center;opacity:0.7;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        </div>
+        <div id="fs-btn" style="width:48px;height:48px;border-radius:50%;background:#ffffff12;border:2px solid #ffffff20;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0.7;">
+          <svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+        </div>
       </div>
     </div>
   </div>
@@ -507,6 +513,7 @@ function addLongPress(div, nameSelector) {
         else favs = favs.filter(f => f !== div.id);
         localStorage.setItem('favs', JSON.stringify(favs));
       } catch(e) {}
+      updateResetBtn();
     }
   });
 }
@@ -590,7 +597,18 @@ function renderDay(dayKey) {
 
     updateNowLine();
     fitActNames();
+    updateResetBtn();
   });
+}
+
+// Reset favs
+function updateResetBtn() {
+  const btn = document.getElementById('reset-btn');
+  if (!btn) return;
+  try {
+    const favs = JSON.parse(localStorage.getItem('favs'));
+    btn.style.display = Array.isArray(favs) && favs.length > 0 ? 'flex' : 'none';
+  } catch(e) { btn.style.display = 'none'; }
 }
 
 // Fit act names
@@ -691,6 +709,7 @@ window.addEventListener('load', () => {
   const activeDayEl = document.querySelector(`.day-item[data-day="${todayKey}"]`);
   if (activeDayEl) document.getElementById('current-date').textContent = activeDayEl.dataset.dateFr;
   renderDay(todayKey);
+  if (localStorage.getItem('rs_unlocked')) document.body.classList.add('runescape-unlocked');
 
   // Now line interval
   setInterval(updateNowLine, 60000);
@@ -771,13 +790,16 @@ window.addEventListener('load', () => {
   // Scale
   function applyScale() {
     const scaler = document.getElementById('scaler');
-    const scale = Math.min(window.innerWidth / 1080, window.innerHeight / 1920);
+    const vw = window.visualViewport ? window.visualViewport.width  : window.innerWidth;
+    const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    const scale = Math.min(vw / 1080, vh / 1920);
     scaler.style.transform = `scale(${scale})`;
-    scaler.style.left = ((window.innerWidth - 1080 * scale) / 2) + 'px';
-    scaler.style.top = ((window.innerHeight - 1920 * scale) / 2) + 'px';
+    scaler.style.left = ((vw - 1080 * scale) / 2) + 'px';
+    scaler.style.top  = ((vh - 1920 * scale) / 2) + 'px';
   }
   applyScale();
   window.addEventListener('resize', applyScale);
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', applyScale);
 
   // Fullscreen
   const fsBtn = document.getElementById('fs-btn');
@@ -799,6 +821,45 @@ window.addEventListener('load', () => {
       document.addEventListener('click', exitOnClick);
     } else {
       document.removeEventListener('click', exitOnClick);
+    }
+  });
+
+  // Reset favs
+  const resetBtn = document.getElementById('reset-btn');
+  const resetLabel = document.getElementById('reset-label');
+  let resetStep = 0, resetTimer = null;
+  const resetDeactivate = () => {
+    resetStep = 0;
+    resetBtn.style.borderColor = '#ffffff20';
+    resetBtn.style.background = '#ffffff12';
+    resetLabel.style.display = 'none';
+  };
+  updateResetBtn();
+  resetBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    clearTimeout(resetTimer);
+    if (resetStep === 0) {
+      resetStep = 1;
+      resetBtn.style.borderColor = '#ff4444';
+      resetBtn.style.background = '#ff000022';
+      resetLabel.textContent = 'RESET?';
+      resetLabel.style.display = 'block';
+      resetTimer = setTimeout(resetDeactivate, 5000);
+    } else if (resetStep === 1) {
+      resetStep = 2;
+      resetLabel.textContent = 'SURE?';
+      resetTimer = setTimeout(resetDeactivate, 5000);
+    } else {
+      resetDeactivate();
+      localStorage.removeItem('favs');
+      localStorage.removeItem('rs_unlocked');
+      document.body.classList.remove('runescape-unlocked');
+      document.querySelectorAll('.act.selected').forEach(el => {
+        el.classList.remove('selected');
+        el.style.background = '';
+        el.style.borderLeftColor = '';
+      });
+      resetBtn.style.display = 'none';
     }
   });
 
@@ -883,7 +944,12 @@ window.addEventListener('load', () => {
     if (!act || act.querySelector('.act-name')?.textContent.trim() !== 'RuneScape Rave') return;
     if (runeClicks === 0) runeTimer = setTimeout(() => runeClicks = 0, 10000);
     runeClicks++;
-    if (runeClicks >= 6) { runeClicks = 0; clearTimeout(runeTimer); triggerEaster('runescape'); }
+    if (runeClicks >= 3) {
+      runeClicks = 0; clearTimeout(runeTimer);
+      localStorage.setItem('rs_unlocked', '1');
+      document.body.classList.add('runescape-unlocked');
+      triggerEaster('runescape');
+    }
   });
 
   // Auto-activation
