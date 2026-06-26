@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0d0d0d">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    background: #0d0d0d;
+    width: 100%; height: 100%;
+  }
+
+  body {
+    background: transparent; color: #fff;
+    font-family: 'Inter', sans-serif;
+    width: 100vw; height: 100vh;
+    overflow: hidden; position: relative;
+    --accent: #c00018; --accent-bg: #2a0008; --accent-border: #c00018;
+  }
+
+  .bg-full {
+    position: fixed;
+    inset: 0;
+    background:
+      linear-gradient(to bottom,
+        #0d0d0d 0%,
+        transparent 15%,
+        transparent 85%,
+        #0d0d0d 100%
+      ),
+      radial-gradient(ellipse at 50% 50%, rgba(192, 0, 24, 0.4) 0%, #0d0d0d 70%);
+    z-index: 0;
+  }
+
+  /* Scaler: fixed 1080x1920, scaled to fit */
+  #scaler {
+    position: absolute;
+    width: 1080px;
+    height: 1920px;
+    transform-origin: top left;
+    z-index: 1;
+  }
+
+  .content {
+    position: relative; z-index: 1;
+    padding: 55px 55px 35px;
+    height: 100%; display: flex; flex-direction: column;
+  }
+
+  .top-bar { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+
+  .color-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--accent); border: 2px solid #ffffff15;
+    cursor: pointer; flex-shrink: 0; margin-top: 8px; opacity: 0.6;
+  }
+  .color-menu {
+    position: absolute; right: 0; top: 52px;
+    background: #1a1a1a; border: 1px solid #333;
+    border-radius: 8px; padding: 10px;
+    display: none; flex-direction: column; gap: 8px; z-index: 100;
+  }
+  .color-menu.open { display: flex; }
+  .color-option { width: 44px; height: 44px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; }
+  .color-option:hover, .color-option.current { border-color: #fff; }
+
+  .label { font-size: 22px; letter-spacing: 5px; color: var(--accent); text-transform: uppercase; margin-bottom: 6px; }
+  .day-row { display: flex; align-items: flex-end; gap: 20px; }
+  .day-item {
+    font-family: 'Bebas Neue', sans-serif; line-height: 1;
+    cursor: pointer; white-space: nowrap; user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 0.2s, font-size 0.2s;
+    color: #ffffff22; font-size: 40px; padding-bottom: 6px;
+  }
+  .day-item.active { color: #fff; font-size: 90px; padding-bottom: 0; }
+  .day-date { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: #ffffff44; letter-spacing: 6px; margin-top: 4px; margin-bottom: 12px; }
+
+  /* Stage header row */
+  .stage-row { display: grid; gap: 0 6px; margin-bottom: 6px; }
+  .stage-header { border-top: 2px solid var(--accent); padding-top: 6px; }
+  .sh-name { font-size: 18px; font-weight: 700; letter-spacing: 2px; color: var(--accent); text-transform: uppercase; }
+  .sh-sub { font-size: 13px; color: #ffffff33; margin-top: 2px; }
+
+  /* Timeline: axis col + stage cols side by side */
+  .timeline { flex: 1; display: grid; gap: 0 6px; position: relative; min-height: 0; }
+
+  /* Time axis */
+  .time-axis { position: relative; }
+  .tick-label {
+    position: absolute; right: 8px;
+    font-size: 18px; font-weight: 600;
+    color: #ffffff55; letter-spacing: 1px;
+    font-variant-numeric: tabular-nums;
+    transform: translateY(-50%);
+  }
+
+  /* Each stage column is position:relative so acts can be absolute */
+  .stage-col { position: relative; }
+
+  /* Acts positioned absolutely within their column */
+  .act {
+    position: absolute; left: 0; right: 0;
+    border-radius: 3px; padding: 8px 10px;
+    background: #1c1c1c; border-left: 2px solid #333;
+    overflow: hidden; cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    -webkit-tap-highlight-color: transparent; user-select: none;
+    box-sizing: border-box;
+  }
+  .act.selected { background: var(--accent-bg); border-left: 3px solid var(--accent-border); }
+  .act-name { font-size: 22px; font-weight: 700; color: #fff; line-height: 1.2; }
+  .act-time { font-size: 15px; color: #ffffff66; margin-top: 3px; }
+
+  .footer { margin-top: 12px; display: flex; justify-content: space-between; align-items: center; }
+  .footer-text { font-size: 12px; letter-spacing: 3px; color: #ffffff18; text-transform: uppercase; }
+  .red-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); }
+</style>
+</head>
+<body>
+<div class="bg-full"></div>
+<div id="scaler">
+<div class="content">
+
+  <div class="top-bar">
+    <div>
+      <div class="label">Rampage Open Air 2026</div>
+      <div class="day-row">
+        <div class="day-item active" data-day="jeudi"    data-date-fr="02 JUILLET" data-date-en="JULY 02" data-fr="JEUDI"    data-en="THURSDAY">JEUDI</div>
+        <div class="day-item"        data-day="vendredi" data-date-fr="03 JUILLET" data-date-en="JULY 03" data-fr="VENDREDI"  data-en="FRIDAY">VENDREDI</div>
+        <div class="day-item"        data-day="samedi"   data-date-fr="04 JUILLET" data-date-en="JULY 04" data-fr="SAMEDI"    data-en="SATURDAY">SAMEDI</div>
+        <div class="day-item"        data-day="dimanche" data-date-fr="05 JUILLET" data-date-en="JULY 05" data-fr="DIMANCHE"  data-en="SUNDAY">DIMANCHE</div>
+      </div>
+      <div class="day-date" id="current-date">02 JUILLET</div>
+    </div>
+    <div id="right-panel" style="position:relative;display:flex;flex-direction:column;align-items:center;gap:12px;">
+      <div class="color-btn" id="color-btn"></div>
+      <div class="color-menu" id="color-menu">
+        <div class="color-option current" style="background:#c00018" data-accent="#c00018" data-bg="#2a0008" data-border="#c00018" data-glow="rgba(192,0,24,0.4)"></div>
+        <div class="color-option" style="background:#e05500" data-accent="#e05500" data-bg="#2a1000" data-border="#e05500" data-glow="rgba(224,85,0,0.4)"></div>
+        <div class="color-option" style="background:#d4c000" data-accent="#d4c000" data-bg="#2a2500" data-border="#d4c000" data-glow="rgba(212,192,0,0.4)"></div>
+        <div class="color-option" style="background:#008a3c" data-accent="#008a3c" data-bg="#001a0e" data-border="#008a3c" data-glow="rgba(0,138,60,0.4)"></div>
+        <div class="color-option" style="background:#0057c0" data-accent="#0057c0" data-bg="#00153a" data-border="#0057c0" data-glow="rgba(0,87,192,0.4)"></div>
+        <div class="color-option" style="background:#7a00c0" data-accent="#7a00c0" data-bg="#1a0030" data-border="#7a00c0" data-glow="rgba(122,0,192,0.4)"></div>
+        <div class="color-option" style="background:#444;border:2px solid #666" data-accent="#aaa" data-bg="#3a3a3a" data-border="#aaa" data-glow="rgba(170,170,170,0.4)"></div>
+      </div>
+      <div id="fs-btn" style="width:40px;height:40px;border-radius:50%;background:#ffffff12;border:2px solid #ffffff20;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0.7;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+      </div>
+      <div id="lang-btn" style="width:40px;height:40px;border-radius:50%;background:#ffffff12;border:2px solid #ffffff20;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0.7;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;color:#fff;">FR</div>
+    </div>
+  </div>
+
+  <div class="stage-row" id="stage-row"></div>
+  <div class="timeline" id="tl">
+    <div class="time-axis" id="axis"></div>
+  </div>
+
+</div><!-- end .content -->
+</div><!-- end #scaler -->
+<script>
+const DAYS = {
+  jeudi: {
+    gridCols: '60px 1fr 1fr 1fr',
+    startHour: 18, endHour: 25,
+    stages: [
+      { name: 'Dome', sub: 'By Radar', acts: [
+        { name: 'MÆDM', start: 18, end: 19 },
+        { name: 'Gracie van Brunt', start: 19, end: 20 },
+        { name: 'Maze', start: 20, end: 21 },
+        { name: 'T & Bugah', start: 21, end: 22 },
+        { name: 'Murdock b2b Riot Ten', start: 22, end: 23 },
+        { name: 'Captain Bass', start: 23, end: 24 },
+        { name: 'Macky Gee', start: 24, end: 25 },
+      ]},
+      { name: 'Church', sub: '', acts: [
+        { name: 'LeZed B2B MixSaj', start: 18, end: 19.5 },
+        { name: 'Ondulada b2b Rune Evens', start: 19.5, end: 21 },
+        { name: 'KAAI', start: 21, end: 22.5 },
+        { name: 'Volunt Barbati', start: 22.5, end: 24 },
+        { name: 'Burr Oak', start: 24, end: 25 },
+      ]},
+      { name: 'Tunnel', sub: 'Dubstep NL × Space Invaderz', acts: [
+        { name: 'Atex b2b Chenzo b2b TwoPhazed', start: 18, end: 19 },
+        { name: 'Ricky West', start: 19, end: 20 },
+        { name: 'Claybrook', start: 20, end: 21 },
+        { name: 'Obey', start: 21, end: 22 },
+        { name: 'Bommer', start: 22, end: 23 },
+        { name: 'Automhate', start: 23, end: 24 },
+        { name: 'Tape B', start: 24, end: 25 },
+      ]},
+    ]
+  },
+  vendredi: {
+    gridCols: '60px 1fr 1fr 1fr 1fr 1fr',
+    startHour: 14, endHour: 25,
+    stages: [
+      { name: 'Mainstage', sub: 'By MHITR', acts: [
+        { name: 'EXCEPTION', start: 14, end: 15 },
+        { name: 'BOUJEE BASS: ACP b2b Noir b2b VDV', start: 15, end: 16 },
+        { name: 'FM6 6 deck set', start: 16, end: 17 },
+        { name: 'Arcando b2b Primate', start: 17, end: 18 },
+        { name: 'Turno presents Gametime', start: 18, end: 19 },
+        { name: 'Jessica Audiffred b2b Riot Ten', start: 19, end: 20 },
+        { name: 'A Little Sound', start: 20, end: 21 },
+        { name: 'Camo & Krooked', start: 21, end: 22 },
+        { name: 'USED', start: 22, end: 23 },
+        { name: 'Hedex & Eksman', start: 23, end: 24 },
+        { name: 'Slander b2b NGHTMRE', start: 24, end: 25 },
+      ]},
+      { name: 'Dome', sub: 'By RUN', acts: [
+        { name: 'Kyli b2b Construktiv', start: 14, end: 15 },
+        { name: 'Abyssal vs Midas Touch', start: 15, end: 16 },
+        { name: 'Detrix b2b Miscall', start: 16, end: 17 },
+        { name: 'Atmos b2b Latte', start: 17, end: 18 },
+        { name: 'Natty Lou b2b Titan', start: 18, end: 19 },
+        { name: 'SubSonic', start: 19, end: 20 },
+        { name: 'S.P.Y', start: 20, end: 21 },
+        { name: 'Distorted Minds', start: 21, end: 22 },
+        { name: 'Aeonmode b2b ShockOne', start: 22, end: 23 },
+        { name: 'Mefjus', start: 23, end: 24 },
+        { name: 'Black Sun Empire', start: 24, end: 25 },
+      ]},
+      { name: 'Storm', sub: 'By DMZ', acts: [
+        { name: 'SYNLDN: Baitz b2b SiKora', start: 14, end: 15 },
+        { name: 'KAGURA', start: 15, end: 16 },
+        { name: 'iityx b2b Ophion', start: 16, end: 17 },
+        { name: 'Dr.Ushuu b2b Madcore', start: 17, end: 18 },
+        { name: 'DMZ News Official & SweetTooth', start: 18, end: 19 },
+        { name: 'Shockone Dubstep set', start: 19, end: 20 },
+        { name: 'Blanke', start: 20, end: 21 },
+        { name: 'Muerte b2b Stoned Level', start: 21, end: 22 },
+        { name: 'Barely Alive b2b Kompany', start: 22, end: 23 },
+        { name: 'Midnight Tyrannosaurus', start: 23, end: 24 },
+      ]},
+      { name: 'Church', sub: 'By Vision', acts: [
+        { name: 'Groningen Soundsystem (BANOOZLED / DEETS / S.MAZE / SACHIKO / SEVEN-…)', start: 15, end: 17 },
+        { name: 'Sorza', start: 17, end: 18 },
+        { name: 'ɒi|uႱ ɘǫiɒꟼ', start: 18, end: 19 },
+        { name: 'Syzy', start: 19, end: 20 },
+        { name: 'Thys', start: 20, end: 21 },
+        { name: 'Ivy Lab Farewell Tour', start: 21, end: 22 },
+        { name: 'Zeke Beats', start: 22, end: 23 },
+        { name: 'Jon Casey', start: 23, end: 24 },
+        { name: 'Audio', start: 24, end: 25 },
+      ]},
+      { name: 'Tunnel', sub: 'By Vissa', acts: [
+        { name: 'Jetyx', start: 14, end: 15 },
+        { name: 'DEXX', start: 15, end: 16 },
+        { name: 'RuneScape Rave', start: 16, end: 17 },
+        { name: 'Crumb Pit', start: 17, end: 18 },
+        { name: 'Explorers of the Internet', start: 18, end: 19 },
+        { name: 'Unicorn On Ketamine', start: 19, end: 20 },
+        { name: 'GPF', start: 20, end: 21 },
+        { name: 'Audio', start: 21, end: 22 },
+        { name: 'Gladde Paling', start: 22, end: 23 },
+        { name: 'Dr Donk pres. ZAAGSTEP', start: 23, end: 24 },
+        { name: 'MEGA B2B', start: 24, end: 25 },
+      ]},
+    ]
+  },
+  samedi: {
+    gridCols: '60px 1fr 1fr 1fr 1fr 1fr',
+    startHour: 14, endHour: 25,
+    stages: [
+      { name: 'Mainstage', sub: 'By Rampage Recordings', acts: [
+        { name: 'Loboski', start: 14, end: 15 },
+        { name: 'V.O.E', start: 15, end: 16 },
+        { name: 'Freaks & Geeks', start: 16, end: 17 },
+        { name: 'PIRAPUS PRESENTS: FUTURE', start: 17, end: 18 },
+        { name: 'San Holo (Wholesome Riddim)', start: 18, end: 19 },
+        { name: 'Murdock', start: 19, end: 20 },
+        { name: 'Modestep', start: 20, end: 21 },
+        { name: 'KOVEN', start: 21, end: 22 },
+        { name: 'A.M.C ft Phantom', start: 22, end: 23 },
+        { name: 'Mozey', start: 23, end: 24 },
+        { name: 'Kanine b2b Sota', start: 24, end: 25 },
+      ]},
+      { name: 'Dome', sub: 'By Crucast', acts: [
+        { name: 'Fynesse', start: 14, end: 14.5 },
+        { name: 'X-ESS', start: 14.5, end: 15 },
+        { name: '3 After Midnight', start: 15, end: 16 },
+        { name: 'VDV', start: 16, end: 17 },
+        { name: 'Anticipate b2b Lixed b2b Nora', start: 17, end: 18 },
+        { name: 'Sub Zero', start: 18, end: 19 },
+        { name: 'Harriet Jaxxon', start: 19, end: 20 },
+        { name: 'Logan D b2b T-Lex', start: 20, end: 21 },
+        { name: 'Born On Road', start: 21, end: 22 },
+        { name: 'REAPER', start: 22, end: 23 },
+        { name: 'Gentlemens Club', start: 23, end: 24 },
+        { name: 'Disrupta b2b Skepsis', start: 24, end: 25 },
+      ]},
+      { name: 'Storm', sub: 'By Blacklist', acts: [
+        { name: 'Blacklist Showcase Autodrive b2b Sekula', start: 14, end: 16 },
+        { name: 'Elle Rich', start: 16, end: 17 },
+        { name: 'Onara b2b Roi*', start: 17, end: 18 },
+        { name: 'Whales', start: 18, end: 19 },
+        { name: 'Code: Pandorum', start: 19, end: 20 },
+        { name: 'HeSh', start: 20, end: 21 },
+        { name: 'Doctor P.', start: 21, end: 22 },
+        { name: 'Jessica Audiffred', start: 22, end: 23 },
+        { name: 'Nimda', start: 23, end: 24 },
+        { name: 'Space Laces', start: 24, end: 25 },
+      ]},
+      { name: 'Church', sub: 'World Of Drum&Bass 35Y', acts: [
+        { name: 'Fabrict b2b High Roll', start: 15, end: 16 },
+        { name: 'Dub Elements', start: 16, end: 17 },
+        { name: 'Document One', start: 17, end: 18 },
+        { name: 'This Is Inja', start: 18, end: 19 },
+        { name: 'Drumsound & Bassline Smith', start: 19, end: 20 },
+        { name: 'Grooverider', start: 20, end: 21 },
+        { name: 'DJ SS', start: 21, end: 22 },
+        { name: 'Danny Byrd', start: 22, end: 23 },
+        { name: 'Bladerunner b2b DJ Hybrid', start: 23, end: 24 },
+        { name: 'Matrix  Futurebound', start: 24, end: 25 },
+      ]},
+      { name: 'Tunnel', sub: 'By Hardstyle Daily', acts: [
+        { name: 'ARK8', start: 15, end: 16.5 },
+        { name: 'Ecstatic', start: 16.5, end: 17.5 },
+        { name: 'More Kords', start: 17.5, end: 18.5 },
+        { name: 'Cardination', start: 18.5, end: 19.5 },
+        { name: 'Da Tweekaz', start: 19.5, end: 20.5 },
+        { name: 'Hard Driver', start: 20.5, end: 21.5 },
+        { name: 'Audiofreq', start: 21.5, end: 23 },
+        { name: 'Mish', start: 23, end: 24 },
+        { name: '99PRBLMZ', start: 24, end: 25 },
+      ]},
+    ]
+  },
+  dimanche: {
+    gridCols: '60px 1fr 1fr 1fr 1fr 1fr',
+    startHour: 14, endHour: 25,
+    stages: [
+      { name: 'Mainstage', sub: 'By Monstercat', acts: [
+        { name: 'Protostar', start: 14, end: 15 },
+        { name: 'Ultralight AV', start: 15, end: 16 },
+        { name: 'Elipsa', start: 16, end: 17 },
+        { name: 'Cartoon', start: 17, end: 18 },
+        { name: 'Eskei83', start: 18, end: 19 },
+        { name: 'Basstripper Presents: Area Code', start: 19, end: 20 },
+        { name: 'Fox Stevenson DJ Set', start: 20, end: 21 },
+        { name: 'Infekt b2b Samplifire', start: 21, end: 22 },
+        { name: 'Murdock b2b Reaper', start: 22, end: 23 },
+        { name: 'Dirtyphonics', start: 23, end: 24 },
+        { name: 'Sub Focus', start: 24, end: 25 },
+      ]},
+      { name: 'Dome', sub: 'By Club Mozey', acts: [
+        { name: 'Solid State', start: 14, end: 15 },
+        { name: 'Nersha b2b Rendah', start: 15, end: 16 },
+        { name: 'Herbz b2b Jaybee', start: 16, end: 17 },
+        { name: 'Waeys', start: 17, end: 18 },
+        { name: 'Jewelz Blu b2b Sudley', start: 18, end: 19 },
+        { name: 'ACI3 b2b Don Darkoe', start: 19, end: 20 },
+        { name: '[IVY]', start: 20, end: 21 },
+        { name: 'P Money x Whiney', start: 21, end: 22 },
+        { name: 'Circadian', start: 22, end: 23 },
+        { name: 'Lens', start: 23, end: 24 },
+        { name: 'Friction b2b Mozey', start: 24, end: 25 },
+      ]},
+      { name: 'Storm', sub: 'By Dubstep FBI', acts: [
+        { name: 'Dubstep FBI DJ Contest', start: 14, end: 15 },
+        { name: 'Crysomemore b2b Shockwav', start: 15, end: 16 },
+        { name: 'Kerosene b2b Warlord', start: 16, end: 17 },
+        { name: 'Bizo b2b Hammerhead', start: 17, end: 18 },
+        { name: 'Gorilla T', start: 18, end: 19 },
+        { name: 'Ivory', start: 19, end: 20 },
+        { name: 'Shiverz', start: 20, end: 21 },
+        { name: 'Seven Lions', start: 21, end: 22 },
+        { name: 'Hol!', start: 22, end: 23 },
+        { name: 'Eptic', start: 23, end: 24 },
+        { name: 'Virtual Riot', start: 24, end: 25 },
+      ]},
+      { name: 'Church', sub: 'By Ampere Invites', acts: [
+        { name: 'Headspace', start: 15, end: 16 },
+        { name: 'Lauravioli', start: 16, end: 17 },
+        { name: 'Cheyanne Hudson', start: 17, end: 18 },
+        { name: 'Shawiya Tribe', start: 18, end: 19 },
+        { name: 'Dr.Ushuu 140 set', start: 19, end: 20 },
+        { name: 'Die', start: 20, end: 21 },
+        { name: 'Mary Droppinz', start: 21, end: 22 },
+        { name: '33 Below', start: 22, end: 23 },
+        { name: 'IMANU', start: 23, end: 24 },
+        { name: 'Joker', start: 24, end: 25 },
+      ]},
+      { name: 'Tunnel', sub: 'By Unfaced', acts: [
+        { name: 'Venox', start: 14, end: 15 },
+        { name: 'Vespera', start: 15, end: 16 },
+        { name: 'Luna Fields', start: 16, end: 17.5 },
+        { name: 'VIDO', start: 17.5, end: 19 },
+        { name: 'JacidOrex', start: 19, end: 20.5 },
+        { name: 'BYØRN', start: 20.5, end: 22 },
+        { name: 'Creeds', start: 22, end: 23.5 },
+        { name: 'Lena de Roose', start: 23.5, end: 25 },
+      ]},
+    ]
+  }
+};
+
+function fmtH(h) {
+  const hh = h >= 24 ? h - 24 : h;
+  const mm = (h % 1 === 0.5) ? '30' : '00';
+  return String(Math.floor(hh)).padStart(2,'0') + ':' + mm;
+}
+
+function addLongPress(div, nameSelector) {
+  let timer = null, didLong = false;
+  const start = () => {
+    didLong = false;
+    timer = setTimeout(() => {
+      didLong = true;
+      const ne = div.querySelector(nameSelector);
+      const cur = ne.textContent;
+      const inp = document.createElement('input');
+      inp.value = cur;
+      inp.style.cssText = 'font-size:16px;font-weight:700;color:#fff;background:transparent;border:none;border-bottom:2px solid var(--accent);outline:none;width:100%;font-family:Inter,sans-serif;';
+      ne.replaceWith(inp);
+      inp.focus(); inp.select();
+      const fin = () => {
+        const nd = document.createElement('div');
+        nd.className = ne.className;
+        nd.textContent = inp.value.trim() || cur;
+        inp.replaceWith(nd);
+      };
+      inp.addEventListener('blur', fin);
+      inp.addEventListener('keydown', e => { if (e.key === 'Enter') inp.blur(); });
+    }, 1000);
+  };
+  const cancel = () => clearTimeout(timer);
+  div.addEventListener('mousedown', start);
+  div.addEventListener('touchstart', start, { passive: true });
+  div.addEventListener('mouseup', cancel);
+  div.addEventListener('touchend', cancel);
+  div.addEventListener('mouseleave', cancel);
+  div.addEventListener('click', () => { if (!didLong) div.classList.toggle('selected'); });
+}
+
+function renderDay(dayKey) {
+  const day = DAYS[dayKey];
+  const stageRow = document.getElementById('stage-row');
+  const tl = document.getElementById('tl');
+  const axis = document.getElementById('axis');
+
+  stageRow.innerHTML = '';
+  tl.querySelectorAll('.stage-col').forEach(e => e.remove());
+  axis.innerHTML = '';
+
+  stageRow.style.gridTemplateColumns = day.gridCols;
+  tl.style.gridTemplateColumns = day.gridCols;
+
+  // Stage headers
+  stageRow.appendChild(document.createElement('div'));
+  day.stages.forEach(s => {
+    const d = document.createElement('div');
+    d.className = 'stage-header';
+    d.innerHTML = `<div class="sh-name">${s.name}</div>${s.sub ? `<div class="sh-sub">${s.sub}</div>` : ''}`;
+    stageRow.appendChild(d);
+  });
+
+  requestAnimationFrame(() => {
+    const totalH = tl.clientHeight;
+    const totalMin = (day.endHour - day.startHour) * 60;
+    const pxPerMin = totalH / totalMin;
+    const GAP = 2; // small visual gap in pixels between adjacent acts
+
+    // Tick labels on axis
+    for (let h = day.startHour; h <= day.endHour; h++) {
+      const minOffset = (h - day.startHour) * 60;
+      const topPx = minOffset * pxPerMin;
+      const span = document.createElement('span');
+      span.className = 'tick-label';
+      span.textContent = fmtH(h);
+      span.style.top = topPx + 'px';
+      axis.appendChild(span);
+    }
+
+    // Stage columns — acts positioned absolutely by time
+    day.stages.forEach(s => {
+      const col = document.createElement('div');
+      col.className = 'stage-col';
+
+      s.acts.forEach(a => {
+        const topMin = (a.start - day.startHour) * 60;
+        const durMin = (a.end - a.start) * 60;
+        const topPx = topMin * pxPerMin;
+        const heightPx = durMin * pxPerMin - GAP;
+
+        const div = document.createElement('div');
+        div.className = 'act';
+        div.style.top = topPx + 'px';
+        div.style.height = heightPx + 'px';
+        div.innerHTML = `<div class="act-name">${a.name}</div><div class="act-time">${fmtH(a.start)} – ${fmtH(a.end)}</div>`;
+        addLongPress(div, '.act-name');
+        col.appendChild(div);
+      });
+
+      tl.appendChild(col);
+    });
+  });
+}
+
+window.addEventListener('load', () => {
+  renderDay('jeudi');
+
+  let lang = 'fr';
+
+  document.querySelectorAll('.day-item').forEach(el => {
+    el.addEventListener('click', () => {
+      document.querySelectorAll('.day-item').forEach(d => d.classList.remove('active'));
+      el.classList.add('active');
+      const dateKey = lang === 'fr' ? 'dateFr' : 'dateEn';
+      document.getElementById('current-date').textContent = el.dataset[dateKey];
+      renderDay(el.dataset.day);
+    });
+  });
+
+  // Language toggle
+  const langBtn = document.getElementById('lang-btn');
+  langBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    lang = lang === 'fr' ? 'en' : 'fr';
+    langBtn.textContent = lang.toUpperCase();
+    document.querySelectorAll('.day-item').forEach(el => {
+      el.textContent = el.dataset[lang];
+    });
+    const active = document.querySelector('.day-item.active');
+    if (active) {
+      const dateKey = lang === 'fr' ? 'dateFr' : 'dateEn';
+      document.getElementById('current-date').textContent = active.dataset[dateKey];
+    }
+  });
+
+  const colorBtn = document.getElementById('color-btn');
+  const colorMenu = document.getElementById('color-menu');
+  colorBtn.addEventListener('click', e => { e.stopPropagation(); colorMenu.classList.toggle('open'); });
+  document.addEventListener('click', () => colorMenu.classList.remove('open'));
+  document.querySelectorAll('.color-option').forEach(opt => {
+    opt.addEventListener('click', e => {
+      e.stopPropagation();
+      document.body.style.setProperty('--accent', opt.dataset.accent);
+      document.body.style.setProperty('--accent-bg', opt.dataset.bg);
+      document.body.style.setProperty('--accent-border', opt.dataset.border);
+      document.querySelector('.bg-full').style.background = `linear-gradient(to bottom, #0d0d0d 0%, transparent 15%, transparent 85%, #0d0d0d 100%), radial-gradient(ellipse at 50% 50%, ${opt.dataset.glow} 0%, #0d0d0d 70%)`;      colorBtn.style.background = opt.dataset.accent;
+      document.querySelectorAll('.color-option').forEach(o => o.classList.remove('current'));
+      opt.classList.add('current');
+      colorMenu.classList.remove('open');
+    });
+  });
+
+  // Scale scaler to fit screen, bg-full covers everything
+  function applyScale() {
+    const scaler = document.getElementById('scaler');
+    const scale = Math.min(window.innerWidth / 1080, window.innerHeight / 1920);
+    scaler.style.transform = `scale(${scale})`;
+    scaler.style.left = ((window.innerWidth - 1080 * scale) / 2) + 'px';
+    scaler.style.top = ((window.innerHeight - 1920 * scale) / 2) + 'px';
+  }
+  applyScale();
+  window.addEventListener('resize', applyScale);
+
+  // Fullscreen
+  const fsBtn = document.getElementById('fs-btn');
+  const rightPanel = document.getElementById('right-panel');
+
+  fsBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    const el = document.documentElement;
+    (el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen).call(el);
+  });
+
+  document.addEventListener('fullscreenchange', () => {
+    const isFS = !!document.fullscreenElement;
+    rightPanel.style.visibility = isFS ? 'hidden' : 'visible';
+    applyScale();
+    if (isFS) {
+      document.addEventListener('click', exitOnClick);
+    } else {
+      document.removeEventListener('click', exitOnClick);
+    }
+  });
+
+  function exitOnClick(e) {
+    if (!e.target.closest('.act') && !e.target.closest('.day-item')) {
+      (document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen).call(document);
+    }
+  }
+
+});
+</script>
+</body>
+</html>
