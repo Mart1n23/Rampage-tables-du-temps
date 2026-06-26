@@ -458,8 +458,24 @@ function addLongPress(div, nameSelector) {
     if (!didLong) {
       div.classList.toggle('selected');
       const sel = div.classList.contains('selected');
-      div.style.background = sel ? accentBg : '';
-      div.style.borderLeftColor = sel ? accentBorder : '';
+      const isRuneRave = div.querySelector('.act-name')?.textContent.trim() === 'RuneScape Rave'
+                      && !document.body.classList.contains('runescape-active') && !document.body.classList.contains('runescape-unlocked');
+      div.style.background = sel ? (isRuneRave ? '#555' : accentBg) : '';
+      if (sel) {
+        div.style.borderLeftColor = isRuneRave ? '#fff' : accentBorder;
+      } else {
+        const isNow = div.classList.contains('act-now');
+        const isFS = !!document.fullscreenElement;
+        div.style.borderLeftColor = (isNow && !isFS) ? accentColor : '';
+        div.style.borderTopColor = isNow ? accentColor : '';
+      }
+      try {
+        const stored = JSON.parse(localStorage.getItem('favs'));
+        let favs = Array.isArray(stored) ? stored : [];
+        if (sel) favs.push(div.id);
+        else favs = favs.filter(f => f !== div.id);
+        localStorage.setItem('favs', JSON.stringify(favs));
+      } catch(e) {}
     }
   });
 }
@@ -505,6 +521,8 @@ function renderDay(dayKey) {
       span.style.top = topPx + 'px';
       axis.appendChild(span);
     }
+    let favs = [];
+    try { const s = JSON.parse(localStorage.getItem('favs')); if (Array.isArray(s)) favs = s; } catch(e) {}
 
     // Columns
     day.stages.forEach(s => {
@@ -518,7 +536,14 @@ function renderDay(dayKey) {
         const heightPx = durMin * pxPerMin - GAP;
 
         const div = document.createElement('div');
-        div.className = 'act';
+        div.id = `${dayKey}-${s.name}-${a.name}`;
+        div.className = 'act' + (a.name === 'RuneScape Rave' ? ' act-runescape' : '');
+        if (favs.includes(div.id)) {
+          div.classList.add('selected');
+          const isRR = a.name === 'RuneScape Rave' && !document.body.classList.contains('runescape-active') && !document.body.classList.contains('runescape-unlocked');
+          div.style.background = isRR ? '#555' : accentBg;
+          div.style.borderLeftColor = isRR ? '#fff' : accentBorder;
+        }
         div.dataset.start = a.start;
         div.dataset.end = a.end;
         div.style.top = topPx + 'px';
