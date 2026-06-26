@@ -568,7 +568,7 @@ function updateNowLine() {
   const festivalIdx = festivalDay ? dayOrder.indexOf(festivalDay) : -1;
   const viewedIdx = activeDay ? dayOrder.indexOf(activeDay.dataset.day) : -1;
 
-  // Viewed day is before current festival day → gray all acts
+  // Past day
   if (festivalDay && viewedIdx < festivalIdx) {
     if (existing) existing.remove();
     document.querySelectorAll('.act').forEach(act => {
@@ -637,8 +637,6 @@ window.addEventListener('load', () => {
 
   // Now line interval
   setInterval(updateNowLine, 60000);
-
-
 
   document.querySelectorAll('.day-item').forEach(el => {
     el.addEventListener('click', () => {
