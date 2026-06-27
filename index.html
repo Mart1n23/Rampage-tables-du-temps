@@ -23,6 +23,7 @@
     font-family: 'Inter', sans-serif;
     width: 100vw; height: 100dvh;
     overflow: hidden; position: relative;
+    opacity: 0; transition: opacity 0.2s;
   }
 
   .bg-full {
@@ -39,7 +40,6 @@
     z-index: 0;
   }
 
-  /* Scaler */
   #scaler {
     position: absolute;
     width: 1080px;
@@ -71,7 +71,10 @@
   .color-option { width: 44px; height: 44px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; }
   .color-option:hover, .color-option.current { border-color: #fff; }
 
-  .label { font-size: 22px; letter-spacing: 5px; color: var(--accent); text-transform: uppercase; margin-bottom: 6px; cursor: pointer; }
+  .label { font-size: 22px; letter-spacing: 5px; color: var(--accent); text-transform: uppercase; margin-bottom: 8px; cursor: pointer; display: flex; align-items: center; gap: 28px; }
+  #days-left { font-family: 'Bebas Neue', sans-serif; font-size: 34px; letter-spacing: 3px; color: var(--accent); opacity: 0.85; flex-shrink: 0; }
+  .is-fullscreen #days-left { display: none; }
+  .is-fullscreen .day-item:not(.active) { display: none; }
   .day-row { display: flex; align-items: flex-end; gap: 20px; }
   .day-item {
     font-family: 'Bebas Neue', sans-serif; line-height: 1;
@@ -81,18 +84,15 @@
     color: #ffffff22; font-size: 40px; padding-bottom: 6px;
   }
   .day-item.active { color: #fff; font-size: 90px; padding-bottom: 0; }
-  .day-date { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: #ffffff44; letter-spacing: 6px; margin-top: 4px; margin-bottom: 12px; }
+  .day-date { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: #ffffff44; letter-spacing: 6px; margin-top: 8px; margin-bottom: 12px; }
 
-  /* Stage headers */
   .stage-row { display: grid; gap: 0 6px; margin-bottom: 6px; }
   .stage-header { border-top: 2px solid var(--accent); padding-top: 6px; }
   .sh-name { font-size: 21px; font-weight: 700; letter-spacing: 2px; color: var(--accent); text-transform: uppercase; }
   .sh-sub { font-size: 13px; color: #ffffff66; margin-top: 2px; }
 
-  /* Timeline */
   .timeline { flex: 1; display: grid; gap: 0 6px; position: relative; min-height: 0; }
 
-  /* Axis */
   .time-axis { position: relative; }
   .tick-label {
     position: absolute; right: 8px;
@@ -102,10 +102,8 @@
     transform: translateY(-50%);
   }
 
-  /* Stage column */
   .stage-col { position: relative; }
 
-  /* Acts */
   .act {
     position: absolute; left: 0; right: 0;
     border-radius: 3px; padding: 10px 13px;
@@ -128,10 +126,6 @@
   .act-name { font-size: 25px; font-weight: 700; color: #fff; line-height: 1.3; }
   .act-time { font-size: 17px; color: #ffffff88; margin-top: 4px; }
 
-  .footer { margin-top: 12px; display: flex; justify-content: space-between; align-items: center; }
-  .footer-text { font-size: 12px; letter-spacing: 3px; color: #ffffff18; text-transform: uppercase; }
-  .red-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); }
-
   .act-runescape.selected::before { background: #ffffff; opacity: 0.1; }
   .runescape-active .act-runescape.selected::before,
   .runescape-unlocked .act-runescape.selected::before { background: var(--accent); opacity: 0.15; }
@@ -150,12 +144,12 @@
 <img id="en-img"    src="png/en.png"    style="position:absolute;width:1080px;height:1920px;top:0;left:0;object-fit:cover;pointer-events:none;z-index:0;">
 <img id="zh-img"    src="png/zh.png"    style="position:absolute;width:1080px;height:1920px;top:0;left:0;object-fit:cover;pointer-events:none;z-index:0;">
 <img id="disco-img"     src="png/disco.png"     style="position:absolute;width:1080px;height:1920px;top:0;left:0;object-fit:cover;pointer-events:none;z-index:0;">
-<img id="runescape-img" src="png/runescape.png" style="position:absolute;width:1080px;height:1920px;top:0;left:0;object-fit:cover;pointer-events:none;z-index:0;">
+<img id="runescape-img" src="png/runescape.png" style="position:absolute;width:1080px;height:1920px;top:0;left:0;object-fit:contain;object-position:top center;pointer-events:none;z-index:0;">
 <div class="content">
 
   <div class="top-bar">
     <div>
-      <div class="label">Rampage Open Air 2026</div>
+      <div class="label"><span>Rampage Open Air 2026</span><span id="days-left"></span></div>
       <div class="day-row">
         <div class="day-item active" data-day="jeudi"    data-date-fr="02 JUILLET" data-date-en="JULY 02" data-date-zh="7月2日" data-fr="JEUDI"    data-en="THURSDAY" data-zh="周四">JEUDI</div>
         <div class="day-item"        data-day="vendredi" data-date-fr="03 JUILLET" data-date-en="JULY 03" data-date-zh="7月3日" data-fr="VENDREDI"  data-en="FRIDAY"   data-zh="周五">VENDREDI</div>
@@ -193,17 +187,17 @@
     <div class="time-axis" id="axis"></div>
   </div>
 
-</div><!-- end .content -->
-</div><!-- end #scaler -->
+</div>
+</div>
 <script>
 let accentColor = '#eb0028', accentBg = '#4b000e', accentBorder = '#eb0028';
 
 const EASTER_EVENTS = {
   shrek:     { img: 'shrek.png',     opacity: '0.50', accent: '#3d9e3d', bg: '#0d1f0d', border: '#3d9e3d', glow: 'rgba(61,158,61,0.4)',   comic: true,  triggers: [{h:0, m:0,  endH:0, endM:1}] },
   alien:     { img: 'alien.png',     opacity: '0.70', accent: '#9200e0', bg: '#260045', border: '#9200e0', glow: 'rgba(146,0,224,0.4)', comic: true,  triggers: [{h:4, m:20, endH:4, endM:21},{h:16,m:20,endH:16,endM:21}] },
-  fr:        { img: 'fr.png',        opacity: '0.80', accent: '#0055a4', bg: '#001833', border: '#0055a4', glow: 'rgba(0,85,164,0.4)',   comic: false, triggers: [{h:1, m:11, endH:1, endM:12}] },
-  en:        { img: 'en.png',        opacity: '0.70', accent: '#cf142b', bg: '#3d0008', border: '#cf142b', glow: 'rgba(207,20,43,0.4)',  comic: false, triggers: [{h:2, m:22, endH:2, endM:23}] },
-  zh:        { img: 'zh.png',        opacity: '0.70', accent: '#eb0028', bg: '#4b000e', border: '#eb0028', glow: 'rgba(235,0,40,0.4)',   comic: false, triggers: [{h:3, m:33, endH:3, endM:34}] },
+  fr:        { img: 'fr.png',        opacity: '0.80', accent: '#0055a4', bg: '#001833', border: '#0055a4', glow: 'rgba(0,85,164,0.4)',   comic: false, triggers: [] },
+  en:        { img: 'en.png',        opacity: '0.70', accent: '#cf142b', bg: '#3d0008', border: '#cf142b', glow: 'rgba(207,20,43,0.4)',  comic: false, triggers: [{h:2, m:0, endH:2, endM:1},{h:3, m:0, endH:3, endM:1},{h:4, m:0, endH:4, endM:1}] },
+  zh:        { img: 'zh.png',        opacity: '0.70', accent: '#eb0028', bg: '#4b000e', border: '#eb0028', glow: 'rgba(235,0,40,0.4)',   comic: false, triggers: [] },
   disco:     { img: 'disco.png',     opacity: '0.60', accent: '#ff69b4', bg: '#2d001a', border: '#ff69b4', glow: 'rgba(255,105,180,0.4)', comic: false, blackBg: true, activeDates: ['2026-07-04','2026-07-05','2026-07-06'], triggers: [{h:1, m:30, endH:4, endM:30}] },
   runescape: { img: 'runescape.png', opacity: '0.80', accent: '#c8a94e', bg: '#3a2800', border: '#c8a94e', glow: 'rgba(200,169,78,0.4)',  comic: true, activeDates: ['2026-07-03'], triggers: [{h:16, m:0, endH:17, endM:0}] },
 };
@@ -445,7 +439,6 @@ const DAYS = {
   }
 };
 
-// getNow
 function getNow() {
   const p = new URLSearchParams(location.search).get('t');
   if (!p) return new Date();
@@ -454,14 +447,12 @@ function getNow() {
   return isNaN(d) ? new Date() : d;
 }
 
-// Format hour
 function fmtH(h) {
   const hh = h >= 24 ? h - 24 : h;
   const mm = (h % 1 === 0.5) ? '30' : '00';
   return String(Math.floor(hh)).padStart(2,'0') + ':' + mm;
 }
 
-// Long press
 function addLongPress(div, nameSelector) {
   let timer = null, didLong = false;
   const start = () => {
@@ -518,7 +509,6 @@ function addLongPress(div, nameSelector) {
   });
 }
 
-// Render day
 function renderDay(dayKey) {
   const day = DAYS[dayKey];
   const stageRow = document.getElementById('stage-row');
@@ -532,7 +522,6 @@ function renderDay(dayKey) {
   stageRow.style.gridTemplateColumns = day.gridCols;
   tl.style.gridTemplateColumns = day.gridCols;
 
-  // Headers
   stageRow.appendChild(document.createElement('div'));
   day.stages.forEach(s => {
     const d = document.createElement('div');
@@ -549,7 +538,6 @@ function renderDay(dayKey) {
     const pxPerMin = totalH / totalMin;
     const GAP = 2;
 
-    // Ticks
     for (let h = day.startHour; h <= day.endHour; h++) {
       const minOffset = (h - day.startHour) * 60;
       const topPx = minOffset * pxPerMin;
@@ -563,7 +551,6 @@ function renderDay(dayKey) {
     let favs = [];
     try { const s = JSON.parse(localStorage.getItem('favs')); if (Array.isArray(s)) favs = s; } catch(e) {}
 
-    // Columns
     day.stages.forEach(s => {
       const col = document.createElement('div');
       col.className = 'stage-col';
@@ -601,7 +588,6 @@ function renderDay(dayKey) {
   });
 }
 
-// Reset favs
 function updateResetBtn() {
   const btn = document.getElementById('reset-btn');
   if (!btn) return;
@@ -611,7 +597,6 @@ function updateResetBtn() {
   } catch(e) { btn.style.display = 'none'; }
 }
 
-// Fit act names
 function fitActNames() {
   document.querySelectorAll('.act-name').forEach(el => {
     el.style.fontSize = '';
@@ -623,7 +608,6 @@ function fitActNames() {
   });
 }
 
-// Festival day
 function getCurrentFestivalDay() {
   const now = getNow();
   const d = new Date(now);
@@ -632,7 +616,6 @@ function getCurrentFestivalDay() {
   return { 2: 'jeudi', 3: 'vendredi', 4: 'samedi', 5: 'dimanche' }[d.getDate()] || null;
 }
 
-// Now line
 function updateNowLine() {
   const tl = document.getElementById('tl');
   const existing = document.getElementById('now-line');
@@ -643,7 +626,6 @@ function updateNowLine() {
   const festivalIdx = festivalDay ? dayOrder.indexOf(festivalDay) : -1;
   const viewedIdx = activeDay ? dayOrder.indexOf(activeDay.dataset.day) : -1;
 
-  // Past day
   if (festivalDay && viewedIdx < festivalIdx) {
     if (existing) existing.remove();
     document.querySelectorAll('.act').forEach(act => {
@@ -685,7 +667,6 @@ function updateNowLine() {
   }
   line.style.top = topPx + 'px';
 
-  // Highlights
   const isFS = !!document.fullscreenElement;
   document.querySelectorAll('.act').forEach(act => {
     const s = parseFloat(act.dataset.start);
@@ -699,19 +680,48 @@ function updateNowLine() {
 }
 
 window.addEventListener('load', () => {
-  let lang = 'fr';
+  let lang = localStorage.getItem('lang') || 'fr';
 
-  // Auto day
+  try {
+    const saved = JSON.parse(localStorage.getItem('color'));
+    if (saved) {
+      accentColor = saved.accent; accentBg = saved.bg; accentBorder = saved.border;
+      document.documentElement.style.setProperty('--accent', accentColor);
+      document.documentElement.style.setProperty('--accent-bg', accentBg);
+      document.documentElement.style.setProperty('--accent-border', accentBorder);
+      document.querySelector('.bg-full').style.background = `linear-gradient(to bottom, #0d0d0d 0%, transparent 15%, transparent 85%, #0d0d0d 100%), radial-gradient(ellipse at 50% 50%, ${saved.glow} 0%, #0d0d0d 70%)`;
+      document.querySelectorAll('.color-option').forEach(o => o.classList.toggle('current', o.dataset.accent === accentColor));
+      document.querySelectorAll('.label').forEach(el => el.style.color = accentColor);
+      const dlEl = document.getElementById('days-left');
+      if (dlEl) dlEl.style.color = accentColor;
+      const cb = document.getElementById('color-btn');
+      if (cb) cb.style.background = accentColor;
+    }
+  } catch(e) {}
+
   const todayKey = getCurrentFestivalDay() || 'jeudi';
   document.querySelectorAll('.day-item').forEach(el => {
     el.classList.toggle('active', el.dataset.day === todayKey);
+    el.textContent = el.dataset[lang];
   });
   const activeDayEl = document.querySelector(`.day-item[data-day="${todayKey}"]`);
-  if (activeDayEl) document.getElementById('current-date').textContent = activeDayEl.dataset.dateFr;
+  if (activeDayEl) {
+    const dateKey = 'date' + lang.charAt(0).toUpperCase() + lang.slice(1);
+    document.getElementById('current-date').textContent = activeDayEl.dataset[dateKey];
+  }
   renderDay(todayKey);
   if (localStorage.getItem('rs_unlocked')) document.body.classList.add('runescape-unlocked');
 
-  // Now line interval
+  function updateDaysLeft() {
+    const el = document.getElementById('days-left');
+    if (!el) return;
+    const diff = Math.ceil((new Date('2026-07-02T00:00:00') - new Date().setHours(0,0,0,0)) / 86400000);
+    if (diff <= 0) { el.textContent = ''; return; }
+    el.textContent = lang === 'zh' ? diff + '天' : lang === 'en' ? 'D-' + diff : 'J-' + diff;
+  }
+  updateDaysLeft();
+  setTimeout(() => { document.body.style.opacity = '1'; }, 100);
+
   setInterval(updateNowLine, 60000);
 
   document.querySelectorAll('.day-item').forEach(el => {
@@ -724,8 +734,8 @@ window.addEventListener('load', () => {
     });
   });
 
-  // Language
   const langBtn = document.getElementById('lang-btn');
+  langBtn.textContent = lang.toUpperCase();
   langBtn.addEventListener('click', e => {
     e.stopPropagation();
     if (langDidLong) { langDidLong = false; return; }
@@ -735,6 +745,7 @@ window.addEventListener('load', () => {
       return;
     }
     lang = lang === 'fr' ? 'en' : lang === 'en' ? 'zh' : 'fr';
+    localStorage.setItem('lang', lang);
     langBtn.textContent = lang.toUpperCase();
     document.querySelectorAll('.day-item').forEach(el => {
       el.textContent = el.dataset[lang];
@@ -744,6 +755,7 @@ window.addEventListener('load', () => {
       const dateKey = 'date' + lang.charAt(0).toUpperCase() + lang.slice(1);
       document.getElementById('current-date').textContent = active.dataset[dateKey];
     }
+    updateDaysLeft();
   });
 
   let langPressTimer = null, langDidLong = false, manualLangEaster = null;
@@ -774,7 +786,7 @@ window.addEventListener('load', () => {
       document.querySelector('.bg-full').style.background = `linear-gradient(to bottom, #0d0d0d 0%, transparent 15%, transparent 85%, #0d0d0d 100%), radial-gradient(ellipse at 50% 50%, ${opt.dataset.glow} 0%, #0d0d0d 70%)`;
       colorBtn.style.background = accentColor;
       document.querySelectorAll('.label').forEach(el => el.style.color = accentColor);
-      document.querySelectorAll('.red-dot').forEach(el => el.style.background = accentColor);
+      const dlEl = document.getElementById('days-left'); if (dlEl) dlEl.style.color = accentColor;
       document.querySelectorAll('.sh-name').forEach(el => el.style.color = accentColor);
       document.querySelectorAll('.stage-header').forEach(el => el.style.borderTopColor = accentColor);
       document.querySelectorAll('.act.act-now').forEach(el => { el.style.borderLeftColor = accentColor; el.style.borderTopColor = accentColor; });
@@ -784,10 +796,10 @@ window.addEventListener('load', () => {
       document.querySelectorAll('.color-option').forEach(o => o.classList.remove('current'));
       opt.classList.add('current');
       colorMenu.classList.remove('open');
+      localStorage.setItem('color', JSON.stringify({accent: accentColor, bg: accentBg, border: accentBorder, glow: opt.dataset.glow}));
     });
   });
 
-  // Scale
   function applyScale() {
     const scaler = document.getElementById('scaler');
     const vw = window.visualViewport ? window.visualViewport.width  : window.innerWidth;
@@ -801,30 +813,46 @@ window.addEventListener('load', () => {
   window.addEventListener('resize', applyScale);
   if (window.visualViewport) window.visualViewport.addEventListener('resize', applyScale);
 
-  // Fullscreen
   const fsBtn = document.getElementById('fs-btn');
   const rightPanel = document.getElementById('right-panel');
 
-  fsBtn.addEventListener('click', e => {
-    e.stopPropagation();
-    const el = document.documentElement;
-    (el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen).call(el);
-  });
+  let appFS = false;
 
-  document.addEventListener('fullscreenchange', () => {
-    const isFS = !!document.fullscreenElement;
-    document.body.classList.toggle('is-fullscreen', isFS);
-    rightPanel.style.visibility = isFS ? 'hidden' : 'visible';
+  function enterFS() {
+    appFS = true;
+    document.body.classList.add('is-fullscreen');
+    rightPanel.style.visibility = 'hidden';
     applyScale();
     updateNowLine();
-    if (isFS) {
-      document.addEventListener('click', exitOnClick);
-    } else {
-      document.removeEventListener('click', exitOnClick);
-    }
+    document.addEventListener('click', exitOnClick);
+    const el = document.documentElement;
+    const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen;
+    if (req) req.call(el).catch(() => {});
+  }
+
+  function leaveFS() {
+    appFS = false;
+    document.body.classList.remove('is-fullscreen');
+    rightPanel.style.visibility = 'visible';
+    applyScale();
+    updateNowLine();
+    document.removeEventListener('click', exitOnClick);
+    const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen;
+    if (exit && (document.fullscreenElement || document.webkitFullscreenElement)) exit.call(document).catch(() => {});
+  }
+
+  fsBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    appFS ? leaveFS() : enterFS();
   });
 
-  // Reset favs
+  function onFSChange() {
+    const nativeFS = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    if (!nativeFS && appFS) leaveFS();
+  }
+  document.addEventListener('fullscreenchange', onFSChange);
+  document.addEventListener('webkitfullscreenchange', onFSChange);
+
   const resetBtn = document.getElementById('reset-btn');
   const resetLabel = document.getElementById('reset-label');
   let resetStep = 0, resetTimer = null;
@@ -863,7 +891,6 @@ window.addEventListener('load', () => {
     }
   });
 
-  // Easter eggs
   let easterActive = null;
   let preEasterState = null;
 
@@ -873,7 +900,7 @@ window.addEventListener('load', () => {
     document.documentElement.style.setProperty('--accent-border', accentBorder);
     colorBtn.style.background = accentColor;
     document.querySelectorAll('.label').forEach(el => el.style.color = accentColor);
-    document.querySelectorAll('.red-dot').forEach(el => el.style.background = accentColor);
+    const dlElA = document.getElementById('days-left'); if (dlElA) dlElA.style.color = accentColor;
     document.querySelectorAll('.sh-name').forEach(el => el.style.color = accentColor);
     document.querySelectorAll('.stage-header').forEach(el => el.style.borderTopColor = accentColor);
     document.querySelectorAll('.act.selected').forEach(el => { const rr = el.querySelector('.act-name')?.textContent.trim() === 'RuneScape Rave' && !document.body.classList.contains('runescape-active') && !document.body.classList.contains('runescape-unlocked'); el.style.background = rr ? '#555' : accentBg; el.style.borderLeftColor = rr ? '#fff' : accentBorder; });
@@ -924,14 +951,14 @@ window.addEventListener('load', () => {
 
   document.addEventListener('pointerdown', (e) => {
     if (e.target.closest('.label')) {
-      if (shrekClicks === 0) shrekTimer = setTimeout(() => shrekClicks = 0, 10000);
+      if (shrekClicks === 0) shrekTimer = setTimeout(() => shrekClicks = 0, 5000);
       shrekClicks++;
       easterLabel.style.color = '#fff';
       setTimeout(() => easterLabel.style.color = accentColor, 200);
       if (shrekClicks >= 5) { shrekClicks = 0; clearTimeout(shrekTimer); triggerEaster('shrek'); }
     }
     if (e.target.closest('#current-date')) {
-      if (comicClicks === 0) comicTimer = setTimeout(() => comicClicks = 0, 10000);
+      if (comicClicks === 0) comicTimer = setTimeout(() => comicClicks = 0, 5000);
       comicClicks++;
       easterDate.style.color = '#fff';
       setTimeout(() => easterDate.style.color = '', 200);
@@ -942,9 +969,9 @@ window.addEventListener('load', () => {
   document.addEventListener('click', e => {
     const act = e.target.closest('.act');
     if (!act || act.querySelector('.act-name')?.textContent.trim() !== 'RuneScape Rave') return;
-    if (runeClicks === 0) runeTimer = setTimeout(() => runeClicks = 0, 10000);
+    if (runeClicks === 0) runeTimer = setTimeout(() => runeClicks = 0, 5000);
     runeClicks++;
-    if (runeClicks >= 3) {
+    if (runeClicks >= 6) {
       runeClicks = 0; clearTimeout(runeTimer);
       localStorage.setItem('rs_unlocked', '1');
       document.body.classList.add('runescape-unlocked');
@@ -952,7 +979,6 @@ window.addEventListener('load', () => {
     }
   });
 
-  // Auto-activation
   (() => {
     const now = getNow();
     const h = now.getHours(), m = now.getMinutes();
@@ -974,7 +1000,6 @@ window.addEventListener('load', () => {
     }
   })();
 
-  // Reload
   setInterval(() => {
     const now = getNow();
     const h = now.getHours(), m = now.getMinutes();
@@ -1003,7 +1028,7 @@ window.addEventListener('load', () => {
 
   function exitOnClick(e) {
     if (!e.target.closest('.act') && !e.target.closest('.day-item')) {
-      (document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen).call(document);
+      leaveFS();
     }
   }
 
