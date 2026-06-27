@@ -23,6 +23,7 @@
     font-family: 'Inter', sans-serif;
     width: 100vw; height: 100dvh;
     overflow: hidden; position: relative;
+    opacity: 0; transition: opacity 0.2s;
   }
 
   .bg-full {
@@ -71,7 +72,10 @@
   .color-option { width: 44px; height: 44px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; }
   .color-option:hover, .color-option.current { border-color: #fff; }
 
-  .label { font-size: 22px; letter-spacing: 5px; color: var(--accent); text-transform: uppercase; margin-bottom: 6px; cursor: pointer; }
+  .label { font-size: 22px; letter-spacing: 5px; color: var(--accent); text-transform: uppercase; margin-bottom: 8px; cursor: pointer; display: flex; align-items: center; gap: 28px; }
+  #days-left { font-family: 'Bebas Neue', sans-serif; font-size: 34px; letter-spacing: 3px; color: var(--accent); opacity: 0.85; flex-shrink: 0; }
+  .is-fullscreen #days-left { display: none; }
+  .is-fullscreen .day-item:not(.active) { display: none; }
   .day-row { display: flex; align-items: flex-end; gap: 20px; }
   .day-item {
     font-family: 'Bebas Neue', sans-serif; line-height: 1;
@@ -81,7 +85,7 @@
     color: #ffffff22; font-size: 40px; padding-bottom: 6px;
   }
   .day-item.active { color: #fff; font-size: 90px; padding-bottom: 0; }
-  .day-date { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: #ffffff44; letter-spacing: 6px; margin-top: 4px; margin-bottom: 12px; }
+  .day-date { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: #ffffff44; letter-spacing: 6px; margin-top: 8px; margin-bottom: 12px; }
 
   /* Stage headers */
   .stage-row { display: grid; gap: 0 6px; margin-bottom: 6px; }
@@ -150,12 +154,12 @@
 <img id="en-img"    src="png/en.png"    style="position:absolute;width:1080px;height:1920px;top:0;left:0;object-fit:cover;pointer-events:none;z-index:0;">
 <img id="zh-img"    src="png/zh.png"    style="position:absolute;width:1080px;height:1920px;top:0;left:0;object-fit:cover;pointer-events:none;z-index:0;">
 <img id="disco-img"     src="png/disco.png"     style="position:absolute;width:1080px;height:1920px;top:0;left:0;object-fit:cover;pointer-events:none;z-index:0;">
-<img id="runescape-img" src="png/runescape.png" style="position:absolute;width:1080px;height:1920px;top:0;left:0;object-fit:cover;pointer-events:none;z-index:0;">
+<img id="runescape-img" src="png/runescape.png" style="position:absolute;width:1080px;height:1920px;top:0;left:0;object-fit:contain;object-position:top center;pointer-events:none;z-index:0;">
 <div class="content">
 
   <div class="top-bar">
     <div>
-      <div class="label">Rampage Open Air 2026</div>
+      <div class="label"><span>Rampage Open Air 2026</span><span id="days-left"></span></div>
       <div class="day-row">
         <div class="day-item active" data-day="jeudi"    data-date-fr="02 JUILLET" data-date-en="JULY 02" data-date-zh="7月2日" data-fr="JEUDI"    data-en="THURSDAY" data-zh="周四">JEUDI</div>
         <div class="day-item"        data-day="vendredi" data-date-fr="03 JUILLET" data-date-en="JULY 03" data-date-zh="7月3日" data-fr="VENDREDI"  data-en="FRIDAY"   data-zh="周五">VENDREDI</div>
@@ -699,17 +703,50 @@ function updateNowLine() {
 }
 
 window.addEventListener('load', () => {
-  let lang = 'fr';
+  let lang = localStorage.getItem('lang') || 'fr';
+
+  // Restore color before render
+  try {
+    const saved = JSON.parse(localStorage.getItem('color'));
+    if (saved) {
+      accentColor = saved.accent; accentBg = saved.bg; accentBorder = saved.border;
+      document.documentElement.style.setProperty('--accent', accentColor);
+      document.documentElement.style.setProperty('--accent-bg', accentBg);
+      document.documentElement.style.setProperty('--accent-border', accentBorder);
+      document.querySelector('.bg-full').style.background = `linear-gradient(to bottom, #0d0d0d 0%, transparent 15%, transparent 85%, #0d0d0d 100%), radial-gradient(ellipse at 50% 50%, ${saved.glow} 0%, #0d0d0d 70%)`;
+      document.querySelectorAll('.color-option').forEach(o => o.classList.toggle('current', o.dataset.accent === accentColor));
+      document.querySelectorAll('.label').forEach(el => el.style.color = accentColor);
+      const dlEl = document.getElementById('days-left');
+      if (dlEl) dlEl.style.color = accentColor;
+      const cb = document.getElementById('color-btn');
+      if (cb) cb.style.background = accentColor;
+    }
+  } catch(e) {}
 
   // Auto day
   const todayKey = getCurrentFestivalDay() || 'jeudi';
   document.querySelectorAll('.day-item').forEach(el => {
     el.classList.toggle('active', el.dataset.day === todayKey);
+    el.textContent = el.dataset[lang];
   });
   const activeDayEl = document.querySelector(`.day-item[data-day="${todayKey}"]`);
-  if (activeDayEl) document.getElementById('current-date').textContent = activeDayEl.dataset.dateFr;
+  if (activeDayEl) {
+    const dateKey = 'date' + lang.charAt(0).toUpperCase() + lang.slice(1);
+    document.getElementById('current-date').textContent = activeDayEl.dataset[dateKey];
+  }
   renderDay(todayKey);
   if (localStorage.getItem('rs_unlocked')) document.body.classList.add('runescape-unlocked');
+
+  // Days counter
+  function updateDaysLeft() {
+    const el = document.getElementById('days-left');
+    if (!el) return;
+    const diff = Math.ceil((new Date('2026-07-02T00:00:00') - new Date().setHours(0,0,0,0)) / 86400000);
+    if (diff <= 0) { el.textContent = ''; return; }
+    el.textContent = lang === 'zh' ? diff + '天' : lang === 'en' ? 'D-' + diff : 'J-' + diff;
+  }
+  updateDaysLeft();
+  setTimeout(() => { document.body.style.opacity = '1'; }, 100);
 
   // Now line interval
   setInterval(updateNowLine, 60000);
@@ -726,6 +763,7 @@ window.addEventListener('load', () => {
 
   // Language
   const langBtn = document.getElementById('lang-btn');
+  langBtn.textContent = lang.toUpperCase();
   langBtn.addEventListener('click', e => {
     e.stopPropagation();
     if (langDidLong) { langDidLong = false; return; }
@@ -735,6 +773,7 @@ window.addEventListener('load', () => {
       return;
     }
     lang = lang === 'fr' ? 'en' : lang === 'en' ? 'zh' : 'fr';
+    localStorage.setItem('lang', lang);
     langBtn.textContent = lang.toUpperCase();
     document.querySelectorAll('.day-item').forEach(el => {
       el.textContent = el.dataset[lang];
@@ -744,6 +783,7 @@ window.addEventListener('load', () => {
       const dateKey = 'date' + lang.charAt(0).toUpperCase() + lang.slice(1);
       document.getElementById('current-date').textContent = active.dataset[dateKey];
     }
+    updateDaysLeft();
   });
 
   let langPressTimer = null, langDidLong = false, manualLangEaster = null;
@@ -774,6 +814,7 @@ window.addEventListener('load', () => {
       document.querySelector('.bg-full').style.background = `linear-gradient(to bottom, #0d0d0d 0%, transparent 15%, transparent 85%, #0d0d0d 100%), radial-gradient(ellipse at 50% 50%, ${opt.dataset.glow} 0%, #0d0d0d 70%)`;
       colorBtn.style.background = accentColor;
       document.querySelectorAll('.label').forEach(el => el.style.color = accentColor);
+      const dlEl = document.getElementById('days-left'); if (dlEl) dlEl.style.color = accentColor;
       document.querySelectorAll('.red-dot').forEach(el => el.style.background = accentColor);
       document.querySelectorAll('.sh-name').forEach(el => el.style.color = accentColor);
       document.querySelectorAll('.stage-header').forEach(el => el.style.borderTopColor = accentColor);
@@ -784,6 +825,7 @@ window.addEventListener('load', () => {
       document.querySelectorAll('.color-option').forEach(o => o.classList.remove('current'));
       opt.classList.add('current');
       colorMenu.classList.remove('open');
+      localStorage.setItem('color', JSON.stringify({accent: accentColor, bg: accentBg, border: accentBorder, glow: opt.dataset.glow}));
     });
   });
 
@@ -805,24 +847,42 @@ window.addEventListener('load', () => {
   const fsBtn = document.getElementById('fs-btn');
   const rightPanel = document.getElementById('right-panel');
 
-  fsBtn.addEventListener('click', e => {
-    e.stopPropagation();
-    const el = document.documentElement;
-    (el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen).call(el);
-  });
+  let appFS = false;
 
-  document.addEventListener('fullscreenchange', () => {
-    const isFS = !!document.fullscreenElement;
-    document.body.classList.toggle('is-fullscreen', isFS);
-    rightPanel.style.visibility = isFS ? 'hidden' : 'visible';
+  function enterFS() {
+    appFS = true;
+    document.body.classList.add('is-fullscreen');
+    rightPanel.style.visibility = 'hidden';
     applyScale();
     updateNowLine();
-    if (isFS) {
-      document.addEventListener('click', exitOnClick);
-    } else {
-      document.removeEventListener('click', exitOnClick);
-    }
+    document.addEventListener('click', exitOnClick);
+    const el = document.documentElement;
+    const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen;
+    if (req) req.call(el).catch(() => {});
+  }
+
+  function leaveFS() {
+    appFS = false;
+    document.body.classList.remove('is-fullscreen');
+    rightPanel.style.visibility = 'visible';
+    applyScale();
+    updateNowLine();
+    document.removeEventListener('click', exitOnClick);
+    const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen;
+    if (exit && (document.fullscreenElement || document.webkitFullscreenElement)) exit.call(document).catch(() => {});
+  }
+
+  fsBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    appFS ? leaveFS() : enterFS();
   });
+
+  function onFSChange() {
+    const nativeFS = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    if (!nativeFS && appFS) leaveFS();
+  }
+  document.addEventListener('fullscreenchange', onFSChange);
+  document.addEventListener('webkitfullscreenchange', onFSChange);
 
   // Reset favs
   const resetBtn = document.getElementById('reset-btn');
@@ -924,14 +984,14 @@ window.addEventListener('load', () => {
 
   document.addEventListener('pointerdown', (e) => {
     if (e.target.closest('.label')) {
-      if (shrekClicks === 0) shrekTimer = setTimeout(() => shrekClicks = 0, 10000);
+      if (shrekClicks === 0) shrekTimer = setTimeout(() => shrekClicks = 0, 5000);
       shrekClicks++;
       easterLabel.style.color = '#fff';
       setTimeout(() => easterLabel.style.color = accentColor, 200);
       if (shrekClicks >= 5) { shrekClicks = 0; clearTimeout(shrekTimer); triggerEaster('shrek'); }
     }
     if (e.target.closest('#current-date')) {
-      if (comicClicks === 0) comicTimer = setTimeout(() => comicClicks = 0, 10000);
+      if (comicClicks === 0) comicTimer = setTimeout(() => comicClicks = 0, 5000);
       comicClicks++;
       easterDate.style.color = '#fff';
       setTimeout(() => easterDate.style.color = '', 200);
@@ -942,9 +1002,9 @@ window.addEventListener('load', () => {
   document.addEventListener('click', e => {
     const act = e.target.closest('.act');
     if (!act || act.querySelector('.act-name')?.textContent.trim() !== 'RuneScape Rave') return;
-    if (runeClicks === 0) runeTimer = setTimeout(() => runeClicks = 0, 10000);
+    if (runeClicks === 0) runeTimer = setTimeout(() => runeClicks = 0, 5000);
     runeClicks++;
-    if (runeClicks >= 3) {
+    if (runeClicks >= 6) {
       runeClicks = 0; clearTimeout(runeTimer);
       localStorage.setItem('rs_unlocked', '1');
       document.body.classList.add('runescape-unlocked');
@@ -1003,7 +1063,7 @@ window.addEventListener('load', () => {
 
   function exitOnClick(e) {
     if (!e.target.closest('.act') && !e.target.closest('.day-item')) {
-      (document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen).call(document);
+      leaveFS();
     }
   }
 
