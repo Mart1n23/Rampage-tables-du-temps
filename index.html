@@ -197,7 +197,9 @@
 <script>
 let accentColor = '#eb0028', accentBg = '#4b000e', accentBorder = '#eb0028';
 
-const SHEET_ID = '1Vovax0HOLgo6ktqchvsajUFLejK-K_oq1tNC1s8E1VE';
+const SHEET_ID_PROD = '1Vovax0HOLgo6ktqchvsajUFLejK-K_oq1tNC1s8E1VE'; // Rampage 2026 - Timetable
+const SHEET_ID_TEST = '1z1sxHzhJWjWlyTdjYGRn1UBuFW8GnauAjQbJeL-3V38'; // Rampage 2026 - TEST
+const SHEET_ID = location.hostname.endsWith('github.io') ? SHEET_ID_PROD : SHEET_ID_TEST;
 let overrides = {};
 
 function parseCSVRow(row) {
@@ -807,7 +809,7 @@ window.addEventListener('load', () => {
     el.classList.toggle('active', el.dataset.day === activeDayKey);
     el.textContent = el.dataset[lang];
   });
-  const activeDayEl = document.querySelector(`.day-item[data-day="${todayKey}"]`);
+  const activeDayEl = document.querySelector(`.day-item[data-day="${activeDayKey}"]`);
   if (activeDayEl) {
     const dateKey = 'date' + lang.charAt(0).toUpperCase() + lang.slice(1);
     document.getElementById('current-date').textContent = activeDayEl.dataset[dateKey];
