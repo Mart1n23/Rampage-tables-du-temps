@@ -73,6 +73,7 @@
   #days-left { font-family: 'Bebas Neue', sans-serif; font-size: 34px; letter-spacing: 3px; color: var(--accent); opacity: 0.85; flex-shrink: 0; position: relative; top: 2px; }
   .is-fullscreen #days-left { display: none; }
   .is-fullscreen .day-item:not(.active) { display: none; }
+  .disco-mode .day-item[data-day="jeudi"] { display: none; }
   .day-row { display: flex; align-items: flex-end; gap: 20px; }
   .day-item {
     font-family: 'Bebas Neue', sans-serif; line-height: 1;
@@ -112,25 +113,53 @@
     transition: background 0.15s, border-color 0.15s;
     -webkit-tap-highlight-color: transparent; user-select: none;
     box-sizing: border-box;
+    display: flex; flex-direction: column;
   }
   .act.selected { background: var(--accent-bg); border-left: 3px solid var(--accent-border); }
   .act.selected::before { content: ''; position: absolute; inset: 0; background: var(--accent); opacity: 0.15; border-radius: inherit; pointer-events: none; }
   .act.act-now { background: #2a2a2a; border-left: 4px solid var(--accent); border-top-color: var(--accent); }
-  .act.act-past { opacity: 0.65; }
-  .easter-active .act { opacity: 0.75; }
-  .easter-active .act.act-past { opacity: 0.455; }
+  .act.act-past { opacity: 0.75; }
+  .act-disco-r { border-left-color: #e63939; }
+  .act-disco-b { border-left-color: #3399ff; }
+  .disco-mode .act { background: #272727; opacity: 1; }
+  .disco-mode .act.act-past { opacity: 0.75; }
+  .disco-mode .act.act-now { background: #2f2f2f; border-left-width: 4px; border-top-color: transparent; }
+  .disco-mode .act.selected { background: #606060; }
+  .disco-mode .act.selected::before { display: none; }
+  .disco-mode.is-fullscreen .act.selected { background: #737373; }
+  .disco-mode .sh-name { font-size: 42px; }
+  .disco-mode .act-name { font-size: 40px; }
+  .disco-mode .act-time { font-size: 36px; }
+  .easter-active .act { opacity: 0.85; }
+  .easter-active .act.act-past { opacity: 0.555; }
   .is-fullscreen .act-past { opacity: 1; }
+  .is-fullscreen .act { opacity: 1; }
   .is-fullscreen .act-now { background: #1c1c1c; border-left: 3px solid #444; border-top-color: #2a2a2a; }
   .is-fullscreen .act.selected { background: var(--accent-bg); border-left: 3px solid var(--accent-border); }
   .is-fullscreen #now-line { display: none; }
-  .act-name { font-size: 25px; font-weight: 700; color: #fff; line-height: 1.3; }
-  .act-time { font-size: 17px; color: #ffffff88; margin-top: 4px; }
+  .act-name { flex: 1; min-height: 0; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; font-size: 20px; font-weight: 700; color: #fff; line-height: 1.3; }
+  .act-time { font-size: 18px; color: #ffffff88; margin-top: 3px; flex-shrink: 0; }
+  #act-name-toast {
+    position: absolute; top: 90px; left: 60px; right: 60px;
+    border-radius: 16px; padding: 20px 28px; font-size: 30px; font-weight: 700; color: #fff;
+    text-align: center; z-index: 500; pointer-events: none;
+    opacity: 0; transition: opacity 0.25s;
+  }
+  #act-name-toast.visible { opacity: 1; }
 
   .act-runescape.selected::before { background: #ffffff; opacity: 0.1; }
   .runescape-active .act-runescape.selected::before,
   .runescape-unlocked .act-runescape.selected::before { background: var(--accent); opacity: 0.15; }
 
   .comic-sans, .comic-sans * { font-family: 'Comic Neue', 'Comic Sans MS', 'Comic Sans', cursive !important; }
+  .comic-sans .day-item { font-family: 'Bebas Neue', sans-serif !important; }
+
+  .camping-card { border-radius: 3px; padding: 22px 20px; background: #1c1c1c; border-left: 3px solid #444; border-top: 1px solid #2a2a2a; }
+  .camping-card-active { background: #2a2a2a; border-left: 4px solid var(--accent); }
+  .camping-label { font-size: 26px; font-weight: 700; color: #fff; }
+  .camping-time { font-size: 22px; color: #ffffff88; margin-top: 6px; }
+
+  .is-fullscreen #disco-img { opacity: 0 !important; }
 
   img[id$="-img"] { opacity: 0; transition: opacity 0.6s; }
 </style>
@@ -143,7 +172,7 @@
 <img id="fr-img"    src="png/fr.png"    style="position:absolute;width:1080px;height:1920px;top:0;left:0;object-fit:cover;pointer-events:none;z-index:0;">
 <img id="en-img"    src="png/en.png"    style="position:absolute;width:1080px;height:1920px;top:0;left:0;object-fit:cover;pointer-events:none;z-index:0;">
 <img id="zh-img"    src="png/zh.png"    style="position:absolute;width:1080px;height:1920px;top:0;left:0;object-fit:cover;pointer-events:none;z-index:0;">
-<img id="disco-img"     src="png/disco.png"     style="position:absolute;width:1080px;height:1920px;top:0;left:0;object-fit:cover;pointer-events:none;z-index:0;">
+<img id="disco-img"     src="png/disco.png"     style="position:absolute;width:540px;height:960px;top:0;left:270px;object-fit:cover;pointer-events:none;z-index:0;">
 <img id="runescape-img" src="png/runescape.png" style="position:absolute;width:1080px;height:1920px;top:0;left:0;object-fit:contain;object-position:top center;pointer-events:none;z-index:0;">
 <div class="content">
 
@@ -159,7 +188,6 @@
       <div class="day-date" id="current-date">02 JUILLET</div>
     </div>
     <div id="right-panel" style="position:relative;display:flex;flex-direction:column;align-items:flex-end;gap:12px;">
-      <div class="color-btn" id="color-btn" style="width:48px;height:48px;border-radius:50%;background:var(--accent);border:2px solid #ffffff15;cursor:pointer;opacity:0.95;"></div>
       <div class="color-menu" id="color-menu">
         <div class="color-option current" style="background:#eb0028" data-accent="#eb0028" data-bg="#4b000e" data-border="#eb0028" data-glow="rgba(235,0,40,0.4)"></div>
         <div class="color-option" style="background:#ff6a00" data-accent="#ff6a00" data-bg="#4b1c00" data-border="#ff6a00" data-glow="rgba(255,106,0,0.4)"></div>
@@ -168,6 +196,13 @@
         <div class="color-option" style="background:#0066e0" data-accent="#0066e0" data-bg="#001d50" data-border="#0066e0" data-glow="rgba(0,102,224,0.4)"></div>
         <div class="color-option" style="background:#9200e0" data-accent="#9200e0" data-bg="#260045" data-border="#9200e0" data-glow="rgba(146,0,224,0.4)"></div>
         <div class="color-option" style="background:#444;border:2px solid #666" data-accent="#aaa" data-bg="#333333" data-border="#aaa" data-glow="rgba(170,170,170,0.4)"></div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center;">
+        <div id="camping-btn" style="width:48px;height:48px;border-radius:50%;background:#ffffff12;border:2px solid #ffffff20;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0.7;font-family:'Bebas Neue',sans-serif;font-size:32px;color:#fff;user-select:none;">!</div>
+        <div id="disco-btn" style="width:48px;height:48px;border-radius:50%;background:#ffffff12;border:2px solid #ffffff20;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0.7;">
+          <svg width="200" height="200" viewBox="-1 -1 26 26" fill="none" stroke="#fff" stroke-width="1.2" stroke-linecap="round"><defs><clipPath id="dbc"><circle cx="12" cy="12" r="9"/></clipPath></defs><circle cx="12" cy="12" r="9"/><line x1="12" y1="0" x2="12" y2="3"/><g clip-path="url(#dbc)"><line x1="3" y1="8" x2="21" y2="8"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="16" x2="21" y2="16"/><line x1="8" y1="3" x2="8" y2="21"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="16" y1="3" x2="16" y2="21"/></g><circle cx="1" cy="6" r="1" fill="#fff" stroke="none"/><circle cx="23" cy="6" r="1" fill="#fff" stroke="none"/><circle cx="0" cy="17" r="0.8" fill="#fff" stroke="none"/><circle cx="24" cy="17" r="0.8" fill="#fff" stroke="none"/></svg>
+        </div>
+        <div class="color-btn" id="color-btn" style="width:48px;height:48px;border-radius:50%;background:var(--accent);border:2px solid #ffffff15;cursor:pointer;opacity:0.95;"></div>
       </div>
       <div style="display:flex;gap:12px;align-items:center;">
         <div id="reload-btn" style="width:48px;height:48px;border-radius:50%;background:#ffffff12;border:2px solid #ffffff20;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0.85;">
@@ -201,6 +236,11 @@ const SHEET_ID_PROD = '1Vovax0HOLgo6ktqchvsajUFLejK-K_oq1tNC1s8E1VE'; // Rampage
 const SHEET_ID_TEST = '1z1sxHzhJWjWlyTdjYGRn1UBuFW8GnauAjQbJeL-3V38'; // Rampage 2026 - TEST
 const SHEET_ID = location.hostname.endsWith('github.io') ? SHEET_ID_PROD : SHEET_ID_TEST;
 let overrides = {};
+let discoMode = false;
+let campingMode = false;
+let discoHours = { start: 25, end: 29 };
+let infoData = {};
+let currentLang = 'fr';
 
 function parseCSVRow(row) {
   const result = [];
@@ -218,6 +258,7 @@ function parseCSVRow(row) {
 
 function parseOverridesFromCsv(text) {
   const parsed = {};
+  infoData = {};
   const rows = (text || '').trim().split(/\r?\n/).map(parseCSVRow);
   if (!rows.length) return parsed;
 
@@ -240,9 +281,22 @@ function parseOverridesFromCsv(text) {
         const name = values[index + 4] || '';
 
         if (day && stage && start) {
-          const key = `${day}|${stage}|${start}`;
-          const endNum = parseFloat(end) || null;
-          parsed[key] = { name: name || '', end: endNum };
+          if (stage.toLowerCase() === 'camping') {
+            let s = parseTimeStr(start), e = parseTimeStr(end);
+            if (!isNaN(s)) {
+              if (s < 6) s += 24;
+              if (!isNaN(e) && e < 6) e += 24;
+              if (!infoData[day]) infoData[day] = [];
+              infoData[day].push({ label: name || '', start: s, end: isNaN(e) ? null : e });
+            }
+          } else {
+            const startNum = parseTimeStr(start);
+            const endNum = parseTimeStr(end) || null;
+            if (!isNaN(startNum)) {
+              const key = `${day}|${stage}|${startNum}`;
+              parsed[key] = { name: name || '', end: isNaN(endNum) ? null : endNum };
+            }
+          }
         }
 
         index += 5;
@@ -263,7 +317,10 @@ async function loadOverrides() {
   if (!SHEET_ID || SHEET_ID === 'YOUR_SHEET_ID_HERE') return overrides;
 
   try {
-    const res = await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`);
+    const ctrl = new AbortController();
+    const tid = setTimeout(() => ctrl.abort(), 5000);
+    const res = await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`, { signal: ctrl.signal });
+    clearTimeout(tid);
     const text = await res.text();
     overrides = parseOverridesFromCsv(text);
   } catch (e) {
@@ -279,7 +336,7 @@ const EASTER_EVENTS = {
   fr:        { img: 'fr.png',        opacity: '0.80', accent: '#0055a4', bg: '#001833', border: '#0055a4', glow: 'rgba(0,85,164,0.4)',   comic: false, triggers: [] },
   en:        { img: 'en.png',        opacity: '0.70', accent: '#cf142b', bg: '#3d0008', border: '#cf142b', glow: 'rgba(207,20,43,0.4)',  comic: false, triggers: [{h:2, m:0, endH:2, endM:1},{h:3, m:0, endH:3, endM:1},{h:4, m:0, endH:4, endM:1}] },
   zh:        { img: 'zh.png',        opacity: '0.70', accent: '#eb0028', bg: '#4b000e', border: '#eb0028', glow: 'rgba(235,0,40,0.4)',   comic: false, triggers: [] },
-  disco:     { img: 'disco.png',     opacity: '0.60', accent: '#ff69b4', bg: '#2d001a', border: '#ff69b4', glow: 'rgba(255,105,180,0.4)', comic: false, blackBg: true, activeDates: ['2026-07-04','2026-07-05','2026-07-06'], triggers: [{h:1, m:30, endH:4, endM:30}] },
+  disco:     { img: 'disco.png',     opacity: '0.24', accent: '#ffffff', bg: '#1a1a1a', border: '#ffffff', glow: 'rgba(255,255,255,0.15)', comic: false, blackBg: true, activeDates: ['2026-07-04','2026-07-05','2026-07-06'], triggers: [] },
   runescape: { img: 'runescape.png', opacity: '0.80', accent: '#c8a94e', bg: '#3a2800', border: '#c8a94e', glow: 'rgba(200,169,78,0.4)',  comic: true, activeDates: ['2026-07-03'], triggers: [{h:16, m:0, endH:17, endM:0}] },
 };
 
@@ -528,65 +585,73 @@ function getNow() {
   return isNaN(d) ? new Date() : d;
 }
 
-function fmtH(h) {
-  const hh = h >= 24 ? h - 24 : h;
-  const mm = (h % 1 === 0.5) ? '30' : '00';
-  return String(Math.floor(hh)).padStart(2,'0') + ':' + mm;
+function parseTimeStr(str) {
+  const s = (str || '').trim().replace(',', '.');
+  if (s.includes(':')) {
+    const [hPart, mPart] = s.split(':');
+    const h = parseInt(hPart, 10), m = parseInt(mPart, 10);
+    if (!isNaN(h) && !isNaN(m)) return h + m / 60;
+  }
+  return parseFloat(s);
 }
 
-function addLongPress(div, nameSelector) {
-  let timer = null, didLong = false;
-  const start = () => {
-    didLong = false;
-    timer = setTimeout(() => {
-      didLong = true;
-      const ne = div.querySelector(nameSelector);
-      const cur = ne?.textContent ?? '';
-      const inp = document.createElement('input');
-      inp.value = cur;
-      inp.style.cssText = 'font-size:16px;font-weight:700;color:#fff;background:transparent;border:none;border-bottom:2px solid var(--accent);outline:none;width:100%;font-family:Inter,sans-serif;';
-      ne?.replaceWith(inp);
-      inp.focus(); inp.select();
-      const fin = () => {
-        const nd = document.createElement('div');
-        nd.className = ne?.className ?? 'act-name';
-        nd.textContent = inp.value.trim() || cur;
-        inp.replaceWith(nd);
-      };
-      inp.addEventListener('blur', fin);
-      inp.addEventListener('keydown', e => { if (e.key === 'Enter') inp.blur(); });
-    }, 1000);
-  };
-  const cancel = () => clearTimeout(timer);
-  div.addEventListener('mousedown', start);
-  div.addEventListener('touchstart', start, { passive: true });
-  div.addEventListener('mouseup', cancel);
-  div.addEventListener('touchend', cancel);
-  div.addEventListener('mouseleave', cancel);
+function fmtH(h) {
+  const hh = h >= 24 ? h - 24 : h;
+  const totalMin = Math.round((h % 1) * 60);
+  return String(Math.floor(hh)).padStart(2,'0') + ':' + String(totalMin).padStart(2,'0');
+}
+
+function applyActNameClamp(nameEl, heightPx) {
+  const lines = Math.max(1, Math.floor((heightPx - 20 - 18) / 26));
+  nameEl.style.webkitLineClamp = lines;
+}
+
+function showActNameToast(name) {
+  const scaler = document.getElementById('scaler');
+  let toast = document.getElementById('act-name-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'act-name-toast';
+    scaler.appendChild(toast);
+  }
+  toast.textContent = name;
+  toast.style.background = accentBg;
+  toast.style.border = `2px solid ${accentColor}`;
+  toast.style.boxShadow = `0 0 28px ${accentColor}, 0 4px 32px rgba(0,0,0,0.6)`;
+  toast.classList.add('visible');
+  clearTimeout(window._actNameToastTimer);
+  window._actNameToastTimer = setTimeout(() => toast.classList.remove('visible'), 2500);
+}
+
+function addActBehavior(div) {
   div.addEventListener('click', () => {
-    if (!didLong) {
-      div.classList.toggle('selected');
-      const sel = div.classList.contains('selected');
-      const isRuneRave = div.querySelector('.act-name')?.textContent.trim() === 'RuneScape Rave'
-                      && !document.body.classList.contains('runescape-active') && !document.body.classList.contains('runescape-unlocked');
-      div.style.background = sel ? (isRuneRave ? '#555' : accentBg) : '';
-      if (sel) {
-        div.style.borderLeftColor = isRuneRave ? '#fff' : accentBorder;
-      } else {
-        const isNow = div.classList.contains('act-now');
-        const isFS = !!document.fullscreenElement;
-        div.style.borderLeftColor = (isNow && !isFS) ? accentColor : '';
-        div.style.borderTopColor = isNow ? accentColor : '';
-      }
-      try {
-        const stored = JSON.parse(localStorage.getItem('favs'));
-        let favs = Array.isArray(stored) ? stored : [];
-        if (sel) favs.push(div.id);
-        else favs = favs.filter(f => f !== div.id);
-        localStorage.setItem('favs', JSON.stringify(favs));
-      } catch(e) {}
-      updateResetBtn();
+    const nameEl = div.querySelector('.act-name');
+    if (nameEl && nameEl.scrollHeight > nameEl.clientHeight) {
+      showActNameToast(nameEl.textContent);
     }
+    div.classList.toggle('selected');
+    const sel = div.classList.contains('selected');
+    const isRuneRave = div.querySelector('.act-name')?.textContent.trim() === 'RuneScape Rave'
+                    && !document.body.classList.contains('runescape-active') && !document.body.classList.contains('runescape-unlocked');
+    const isDiscoAct = div.classList.contains('act-disco-r') || div.classList.contains('act-disco-b');
+    div.style.background = sel ? (isRuneRave ? '#555' : isDiscoAct ? '' : accentBg) : '';
+    if (sel) {
+      div.style.borderLeftColor = isRuneRave ? '#fff' : '';
+    } else {
+      const isNow = div.classList.contains('act-now');
+      const isFS = document.body.classList.contains('is-fullscreen');
+      const discoColor = div.classList.contains('act-disco-r') ? '#e63939' : div.classList.contains('act-disco-b') ? '#3399ff' : null;
+      div.style.borderLeftColor = discoColor || ((isNow && !isFS) ? accentColor : '');
+      div.style.borderTopColor = (!discoColor && isNow && !isFS) ? accentColor : '';
+    }
+    try {
+      const stored = JSON.parse(localStorage.getItem('favs'));
+      let favs = Array.isArray(stored) ? stored : [];
+      if (sel) favs.push(div.id);
+      else favs = favs.filter(f => f !== div.id);
+      localStorage.setItem('favs', JSON.stringify(favs));
+    } catch(e) {}
+    updateResetBtn();
   });
 }
 
@@ -679,8 +744,9 @@ function renderDay(dayKey) {
         div.dataset.end = displayEnd;
         div.style.top = topPx + 'px';
         div.style.height = heightPx + 'px';
-        div.innerHTML = `<div class="act-name">${displayName}</div><div class="act-time">${fmtH(a.start)} – ${fmtH(displayEnd)}</div>`;
-        addLongPress(div, '.act-name');
+        div.innerHTML = `<div class="act-name">${displayName === '?' ? '' : displayName}</div><div class="act-time">${fmtH(a.start)} – ${fmtH(displayEnd)}</div>`;
+        applyActNameClamp(div.querySelector('.act-name'), heightPx);
+        addActBehavior(div);
         col.appendChild(div);
       });
 
@@ -688,7 +754,111 @@ function renderDay(dayKey) {
     });
 
     updateNowLine();
-    fitActNames();
+
+    updateResetBtn();
+  });
+}
+
+function getDiscoActs(dayKey) {
+  const result = { DiscoR: [], DiscoB: [] };
+  Object.keys(overrides).forEach(key => {
+    const [d, stage, startStr] = key.split('|');
+    if (d !== dayKey) return;
+    const norm = stage.toLowerCase();
+    if (norm !== 'discor' && norm !== 'discob') return;
+    const bucket = norm === 'discor' ? 'DiscoR' : 'DiscoB';
+    const ov = overrides[key];
+    const rawStart = parseFloat(startStr);
+    const start = rawStart < 6 ? rawStart + 24 : rawStart;
+    const rawEnd = typeof ov.end === 'number' ? ov.end : rawStart + 1;
+    const end = rawEnd < 6 ? rawEnd + 24 : rawEnd;
+    result[bucket].push({ name: ov.name || '', start, end });
+  });
+  result.DiscoR.sort((a, b) => a.start - b.start);
+  result.DiscoB.sort((a, b) => a.start - b.start);
+  return result;
+}
+
+function renderDisco(dayKey) {
+  const acts = getDiscoActs(dayKey);
+  const allActs = [...acts.DiscoR, ...acts.DiscoB];
+
+  const stageRow = document.getElementById('stage-row');
+  const tl       = document.getElementById('tl');
+  const axis     = document.getElementById('axis');
+
+  stageRow.innerHTML = '';
+  tl.querySelectorAll('.stage-col').forEach(e => e.remove());
+  axis.innerHTML = '';
+
+  const gridCols = '60px 1fr 1fr';
+  stageRow.style.gridTemplateColumns = gridCols;
+  tl.style.gridTemplateColumns       = gridCols;
+
+  stageRow.appendChild(document.createElement('div'));
+  const DISCO_STAGES = [
+    { key: 'DiscoR', label: currentLang === 'zh' ? '红' : currentLang === 'en' ? 'RED'  : 'ROUGE', color: '#e63939' },
+    { key: 'DiscoB', label: currentLang === 'zh' ? '蓝' : currentLang === 'en' ? 'BLUE' : 'BLEU',  color: '#3399ff' },
+  ];
+  DISCO_STAGES.forEach(s => {
+    const d = document.createElement('div');
+    d.className = 'stage-header';
+    d.style.borderTopColor = s.color;
+    d.innerHTML = `<div class="sh-name" style="color:${s.color}">${s.label}</div>`;
+    stageRow.appendChild(d);
+  });
+
+  if (!allActs.length) return;
+
+  const startHour = Math.floor(Math.min(...allActs.map(a => a.start)));
+  const endHour   = Math.ceil( Math.max(...allActs.map(a => a.end)));
+  discoHours = { start: startHour, end: endHour };
+
+  requestAnimationFrame(() => {
+    const totalH   = tl.clientHeight;
+    const totalMin = (endHour - startHour) * 60;
+    const pxPerMin = totalH / totalMin;
+    const GAP = 2;
+
+    for (let h = startHour; h <= endHour; h++) {
+      const span = document.createElement('span');
+      span.className = 'tick-label';
+      span.textContent = fmtH(h);
+      span.style.top = ((h - startHour) * 60 * pxPerMin) + 'px';
+      axis.appendChild(span);
+    }
+
+    let favs = [];
+    try { const s = JSON.parse(localStorage.getItem('favs')); if (Array.isArray(s)) favs = s; } catch(e) {}
+
+    DISCO_STAGES.forEach(s => {
+      const col = document.createElement('div');
+      col.className = 'stage-col';
+      const stageColor = s.key === 'DiscoR' ? '#e63939' : '#3399ff';
+      acts[s.key].forEach(a => {
+        const topPx    = (a.start - startHour) * 60 * pxPerMin;
+        const heightPx = (a.end   - a.start)   * 60 * pxPerMin - GAP;
+        const div = document.createElement('div');
+        div.id = `${dayKey}-${s.key}-${a.start}`;
+        div.className = `act ${s.key === 'DiscoR' ? 'act-disco-r' : 'act-disco-b'}`;
+        div.dataset.start = a.start;
+        div.dataset.end   = a.end;
+        div.style.top     = topPx + 'px';
+        div.style.height  = heightPx + 'px';
+        div.style.borderLeftColor = stageColor;
+        if (favs.includes(div.id)) {
+          div.classList.add('selected');
+        }
+        div.innerHTML = `<div class="act-name">${a.name === '?' ? '' : (a.name || '—')}</div><div class="act-time">${fmtH(a.start)} – ${fmtH(a.end)}</div>`;
+        applyActNameClamp(div.querySelector('.act-name'), heightPx);
+        addActBehavior(div);
+        col.appendChild(div);
+      });
+      tl.appendChild(col);
+    });
+
+    updateNowLine();
+
     updateResetBtn();
   });
 }
@@ -702,16 +872,6 @@ function updateResetBtn() {
   } catch(e) { btn.style.display = 'none'; }
 }
 
-function fitActNames() {
-  const els = Array.from(document.querySelectorAll('.act-name'));
-  els.forEach(el => el.style.fontSize = '');
-  const fixes = els.reduce((acc, el) => {
-    const maxW = el.parentElement.clientWidth - 26;
-    if (el.scrollWidth > maxW) acc.push({ el, size: Math.max(14, Math.floor(25 * (maxW / el.scrollWidth))) });
-    return acc;
-  }, []);
-  fixes.forEach(({ el, size }) => el.style.fontSize = size + 'px');
-}
 
 function getCurrentFestivalDay() {
   const now = getNow();
@@ -721,9 +881,116 @@ function getCurrentFestivalDay() {
   return { 2: 'jeudi', 3: 'vendredi', 4: 'samedi', 5: 'dimanche' }[d.getDate()] || null;
 }
 
+function getDiscoDay() {
+  const now = getNow();
+  const d = new Date(now);
+  if (now.getHours() < 6) d.setDate(d.getDate() - 1);
+  if (d.getFullYear() !== 2026 || d.getMonth() !== 6) return 'vendredi';
+  const day = { 3: 'vendredi', 4: 'samedi', 5: 'dimanche' }[d.getDate()];
+  return day || 'vendredi';
+}
+
+function updateDiscoBtn() {
+  const btn = document.getElementById('disco-btn');
+  if (!btn) return;
+  if (discoMode) { btn.style.display = 'flex'; return; }
+  const now = getNow();
+  const h = now.getHours() + now.getMinutes() / 60;
+  const d = now.getDate(), m = now.getMonth(), y = now.getFullYear();
+  const visible = y === 2026 && m === 6 && (
+    ((d === 4 || d === 5) && h < 6) ||
+    (d === 6 && h < 4.5)
+  );
+  btn.style.display = visible ? 'flex' : 'none';
+}
+
+function updateCampingBtn() {
+  // Info button is always visible
+}
+
+function renderCamping(dayKey) {
+  const stageRow = document.getElementById('stage-row');
+  const tl       = document.getElementById('tl');
+  const axis      = document.getElementById('axis');
+
+  stageRow.innerHTML = '';
+  tl.querySelectorAll('.stage-col, #now-line').forEach(e => e.remove());
+  axis.innerHTML = '';
+
+  const gridCols = '60px 1fr';
+  stageRow.style.gridTemplateColumns = gridCols;
+  tl.style.gridTemplateColumns = gridCols;
+
+  stageRow.appendChild(document.createElement('div')); // axis placeholder
+  const header = document.createElement('div');
+  header.className = 'stage-header';
+  header.innerHTML = `<div class="sh-name" style="color:${accentColor}">INFO</div>`;
+  stageRow.appendChild(header);
+
+  const col = document.createElement('div');
+  col.className = 'stage-col';
+  col.style.cssText = 'display:flex;flex-direction:column;gap:14px;padding:16px 0;';
+
+  const now = getNow();
+  let h = now.getHours() + now.getMinutes() / 60;
+  if (h < 6) h += 24;
+  const todayKey = getCurrentFestivalDay();
+
+  (infoData[dayKey] || []).forEach(item => {
+    const isActive = todayKey === dayKey && h >= item.start && (item.end === null || h < item.end);
+    const card = document.createElement('div');
+    card.className = 'camping-card' + (isActive ? ' camping-card-active' : '');
+    const timeStr = item.end !== null ? `${fmtH(item.start)} - ${fmtH(item.end)}` : fmtH(item.start);
+    card.innerHTML = `<div class="camping-label">${item.label}</div><div class="camping-time">${timeStr}</div>`;
+    col.appendChild(card);
+  });
+
+  tl.appendChild(col);
+  updateResetBtn();
+}
+
 function updateNowLine() {
   const tl = document.getElementById('tl');
   const existing = document.getElementById('now-line');
+
+  if (discoMode) {
+    const renderedDay = document.querySelector('.day-item.active')?.dataset.day;
+    if (renderedDay && renderedDay !== getDiscoDay()) {
+      if (existing) existing.remove();
+      document.querySelectorAll('.act').forEach(act => {
+        act.classList.remove('act-now', 'act-past');
+      });
+      return;
+    }
+    const now = getNow();
+    let h = now.getHours() + now.getMinutes() / 60;
+    if (h < 6) h += 24;
+    if (h < discoHours.start || h >= discoHours.end) {
+      if (existing) existing.remove();
+      document.querySelectorAll('.act').forEach(act => {
+        act.classList.remove('act-now');
+        act.classList.remove('act-past');
+      });
+      return;
+    }
+    const totalH   = tl.clientHeight;
+    const totalMin = (discoHours.end - discoHours.start) * 60;
+    const topPx    = ((h - discoHours.start) * 60) / totalMin * totalH;
+    const line = existing || document.createElement('div');
+    line.id = 'now-line';
+    if (!existing) {
+      Object.assign(line.style, { position: 'absolute', left: '0', right: '0', height: '2px', background: 'var(--accent)', boxShadow: '0 0 8px var(--accent)', zIndex: '10', pointerEvents: 'none' });
+      tl.appendChild(line);
+    }
+    line.style.top = topPx + 'px';
+    document.querySelectorAll('.act').forEach(act => {
+      const s = parseFloat(act.dataset.start), e = parseFloat(act.dataset.end);
+      act.classList.toggle('act-now',  h >= s && h < e);
+      act.classList.toggle('act-past', h >= e);
+    });
+    return;
+  }
+
   const festivalDay = getCurrentFestivalDay();
   const activeDay = document.querySelector('.day-item.active');
 
@@ -772,7 +1039,7 @@ function updateNowLine() {
   }
   line.style.top = topPx + 'px';
 
-  const isFS = !!document.fullscreenElement;
+  const isFS = document.body.classList.contains('is-fullscreen');
   document.querySelectorAll('.act').forEach(act => {
     const s = parseFloat(act.dataset.start);
     const e = parseFloat(act.dataset.end);
@@ -786,6 +1053,7 @@ function updateNowLine() {
 
 window.addEventListener('load', () => {
   let lang = localStorage.getItem('lang') || 'fr';
+  currentLang = lang;
   let activeDayKey = getCurrentFestivalDay() || 'jeudi';
 
   try {
@@ -814,23 +1082,39 @@ window.addEventListener('load', () => {
     const dateKey = 'date' + lang.charAt(0).toUpperCase() + lang.slice(1);
     document.getElementById('current-date').textContent = activeDayEl.dataset[dateKey];
   }
+  let pageRevealed = false;
+  function revealPage() {
+    if (pageRevealed) return;
+    pageRevealed = true;
+    document.body.style.opacity = '1';
+  }
+  setTimeout(revealPage, 800); // fallback si tout prend trop longtemps
+
   loadOverrides().then(() => {
     renderDay(activeDayKey);
     updateNowLine();
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const fonts = (document.fonts && document.fonts.ready) || Promise.resolve();
+      Promise.race([fonts, new Promise(r => setTimeout(r, 300))]).then(revealPage);
+    }));
   });
   if (localStorage.getItem('rs_unlocked')) document.body.classList.add('runescape-unlocked');
 
   function updateDaysLeft() {
     const el = document.getElementById('days-left');
     if (!el) return;
-    const diff = Math.ceil((new Date('2026-07-02T00:00:00') - new Date().setHours(0,0,0,0)) / 86400000);
-    if (diff <= 0) { el.textContent = ''; return; }
+    const now = getNow();
+    const today = new Date(now); today.setHours(0, 0, 0, 0);
+    const diff = Math.ceil((new Date('2026-07-02T00:00:00') - today) / 86400000);
+    const festivalOver = today > new Date('2026-07-05T23:59:59');
+    if (diff <= 0 || festivalOver) { el.textContent = ''; return; }
     el.textContent = lang === 'zh' ? diff + '天' : lang === 'en' ? 'D-' + diff : 'J-' + diff;
   }
   updateDaysLeft();
-  setTimeout(() => { document.body.style.opacity = '1'; }, 100);
+  updateDiscoBtn();
+  updateCampingBtn();
 
-  setInterval(updateNowLine, 60000);
+  setInterval(() => { updateNowLine(); updateDiscoBtn(); updateCampingBtn(); }, 60000);
 
   document.querySelectorAll('.day-item').forEach(el => {
     el.addEventListener('click', () => {
@@ -839,7 +1123,9 @@ window.addEventListener('load', () => {
       el.classList.add('active');
       const dateKey = 'date' + lang.charAt(0).toUpperCase() + lang.slice(1);
       document.getElementById('current-date').textContent = el.dataset[dateKey];
-      renderDay(activeDayKey);
+      if (discoMode) renderDisco(activeDayKey);
+      else if (campingMode) renderCamping(activeDayKey);
+      else renderDay(activeDayKey);
     });
   });
 
@@ -855,6 +1141,7 @@ window.addEventListener('load', () => {
       return;
     }
     lang = lang === 'fr' ? 'en' : lang === 'en' ? 'zh' : 'fr';
+    currentLang = lang;
     localStorage.setItem('lang', lang);
     langBtn.textContent = lang.toUpperCase();
     document.body.classList.toggle('lang-zh', lang === 'zh');
@@ -867,6 +1154,8 @@ window.addEventListener('load', () => {
       document.getElementById('current-date').textContent = active.dataset[dateKey];
     }
     updateDaysLeft();
+    if (discoMode) renderDisco(activeDayKey);
+    else if (campingMode) renderCamping(activeDayKey);
   });
 
   let langPressTimer = null, langDidLong = false, manualLangEaster = null;
@@ -892,6 +1181,74 @@ window.addEventListener('load', () => {
     colorMenu.classList.toggle('open');
   });
   reloadBtn.addEventListener('click', () => { location.reload(); });
+
+  const discoBtn = document.getElementById('disco-btn');
+  discoBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    if (campingMode) {
+      campingMode = false;
+      const cb = document.getElementById('camping-btn');
+      cb.style.opacity = '0.7';
+      cb.style.borderColor = '#ffffff20';
+      cb.style.background  = '#ffffff12';
+      updateCampingBtn();
+    }
+    discoMode = !discoMode;
+    if (discoMode) {
+      discoBtn.style.opacity = '1';
+      discoBtn.style.borderColor = 'rgba(255,255,255,0.6)';
+      discoBtn.style.background  = '#1a1a1a';
+      document.body.classList.add('disco-mode');
+      if (easterActive !== 'disco') triggerEaster('disco');
+      const discoDay = getDiscoDay();
+      activeDayKey = discoDay;
+      document.querySelectorAll('.day-item').forEach(d => {
+        const active = d.dataset.day === discoDay;
+        d.classList.toggle('active', active);
+        if (active) {
+          const dateKey = 'date' + lang.charAt(0).toUpperCase() + lang.slice(1);
+          document.getElementById('current-date').textContent = d.dataset[dateKey] || '';
+        }
+      });
+      document.querySelector('.label span').textContent = 'Silent Disco';
+      renderDisco(activeDayKey);
+    } else {
+      discoBtn.style.opacity = '0.7';
+      discoBtn.style.borderColor = '#ffffff20';
+      discoBtn.style.background  = '#ffffff12';
+      document.querySelector('.label span').textContent = 'Rampage Open Air 2026';
+      document.body.classList.remove('disco-mode');
+      if (easterActive === 'disco') triggerEaster('disco');
+      renderDay(activeDayKey);
+    }
+  });
+
+  const campingBtn = document.getElementById('camping-btn');
+  campingBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    if (discoMode) {
+      discoMode = false;
+      discoBtn.style.opacity = '0.7';
+      discoBtn.style.borderColor = '#ffffff20';
+      discoBtn.style.background  = '#ffffff12';
+      document.querySelector('.label span').textContent = 'Rampage Open Air 2026';
+      document.body.classList.remove('disco-mode');
+      if (easterActive === 'disco') triggerEaster('disco');
+    }
+    campingMode = !campingMode;
+    if (campingMode) {
+      campingBtn.style.opacity = '1';
+      campingBtn.style.borderColor = 'rgba(255,255,255,0.6)';
+      campingBtn.style.background  = '#1a1a1a';
+      renderCamping(activeDayKey);
+    } else {
+      campingBtn.style.opacity = '0.7';
+      campingBtn.style.borderColor = '#ffffff20';
+      campingBtn.style.background  = '#ffffff12';
+      renderDay(activeDayKey);
+    }
+  });
+
   document.addEventListener('click', () => colorMenu.classList.remove('open'));
   document.querySelectorAll('.color-option').forEach(opt => {
     opt.addEventListener('click', e => {
@@ -906,7 +1263,7 @@ window.addEventListener('load', () => {
       const dlEl = document.getElementById('days-left'); if (dlEl) dlEl.style.color = accentColor;
       document.querySelectorAll('.sh-name').forEach(el => el.style.color = accentColor);
       document.querySelectorAll('.stage-header').forEach(el => el.style.borderTopColor = accentColor);
-      document.querySelectorAll('.act.act-now').forEach(el => { el.style.borderLeftColor = accentColor; el.style.borderTopColor = accentColor; });
+      document.querySelectorAll('.act.act-now').forEach(el => { if (el.classList.contains('act-disco-r') || el.classList.contains('act-disco-b')) return; el.style.borderLeftColor = accentColor; el.style.borderTopColor = accentColor; });
       document.querySelectorAll('.act.selected').forEach(el => { const rr = el.querySelector('.act-name')?.textContent.trim() === 'RuneScape Rave' && !document.body.classList.contains('runescape-active') && !document.body.classList.contains('runescape-unlocked'); el.style.background = rr ? '#555' : accentBg; el.style.borderLeftColor = rr ? '#fff' : accentBorder; });
       const nl = document.getElementById('now-line');
       if (nl) { nl.style.background = accentColor; nl.style.boxShadow = `0 0 8px ${accentColor}`; }
@@ -1021,8 +1378,8 @@ window.addEventListener('load', () => {
     document.querySelectorAll('.sh-name').forEach(el => el.style.color = accentColor);
     document.querySelectorAll('.stage-header').forEach(el => el.style.borderTopColor = accentColor);
     document.querySelectorAll('.act.selected').forEach(el => { const rr = el.querySelector('.act-name')?.textContent.trim() === 'RuneScape Rave' && !document.body.classList.contains('runescape-active') && !document.body.classList.contains('runescape-unlocked'); el.style.background = rr ? '#555' : accentBg; el.style.borderLeftColor = rr ? '#fff' : accentBorder; });
-    const isFS = !!document.fullscreenElement;
-    document.querySelectorAll('.act.act-now').forEach(el => { el.style.borderLeftColor = isFS ? '' : accentColor; el.style.borderTopColor = isFS ? '' : accentColor; });
+    const isFS = document.body.classList.contains('is-fullscreen');
+    document.querySelectorAll('.act.act-now').forEach(el => { if (el.classList.contains('act-disco-r') || el.classList.contains('act-disco-b')) return; el.style.borderLeftColor = isFS ? '' : accentColor; el.style.borderTopColor = isFS ? '' : accentColor; });
     const nl = document.getElementById('now-line');
     if (nl) { nl.style.background = accentColor; nl.style.boxShadow = `0 0 8px ${accentColor}`; }
   }
