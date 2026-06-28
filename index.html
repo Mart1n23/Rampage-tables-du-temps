@@ -142,14 +142,16 @@
 
   #bottom-bar {
     position: absolute;
-    left: 0; right: var(--edge-gap); bottom: var(--edge-gap);
-    display: flex; align-items: center; justify-content: flex-end;
-    gap: 33px; padding: 0;
+    left: var(--edge-gap); right: var(--edge-gap); bottom: var(--edge-gap);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0;
     flex-shrink: 0; z-index: 30;
     pointer-events: none;
     opacity: 0.85;
   }
-  #bottom-bar > .bottom-btn {
+  #left-btns, #right-btns { display: flex; align-items: center; gap: 33px; }
+  #right-btns { position: relative; }
+  #bottom-bar .bottom-btn {
     pointer-events: auto;
     box-shadow: 0 10px 28px rgba(0,0,0,0.45);
     backdrop-filter: blur(8px);
@@ -429,7 +431,14 @@
   </div>
 
   <div id="bottom-bar">
-    <div id="settings-popover" aria-hidden="true">
+    <div id="left-btns">
+      <div id="camping-btn" class="round-btn bottom-btn">!</div>
+      <div id="disco-btn" class="round-btn bottom-btn">
+      <svg width="120" height="120" viewBox="-1 -1 26 26" fill="none" stroke="#fff" stroke-width="1.2" stroke-linecap="round"><defs><clipPath id="dbc"><circle cx="12" cy="12" r="9"/></clipPath></defs><circle cx="12" cy="12" r="9"/><line x1="12" y1="0" x2="12" y2="3"/><g clip-path="url(#dbc)"><line x1="3" y1="8" x2="21" y2="8"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="16" x2="21" y2="16"/><line x1="8" y1="3" x2="8" y2="21"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="16" y1="3" x2="16" y2="21"/></g><circle cx="1" cy="6" r="1" fill="#fff" stroke="none"/><circle cx="23" cy="6" r="1" fill="#fff" stroke="none"/><circle cx="0" cy="17" r="0.8" fill="#fff" stroke="none"/><circle cx="24" cy="17" r="0.8" fill="#fff" stroke="none"/></svg>
+    </div>
+    </div>
+    <div id="right-btns">
+      <div id="settings-popover" aria-hidden="true">
       <div id="reset-wrap">
         <div id="reset-label">RESET?</div>
         <div id="reset-btn" class="round-btn top-btn">
@@ -450,15 +459,12 @@
         <div class="color-btn round-btn top-btn" id="color-btn"></div>
       </div>
     </div>
-    <div id="camping-btn" class="round-btn bottom-btn">!</div>
-    <div id="disco-btn" class="round-btn bottom-btn">
-      <svg width="120" height="120" viewBox="-1 -1 26 26" fill="none" stroke="#fff" stroke-width="1.2" stroke-linecap="round"><defs><clipPath id="dbc"><circle cx="12" cy="12" r="9"/></clipPath></defs><circle cx="12" cy="12" r="9"/><line x1="12" y1="0" x2="12" y2="3"/><g clip-path="url(#dbc)"><line x1="3" y1="8" x2="21" y2="8"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="16" x2="21" y2="16"/><line x1="8" y1="3" x2="8" y2="21"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="16" y1="3" x2="16" y2="21"/></g><circle cx="1" cy="6" r="1" fill="#fff" stroke="none"/><circle cx="23" cy="6" r="1" fill="#fff" stroke="none"/><circle cx="0" cy="17" r="0.8" fill="#fff" stroke="none"/><circle cx="24" cy="17" r="0.8" fill="#fff" stroke="none"/></svg>
-    </div>
-    <div id="fs-btn" class="round-btn bottom-btn">
+      <div id="fs-btn" class="round-btn bottom-btn">
       <svg width="82" height="82" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
     </div>
-    <div id="settings-btn" class="round-btn bottom-btn" aria-label="Réglages">
+      <div id="settings-btn" class="round-btn bottom-btn" aria-label="Réglages">
       <svg width="98" height="98" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.92 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.31.49 1 1.51 1H21a2 2 0 1 1 0 4h-.09c-1.02 0-1.37.69-1.51 1z"/></svg>
+    </div>
     </div>
   </div>
 
