@@ -590,7 +590,7 @@ function buildStageHeaderFragment(stages, headerBuilder) {
 function buildAxisFragment(startHour, endHour) {
   const totalMin = (endHour - startHour) * 60;
   const frag = document.createDocumentFragment();
-  for (let h = startHour; h <= endHour; h++) {
+  for (let h = startHour; h < endHour; h++) {
     const span = document.createElement('span');
     span.className = 'tick-label';
     span.textContent = fmtH(h);
