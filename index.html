@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0d0d0d">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700&family=Comic+Neue:wght@400;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700&family=Comic+Neue:wght@400;700&family=Share+Tech+Mono&display=swap');
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   html {
@@ -16,7 +16,43 @@
     overflow: hidden;
   }
 
-  :root { --accent: #eb0028; --accent-bg: #4b000e; --accent-border: #eb0028; }
+  :root {
+    --accent: #eb0028;
+    --accent-bg: #4b000e;
+    --accent-border: #eb0028;
+    --fs-top-pad: 10px;
+    --fs-bottom-pad: 30px;
+    --fs-text-boost: 1;
+    --fs-left-pad: 90px;
+    --fs-right-pad: 90px;
+    --header-gap: 6px;
+    --day-date-gap: 3px;
+    --day-date-pull: -10px;
+    --muted-time: #ffffff88;
+    --font-scale: 1;
+    --artist-font-scale: 1;
+    --artist-lg6-size: 34px;
+    --artist-lg7-size: 32px;
+    --artist-semi-size: 30px;
+    --artist-size: 25px;
+    --artist-md-size: 27px;
+    --artist-long-size: 23px;
+    --artist-xl-size: 22px;
+    --artist-long-b-size: 21px;
+    --act-time-size: 20px;
+    --act-time-mt: 5px;
+    --scene-name-size: 21px;
+    --edge-gap: 24px;
+    --bottom-btn-size: 149px;
+    --popover-btn-size: 119.2px;
+    --color-option-size: 95px;
+  }
+
+  body.day-jeudi,
+  body.disco-mode {
+    --font-scale: 1.666667;
+    --artist-font-scale: 1.52;
+  }
 
   body {
     background: transparent; color: #fff;
@@ -48,33 +84,107 @@
     z-index: 1;
   }
 
+  .easter-img {
+    position: absolute; top: 0; left: 0;
+    width: 1080px; height: 1920px;
+    object-fit: cover; pointer-events: none; z-index: 0;
+  }
+  .easter-img.contain { object-fit: contain; object-position: top center; }
+  #fr-img {
+    top: auto;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center bottom;
+  }
+  #disco-img { width: 540px; height: 960px; left: 270px; }
+
+  .round-btn {
+    border-radius: 50%; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    user-select: none; -webkit-user-select: none;
+  }
+  #right-panel { display: none; }
+  .top-btn { width: var(--popover-btn-size); height: var(--popover-btn-size); }
+  .bottom-btn { width: var(--bottom-btn-size); height: var(--bottom-btn-size); }
+  .top-btn, .bottom-btn { border: 2px solid #ffffff30; background: #ffffff12; opacity: 0.85; }
+  #settings-popover {
+    position: absolute; right: calc((var(--bottom-btn-size) - var(--popover-btn-size)) / 2); bottom: 182px;
+    display: none; flex-direction: column; align-items: center; gap: 17px;
+    z-index: 40; pointer-events: none;
+  }
+  #bottom-bar.settings-open #settings-popover { display: flex; }
+  #settings-popover > *, #settings-popover .top-btn, #settings-popover .color-option { pointer-events: auto; }
+  #settings-popover .top-btn { box-shadow: 0 10px 28px rgba(0,0,0,0.45); backdrop-filter: blur(8px); }
+  #bottom-bar.settings-open #settings-btn { opacity: 1; border-color: rgba(255,255,255,0.72); background: var(--accent-bg); }
+  #reset-wrap { display: none; position: relative; }
+  #reset-label {
+    display: none; position: absolute; top: 50%; right: calc(100% + 14px); transform: translateY(-50%);
+    font: 64px 'Bebas Neue', sans-serif; color: #ff4444; letter-spacing: 3px; white-space: nowrap;
+  }
+  #reset-btn { border-color: #ffffff30; }
+  #lang-btn {
+    font: 89px/1 'Bebas Neue', sans-serif; letter-spacing: 1px; color: #fff;
+    -webkit-touch-callout: none;
+    padding-top: 5px; text-align: center;
+  }
+  #camping-btn { font: 109px 'Bebas Neue', sans-serif; color: #fff; }
+  #fs-btn, #settings-btn { background: var(--accent-bg); }
+  #settings-btn svg { width: 98px; height: 98px; }
+  .info-col { display: flex; flex-direction: column; gap: 14px; padding: 16px 0; }
+
   .content {
     position: relative; z-index: 1;
-    padding: 32px 55px 70px;
+    padding: 25px 62px 100px;
     height: 100%; display: flex; flex-direction: column;
   }
 
+  #bottom-bar {
+    position: absolute;
+    left: 0; right: var(--edge-gap); bottom: var(--edge-gap);
+    display: flex; align-items: center; justify-content: flex-end;
+    gap: 33px; padding: 0;
+    flex-shrink: 0; z-index: 30;
+    pointer-events: none;
+    opacity: 0.85;
+  }
+  #bottom-bar > .bottom-btn {
+    pointer-events: auto;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.45);
+    backdrop-filter: blur(8px);
+  }
+  .is-fullscreen #bottom-bar { display: none !important; }
+
+  .is-fullscreen .content {
+    padding: var(--fs-top-pad, 10px) var(--fs-right-pad, 90px) var(--fs-bottom-pad, 30px) var(--fs-left-pad, 90px);
+  }
+  .is-fullscreen .top-bar { margin-bottom: calc(var(--header-gap, 6px) * var(--fs-text-boost, 1)); }
+  .is-fullscreen .top-bar > div:first-child { display: flex; flex-direction: column; min-width: 0; }
+
   .top-bar { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
 
+  #color-slot { position: relative; }
   .color-btn {
-    width: 65px; height: 65px; border-radius: 50%;
-    background: var(--accent); border: 2px solid #ffffff15;
-    cursor: pointer; flex-shrink: 0; opacity: 0.6;
+    width: var(--popover-btn-size); height: var(--popover-btn-size); border-radius: 50%;
+    background: var(--accent); border: 2px solid #ffffff30;
+    cursor: pointer; flex-shrink: 0; opacity: 0.95;
+    filter: saturate(0.9) brightness(0.72);
   }
   .color-menu {
-    position: absolute; right: 0;
-    display: none; flex-direction: column; gap: 8px; z-index: 100;
+    position: absolute; right: calc(100% + 12px); top: 50%; transform: translateY(-50%);
+    display: none; flex-direction: row; gap: 8px; z-index: 100;
   }
   .color-menu.open { display: flex; }
-  .color-option { width: 65px; height: 65px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; }
-  .color-option:hover, .color-option.current { border-color: #fff; }
+  .color-option { width: var(--color-option-size); height: var(--color-option-size); border-radius: 50%; cursor: pointer; border: 3px solid transparent; filter: saturate(1) brightness(0.8); }
+  .color-option:hover, .color-option.current { border-color: #fff; filter: saturate(1) brightness(0.8); }
 
-  .label { font-size: 22px; letter-spacing: 5px; color: var(--accent); text-transform: uppercase; margin-bottom: 8px; cursor: pointer; display: flex; align-items: center; gap: 28px; }
+  .label { font-size: 22px; letter-spacing: 5px; color: var(--accent); text-transform: uppercase; margin-bottom: var(--header-gap, 6px); cursor: pointer; display: flex; align-items: center; gap: 28px; }
   #days-left { font-family: 'Bebas Neue', sans-serif; font-size: 34px; letter-spacing: 3px; color: var(--accent); opacity: 0.85; flex-shrink: 0; position: relative; top: 2px; }
   .is-fullscreen #days-left { display: none; }
   .is-fullscreen .day-item:not(.active) { display: none; }
   .disco-mode .day-item[data-day="jeudi"] { display: none; }
-  .day-row { display: flex; align-items: flex-end; gap: 20px; }
+  .day-row { display: flex; align-items: flex-end; gap: 20px; height: 94px; flex-shrink: 0; }
   .day-item {
     font-family: 'Bebas Neue', sans-serif; line-height: 1;
     cursor: pointer; white-space: nowrap; user-select: none;
@@ -85,20 +195,52 @@
   .day-item.active { color: #fff; font-size: 90px; padding-bottom: 0; }
   .lang-zh .day-item { font-size: 38px; }
   .lang-zh .day-item.active { font-size: 82px; }
-  .day-date { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: #ffffff44; letter-spacing: 6px; margin-top: 8px; margin-bottom: 12px; }
+  .day-date { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--muted-time, #ffffff88); letter-spacing: 6px; margin-top: calc(var(--day-date-gap, 3px) + var(--day-date-pull, -10px)); margin-bottom: 12px; }
 
-  .stage-row { display: grid; gap: 0 6px; margin-bottom: 6px; }
+  .is-fullscreen .label {
+    position: relative; z-index: 2; line-height: 1.05;
+    font-size: calc(22px * var(--fs-text-boost, 1));
+    letter-spacing: calc(5px * var(--fs-text-boost, 1));
+    margin-bottom: calc(2px * var(--fs-text-boost, 1));
+  }
+  .is-fullscreen .day-row {
+    position: relative; z-index: 1; margin-top: 0;
+    gap: calc(20px * var(--fs-text-boost, 1));
+    height: calc(100px * var(--fs-text-boost, 1));
+  }
+  .is-fullscreen .day-item {
+    font-size: calc(40px * var(--fs-text-boost, 1));
+    padding-bottom: calc(6px * var(--fs-text-boost, 1));
+  }
+  .is-fullscreen .day-item.active {
+    font-size: calc(90px * var(--fs-text-boost, 1));
+    padding-bottom: 0;
+  }
+  .lang-zh.is-fullscreen .day-item { font-size: calc(38px * var(--fs-text-boost, 1)); }
+  .lang-zh.is-fullscreen .day-item.active { font-size: calc(82px * var(--fs-text-boost, 1)); }
+  .is-fullscreen .day-date {
+    font-size: calc(36px * var(--fs-text-boost, 1));
+    letter-spacing: calc(6px * var(--fs-text-boost, 1));
+    margin-top: calc((var(--day-date-gap, 3px) + var(--day-date-pull, -10px)) * var(--fs-text-boost, 1));
+    margin-bottom: calc(var(--header-gap, 6px) * var(--fs-text-boost, 1));
+  }
+
+  .stage-row { display: grid; gap: 0 7px; margin-bottom: 6px; flex-shrink: 0; height: 74px; overflow: hidden; }
+  .disco-mode .stage-row { overflow: visible; position: relative; z-index: 20; }
+  .disco-mode .timeline { position: relative; z-index: 1; }
+  .disco-mode .stage-header { position: relative; z-index: 25; }
   .stage-header { border-top: 2px solid var(--accent); padding-top: 6px; }
-  .sh-name { font-size: 21px; font-weight: 700; letter-spacing: 2px; color: var(--accent); text-transform: uppercase; }
-  .sh-sub { font-size: 13px; color: #ffffff66; margin-top: 2px; }
+  .sh-name { font-size: calc(var(--scene-name-size) * var(--font-scale, 1)); font-weight: 700; letter-spacing: 2px; color: var(--accent); text-transform: uppercase; }
+  .sh-sub { font-size: 18px; color: #ffffff66; margin-top: 2px; }
 
-  .timeline { flex: 1; display: grid; gap: 0 6px; position: relative; min-height: 0; }
+  .timeline { flex: 1; display: grid; gap: 0 7px; position: relative; min-height: 0; }
 
   .time-axis { position: relative; }
   .tick-label {
     position: absolute; right: 8px;
-    font-size: 18px; font-weight: 600;
-    color: #ffffffaa; letter-spacing: 1px;
+    font-family: 'Share Tech Mono', 'Inter', monospace;
+    font-size: 27px; font-weight: 400;
+    color: var(--muted-time, #ffffff88); letter-spacing: 1px;
     font-variant-numeric: tabular-nums;
     transform: translateY(-50%);
   }
@@ -107,9 +249,9 @@
 
   .act {
     position: absolute; left: 0; right: 0;
-    border-radius: 3px; padding: 10px 13px;
+    border-radius: 3px; padding: 7px 7px 6px 8px; gap: 2px;
     background: #1c1c1c; border-left: 3px solid #444; border-top: 1px solid #2a2a2a;
-    overflow: hidden; cursor: pointer;
+    overflow: visible; cursor: pointer;
     transition: background 0.15s, border-color 0.15s;
     -webkit-tap-highlight-color: transparent; user-select: none;
     box-sizing: border-box;
@@ -117,37 +259,116 @@
   }
   .act.selected { background: var(--accent-bg); border-left: 3px solid var(--accent-border); }
   .act.selected::before { content: ''; position: absolute; inset: 0; background: var(--accent); opacity: 0.15; border-radius: inherit; pointer-events: none; }
-  .act.act-now { background: #2a2a2a; border-left: 4px solid var(--accent); border-top-color: var(--accent); }
+  body:not(.disco-mode) .act.selected.act-now {
+    background: var(--accent-bg);
+    border-left-color: var(--accent-border);
+    border-top-color: var(--accent-border);
+  }
+  .act.act-now {
+    background: #3f3f3f;
+    border-left: 4px solid var(--accent);
+    border-top-color: var(--accent);
+    box-shadow: 0 0 26px rgba(255,255,255,0.36), 0 0 18px var(--accent), inset 0 0 28px rgba(255,255,255,0.14);
+    filter: brightness(1.32);
+  }
   .act.act-past { opacity: 0.75; }
   .act-disco-r { border-left-color: #e63939; }
   .act-disco-b { border-left-color: #3399ff; }
   .act-disco-g { border-left-color: #00c853; }
   .disco-mode .act { background: #272727; opacity: 1; }
   .disco-mode .act.act-past { opacity: 0.75; }
-  .disco-mode .act.act-now { background: #2f2f2f; border-left-width: 4px; border-top-color: transparent; }
+  .disco-mode .act.act-now {
+    background: #484848;
+    border-left-width: 4px;
+    border-top-color: transparent;
+    box-shadow: 0 0 28px rgba(255,255,255,0.42), inset 0 0 30px rgba(255,255,255,0.16);
+    filter: brightness(1.34);
+  }
   .disco-mode .act.selected { background: #606060; }
   .disco-mode .act.selected::before { display: none; }
   .disco-mode.is-fullscreen .act.selected { background: #737373; }
-  .disco-mode .sh-name { font-size: 56px; }
-  .disco-mode .sh-sub { font-size: 37px; font-weight: 600; opacity: 1; }
-  .disco-mode .act-name { font-size: 40px; }
-  .disco-mode .act-time { font-size: 36px; }
+  .disco-mode .sh-sub { font-size: calc(18px * var(--font-scale, 1)); font-weight: 600; opacity: 1; position: relative; z-index: 30; overflow: visible; }
   .easter-active .act { opacity: 0.85; }
   .easter-active .act.act-past { opacity: 0.555; }
-  .is-fullscreen .act-past { opacity: 1; }
-  .is-fullscreen .act { opacity: 1; }
-  .is-fullscreen .act-now { background: #1c1c1c; border-left: 3px solid #444; border-top-color: #2a2a2a; }
-  .is-fullscreen .act.selected { background: var(--accent-bg); border-left: 3px solid var(--accent-border); }
-  .is-fullscreen #now-line { display: none; }
-  .act-name { flex: 1; min-height: 0; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; font-size: 20px; font-weight: 700; color: #fff; line-height: 1.3; }
-  .act-time { font-size: 18px; color: #ffffff88; margin-top: 3px; flex-shrink: 0; }
-  #act-name-toast {
-    position: absolute; top: 90px; left: 60px; right: 60px;
-    border-radius: 16px; padding: 20px 28px; font-size: 30px; font-weight: 700; color: #fff;
-    text-align: center; z-index: 500; pointer-events: none;
-    opacity: 0; transition: opacity 0.25s;
+  .is-fullscreen .act,
+  .is-fullscreen .act.act-past,
+  .is-fullscreen.easter-visual-boost .act,
+  .is-fullscreen.easter-visual-boost .act.act-past {
+    opacity: 1 !important;
   }
-  #act-name-toast.visible { opacity: 1; }
+  .disco-mode.is-fullscreen .act.act-past { opacity: 1 !important; }
+  .is-fullscreen .act.act-now {
+    background: #1c1c1c !important;
+    border-left: 3px solid #444 !important;
+    border-top: 1px solid #2a2a2a !important;
+    box-shadow: none !important;
+    filter: none !important;
+  }
+  .is-fullscreen:not(.disco-mode) .act:not(.selected),
+  .is-fullscreen:not(.disco-mode) .act:not(.selected).act-now {
+    border-left: 3px solid #444 !important;
+    border-top: 1px solid #2a2a2a !important;
+  }
+  .disco-mode.is-fullscreen .act.act-now {
+    background: #272727 !important;
+    border-left-width: 3px !important;
+    border-top: 1px solid #2a2a2a !important;
+    box-shadow: none !important;
+    filter: none !important;
+  }
+  .disco-mode.is-fullscreen .act.act-now.act-disco-r { border-left: 3px solid #e63939 !important; }
+  .disco-mode.is-fullscreen .act.act-now.act-disco-b { border-left: 3px solid #3399ff !important; }
+  .disco-mode.is-fullscreen .act.act-now.act-disco-g { border-left: 3px solid #00c853 !important; }
+  .is-fullscreen:not(.disco-mode) .act.selected,
+  .is-fullscreen:not(.disco-mode) .act.selected.act-now {
+    background: var(--accent-bg) !important;
+    border-left: 3px solid var(--accent-border) !important;
+    border-top: 1px solid #2a2a2a !important;
+    box-shadow: none !important;
+    filter: none !important;
+  }
+  .disco-mode.is-fullscreen .act.selected.act-now {
+    background: #737373 !important;
+    border-left: 3px solid #fff !important;
+    border-top-color: #2a2a2a !important;
+    box-shadow: none !important;
+    filter: none !important;
+  }
+  .is-fullscreen #now-line { display: none; }
+  .act-name {
+    display: block;
+    overflow: visible;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: normal;
+    hyphens: none;
+    text-wrap: balance;
+    max-width: 100%; min-width: 0;
+    color: #fff; font-weight: 800; letter-spacing: -0.035em; line-height: 0.98;
+    flex: 0 0 auto;
+    font-size: calc(var(--name-size, var(--artist-size)) * var(--artist-font-scale, 1));
+  }
+  .act-name.name-lg6    { --name-size: var(--artist-lg6-size); }
+  .act-name.name-lg7    { --name-size: var(--artist-lg7-size); }
+  .act-name.name-semi   { --name-size: var(--artist-semi-size); }
+  .act-name.name-md     { --name-size: var(--artist-md-size); }
+  .act-name.name-long   { --name-size: var(--artist-long-size); }
+  .act-name.name-xl     { --name-size: var(--artist-xl-size); }
+  .act-name.name-long-b { --name-size: var(--artist-long-b-size); }
+  .act-time {
+    position: static;
+    display: block;
+    width: 100%;
+    font-family: 'Share Tech Mono', 'Inter', monospace;
+    font-size: calc(var(--act-time-size) * var(--font-scale, 1));
+    font-weight: 400;
+    color: var(--muted-time, #ffffff88);
+    margin-top: calc(var(--act-time-mt, 4px) * var(--font-scale, 1));
+    flex-shrink: 1;
+    min-height: 0;
+    line-height: 1.02;
+    white-space: nowrap;
+  }
 
   .act-runescape.selected::before { background: #ffffff; opacity: 0.1; }
   .runescape-active .act-runescape.selected::before,
@@ -163,19 +384,29 @@
 
   .is-fullscreen #disco-img { opacity: 0 !important; }
 
+  body.disco-peak #disco-btn {
+    opacity: 1 !important;
+    box-shadow: 0 0 22px 6px rgba(255,255,255,0.55) !important;
+    border-color: rgba(255,255,255,0.9) !important;
+  }
+  body.disco-peak #camping-btn,
+  body.disco-peak #fs-btn {
+    opacity: 0.22 !important;
+  }
+
   img[id$="-img"] { opacity: 0; transition: opacity 0.6s; }
 </style>
 </head>
 <body>
 <div class="bg-full"></div>
 <div id="scaler">
-<img id="shrek-img" src="png/shrek.png" style="position:absolute;width:1080px;height:1920px;top:0;left:0;object-fit:cover;pointer-events:none;z-index:0;">
-<img id="alien-img" src="png/alien.png" style="position:absolute;width:1080px;height:1920px;top:0;left:0;object-fit:cover;pointer-events:none;z-index:0;">
-<img id="fr-img"    src="png/fr.png"    style="position:absolute;width:1080px;height:1920px;top:0;left:0;object-fit:cover;pointer-events:none;z-index:0;">
-<img id="en-img"    src="png/en.png"    style="position:absolute;width:1080px;height:1920px;top:0;left:0;object-fit:cover;pointer-events:none;z-index:0;">
-<img id="zh-img"    src="png/zh.png"    style="position:absolute;width:1080px;height:1920px;top:0;left:0;object-fit:cover;pointer-events:none;z-index:0;">
-<img id="disco-img"     src="png/disco.png"     style="position:absolute;width:540px;height:960px;top:0;left:270px;object-fit:cover;pointer-events:none;z-index:0;">
-<img id="runescape-img" src="png/runescape.png" style="position:absolute;width:1080px;height:1920px;top:0;left:0;object-fit:contain;object-position:top center;pointer-events:none;z-index:0;">
+<img id="shrek-img" class="easter-img" src="png/shrek.png">
+<img id="alien-img" class="easter-img" src="png/alien.png">
+<img id="fr-img" class="easter-img" src="png/fr.png">
+<img id="en-img" class="easter-img" src="png/en.png">
+<img id="zh-img" class="easter-img" src="png/zh.png">
+<img id="disco-img" class="easter-img" src="png/disco.png">
+<img id="runescape-img" class="easter-img contain" src="png/runescape.png">
 <div class="content">
 
   <div class="top-bar">
@@ -189,38 +420,7 @@
       </div>
       <div class="day-date" id="current-date">02 JUILLET</div>
     </div>
-    <div id="right-panel" style="position:relative;display:flex;flex-direction:column;align-items:flex-end;gap:12px;">
-      <div class="color-menu" id="color-menu">
-        <div class="color-option current" style="background:#eb0028" data-accent="#eb0028" data-bg="#4b000e" data-border="#eb0028" data-glow="rgba(235,0,40,0.4)"></div>
-        <div class="color-option" style="background:#ff6a00" data-accent="#ff6a00" data-bg="#4b1c00" data-border="#ff6a00" data-glow="rgba(255,106,0,0.4)"></div>
-        <div class="color-option" style="background:#f5d800" data-accent="#f5d800" data-bg="#413800" data-border="#f5d800" data-glow="rgba(245,216,0,0.4)"></div>
-        <div class="color-option" style="background:#00a848" data-accent="#00a848" data-bg="#002d1b" data-border="#00a848" data-glow="rgba(0,168,72,0.4)"></div>
-        <div class="color-option" style="background:#0066e0" data-accent="#0066e0" data-bg="#001d50" data-border="#0066e0" data-glow="rgba(0,102,224,0.4)"></div>
-        <div class="color-option" style="background:#9200e0" data-accent="#9200e0" data-bg="#260045" data-border="#9200e0" data-glow="rgba(146,0,224,0.4)"></div>
-        <div class="color-option" style="background:#444;border:2px solid #666" data-accent="#aaa" data-bg="#333333" data-border="#aaa" data-glow="rgba(170,170,170,0.4)"></div>
-      </div>
-      <div id="reset-label" style="display:none;position:absolute;right:265px;top:50%;transform:translateY(-50%);font-size:32px;color:#ff4444;letter-spacing:3px;font-family:'Bebas Neue',sans-serif;white-space:nowrap;">RESET?</div>
-      <div style="display:flex;gap:15px;align-items:flex-start;">
-        <div id="disco-btn" style="width:65px;height:65px;border-radius:50%;background:#ffffff12;border:2px solid #ffffff20;cursor:pointer;display:none;align-items:center;justify-content:center;opacity:0.7;">
-          <svg width="52" height="52" viewBox="-1 -1 26 26" fill="none" stroke="#fff" stroke-width="1.2" stroke-linecap="round"><defs><clipPath id="dbc"><circle cx="12" cy="12" r="9"/></clipPath></defs><circle cx="12" cy="12" r="9"/><line x1="12" y1="0" x2="12" y2="3"/><g clip-path="url(#dbc)"><line x1="3" y1="8" x2="21" y2="8"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="16" x2="21" y2="16"/><line x1="8" y1="3" x2="8" y2="21"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="16" y1="3" x2="16" y2="21"/></g><circle cx="1" cy="6" r="1" fill="#fff" stroke="none"/><circle cx="23" cy="6" r="1" fill="#fff" stroke="none"/><circle cx="0" cy="17" r="0.8" fill="#fff" stroke="none"/><circle cx="24" cy="17" r="0.8" fill="#fff" stroke="none"/></svg>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:15px;">
-          <div id="reset-btn" style="display:none;width:65px;height:65px;border-radius:50%;background:#ffffff12;border:2px solid #ffffff20;cursor:pointer;flex-direction:row;align-items:center;justify-content:center;opacity:0.7;">
-            <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-          </div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:15px;">
-          <div id="camping-btn" style="width:65px;height:65px;border-radius:50%;background:#ffffff12;border:2px solid #ffffff20;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0.7;font-family:'Bebas Neue',sans-serif;font-size:46px;color:#fff;user-select:none;">!</div>
-          <div id="fs-btn" style="width:65px;height:65px;border-radius:50%;background:#ffffff12;border:2px solid #ffffff20;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0.7;">
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
-          </div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:15px;">
-          <div class="color-btn" id="color-btn" style="width:65px;height:65px;border-radius:50%;background:var(--accent);border:2px solid #ffffff15;cursor:pointer;opacity:0.95;"></div>
-          <div id="lang-btn" style="width:65px;height:65px;border-radius:50%;background:#ffffff12;border:2px solid #ffffff20;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0.7;font-family:'Bebas Neue',sans-serif;font-size:38px;letter-spacing:1px;color:#fff;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;">FR</div>
-        </div>
-      </div>
-    </div>
+    <div id="right-panel"></div>
   </div>
 
   <div class="stage-row" id="stage-row"></div>
@@ -228,13 +428,47 @@
     <div class="time-axis" id="axis"></div>
   </div>
 
+  <div id="bottom-bar">
+    <div id="settings-popover" aria-hidden="true">
+      <div id="reset-wrap">
+        <div id="reset-label">RESET?</div>
+        <div id="reset-btn" class="round-btn top-btn">
+          <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        </div>
+      </div>
+      <div id="lang-btn" class="round-btn top-btn">FR</div>
+      <div id="color-slot">
+        <div class="color-menu" id="color-menu">
+          <div class="color-option current" style="background:#eb0028" data-accent="#eb0028" data-bg="#4b000e" data-border="#eb0028" data-glow="rgba(235,0,40,0.4)"></div>
+          <div class="color-option" style="background:#ff6a00" data-accent="#ff6a00" data-bg="#4b1c00" data-border="#ff6a00" data-glow="rgba(255,106,0,0.4)"></div>
+          <div class="color-option" style="background:#f5d800" data-accent="#f5d800" data-bg="#413800" data-border="#f5d800" data-glow="rgba(245,216,0,0.4)"></div>
+          <div class="color-option" style="background:#00a848" data-accent="#00a848" data-bg="#002d1b" data-border="#00a848" data-glow="rgba(0,168,72,0.4)"></div>
+          <div class="color-option" style="background:#0066e0" data-accent="#0066e0" data-bg="#001d50" data-border="#0066e0" data-glow="rgba(0,102,224,0.4)"></div>
+          <div class="color-option" style="background:#9200e0" data-accent="#9200e0" data-bg="#260045" data-border="#9200e0" data-glow="rgba(146,0,224,0.4)"></div>
+          <div class="color-option" style="background:#444;border:2px solid #666" data-accent="#aaa" data-bg="#333333" data-border="#aaa" data-glow="rgba(170,170,170,0.4)"></div>
+        </div>
+        <div class="color-btn round-btn top-btn" id="color-btn"></div>
+      </div>
+    </div>
+    <div id="camping-btn" class="round-btn bottom-btn">!</div>
+    <div id="disco-btn" class="round-btn bottom-btn">
+      <svg width="120" height="120" viewBox="-1 -1 26 26" fill="none" stroke="#fff" stroke-width="1.2" stroke-linecap="round"><defs><clipPath id="dbc"><circle cx="12" cy="12" r="9"/></clipPath></defs><circle cx="12" cy="12" r="9"/><line x1="12" y1="0" x2="12" y2="3"/><g clip-path="url(#dbc)"><line x1="3" y1="8" x2="21" y2="8"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="16" x2="21" y2="16"/><line x1="8" y1="3" x2="8" y2="21"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="16" y1="3" x2="16" y2="21"/></g><circle cx="1" cy="6" r="1" fill="#fff" stroke="none"/><circle cx="23" cy="6" r="1" fill="#fff" stroke="none"/><circle cx="0" cy="17" r="0.8" fill="#fff" stroke="none"/><circle cx="24" cy="17" r="0.8" fill="#fff" stroke="none"/></svg>
+    </div>
+    <div id="fs-btn" class="round-btn bottom-btn">
+      <svg width="82" height="82" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+    </div>
+    <div id="settings-btn" class="round-btn bottom-btn" aria-label="Réglages">
+      <svg width="98" height="98" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.92 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.31.49 1 1.51 1H21a2 2 0 1 1 0 4h-.09c-1.02 0-1.37.69-1.51 1z"/></svg>
+    </div>
+  </div>
+
 </div>
 </div>
 <script>
 let accentColor = '#eb0028', accentBg = '#4b000e', accentBorder = '#eb0028';
 
-const SHEET_ID_PROD = '1Vovax0HOLgo6ktqchvsajUFLejK-K_oq1tNC1s8E1VE'; // Rampage 2026 - Timetable
-const SHEET_ID_TEST = '1z1sxHzhJWjWlyTdjYGRn1UBuFW8GnauAjQbJeL-3V38'; // Rampage 2026 - TEST
+const SHEET_ID_PROD = '1Vovax0HOLgo6ktqchvsajUFLejK-K_oq1tNC1s8E1VE';
+const SHEET_ID_TEST = '1z1sxHzhJWjWlyTdjYGRn1UBuFW8GnauAjQbJeL-3V38';
 const SHEET_ID = location.hostname.endsWith('github.io') ? SHEET_ID_PROD : SHEET_ID_TEST;
 let overrides = {};
 let discoMode = false;
@@ -243,6 +477,205 @@ let discoHours = { start: 25, end: 29 };
 let infoData = {};
 let discoStyles = {};
 let currentLang = 'fr';
+let normalDayKey = 'jeudi';
+let discoDayKey = 'vendredi';
+let campingDayKey = 'jeudi';
+
+const DAY_KEYS = ['jeudi', 'vendredi', 'samedi', 'dimanche'];
+const FESTIVAL_DAYS = { 2: 'jeudi', 3: 'vendredi', 4: 'samedi', 5: 'dimanche' };
+const DISCO_DAYS = { 3: 'vendredi', 4: 'samedi', 5: 'dimanche' };
+const DISCO_NIGHT_DAYS = { 4: 'vendredi', 5: 'samedi', 6: 'dimanche' };
+const DISCO_STAGE_META = {
+  DiscoR: { cssClass: 'act-disco-r', color: '#e63939', labels: { fr: 'ROUGE', en: 'RED', zh: '红' } },
+  DiscoB: { cssClass: 'act-disco-b', color: '#3399ff', labels: { fr: 'BLEU',  en: 'BLUE', zh: '蓝' } },
+  DiscoG: { cssClass: 'act-disco-g', color: '#00c853', labels: { fr: 'VERT',  en: 'GREEN', zh: '绿' } },
+};
+const FAVS_KEY = 'favs';
+const TIMELINE_GAP = 3;
+const REFRESH_MS = 15 * 60 * 1000;
+const $ = id => document.getElementById(id);
+
+function getStoredArray(key) {
+  try {
+    const value = JSON.parse(localStorage.getItem(key));
+    return Array.isArray(value) ? value : [];
+  } catch(e) {
+    return [];
+  }
+}
+
+function getFavs() {
+  return getStoredArray(FAVS_KEY);
+}
+
+function saveFavs(favs) {
+  localStorage.setItem(FAVS_KEY, JSON.stringify(favs));
+}
+
+function setThemeVars() {
+  [document.documentElement, document.body, $('scaler')].filter(Boolean).forEach(el => {
+    el.style.setProperty('--accent', accentColor);
+    el.style.setProperty('--accent-bg', accentBg);
+    el.style.setProperty('--accent-border', accentBorder);
+  });
+}
+
+function paintThemedButtons() {
+  ['fs-btn', 'settings-btn'].forEach(id => {
+    const btn = $(id);
+    if (btn) btn.style.background = accentBg;
+  });
+  updateDiscoBtn();
+  updateCampingBtn();
+}
+
+function getJuly2026Day(cutoffHour, dayMap, fallback = null) {
+  const now = getNow();
+  const d = new Date(now);
+  if (now.getHours() < cutoffHour) d.setDate(d.getDate() - 1);
+  if (d.getFullYear() !== 2026 || d.getMonth() !== 6) return fallback;
+  return dayMap[d.getDate()] || fallback;
+}
+
+function activeDateKey() {
+  return 'date' + currentLang.charAt(0).toUpperCase() + currentLang.slice(1);
+}
+
+function setScheduleGrid(stageRow, tl, gridCols) {
+  stageRow.style.gridTemplateColumns = gridCols;
+  tl.style.gridTemplateColumns = gridCols;
+}
+
+function removeTimelineContent(tl) {
+  tl.querySelectorAll('.stage-col, #now-line').forEach(el => el.remove());
+}
+
+function clearSchedule(stageRow, axis, tl) {
+  stageRow.innerHTML = '';
+  axis.innerHTML = '';
+  removeTimelineContent(tl);
+}
+
+function swapSchedule(stageRow, axis, tl, stageFrag, axisFrag, timelineFrag) {
+  stageRow.innerHTML = '';
+  stageRow.appendChild(stageFrag);
+  axis.innerHTML = '';
+  axis.appendChild(axisFrag);
+  removeTimelineContent(tl);
+  tl.appendChild(timelineFrag);
+}
+
+function buildStageHeader(name, sub = '', color = accentColor, subColor = '') {
+  const d = document.createElement('div');
+  d.className = 'stage-header';
+  d.style.borderTopColor = color;
+  const subStyle = subColor ? ` style="color:${subColor}"` : '';
+  d.innerHTML = `<div class="sh-name" style="color:${color}">${escapeHTML(name)}</div>${sub ? `<div class="sh-sub"${subStyle}>${escapeHTML(sub)}</div>` : ''}`;
+  return d;
+}
+
+function buildStageHeaderFragment(stages, headerBuilder) {
+  const frag = document.createDocumentFragment();
+  frag.appendChild(document.createElement('div'));
+  stages.forEach(stage => frag.appendChild(headerBuilder(stage)));
+  return frag;
+}
+
+function buildAxisFragment(startHour, endHour) {
+  const totalMin = (endHour - startHour) * 60;
+  const frag = document.createDocumentFragment();
+  for (let h = startHour; h <= endHour; h++) {
+    const span = document.createElement('span');
+    span.className = 'tick-label';
+    span.textContent = fmtH(h);
+    span.style.top = (((h - startHour) * 60 / totalMin) * 100) + '%';
+    frag.appendChild(span);
+  }
+  return frag;
+}
+
+function positionAct(div, start, end, startHour, endHour) {
+  const totalMin = (endHour - startHour) * 60;
+  const topPct = ((start - startHour) * 60 / totalMin) * 100;
+  const heightPct = ((end - start) * 60 / totalMin) * 100;
+  div.style.top = topPct + '%';
+  div.style.height = `calc(${heightPct}% - ${TIMELINE_GAP}px)`;
+}
+
+function getActsFromOverrides(dayKey, stageName, entries = Object.entries(overrides)) {
+  return entries
+    .reduce((list, [key, ov]) => {
+      const [d, stage, startStr] = key.split('|');
+      if (d !== dayKey || stage !== stageName) return list;
+      const start = parseFloat(startStr);
+      if (!Number.isFinite(start)) return list;
+      list.push({ name: ov.name || '', start, end: typeof ov.end === 'number' ? ov.end : start + 1 });
+      return list;
+    }, [])
+    .sort((a, b) => a.start - b.start);
+}
+
+function discoActColor(div) {
+  if (div.classList.contains('act-disco-r')) return DISCO_STAGE_META.DiscoR.color;
+  if (div.classList.contains('act-disco-b')) return DISCO_STAGE_META.DiscoB.color;
+  if (div.classList.contains('act-disco-g')) return DISCO_STAGE_META.DiscoG.color;
+  return null;
+}
+
+function isLockedRuneRaveAct(div) {
+  return div.querySelector('.act-name')?.textContent.trim() === 'RuneScape Rave'
+      && !document.body.classList.contains('runescape-active')
+      && !document.body.classList.contains('runescape-unlocked');
+}
+
+function setNormalSelectedActStyle(div) {
+  clearNormalSelectedActStyle(div);
+  if (isLockedRuneRaveAct(div)) {
+    div.style.setProperty('--accent', '#fff');
+    div.style.setProperty('--accent-bg', '#555');
+    div.style.setProperty('--accent-border', '#fff');
+    div.style.setProperty('background', '#555', 'important');
+    div.style.setProperty('border-left-color', '#fff', 'important');
+    div.style.setProperty('border-top-color', '#2a2a2a', 'important');
+    return;
+  }
+  div.style.setProperty('--accent', accentColor);
+  div.style.setProperty('--accent-bg', accentBg);
+  div.style.setProperty('--accent-border', accentBorder);
+  div.style.setProperty('background', accentBg, 'important');
+  div.style.setProperty('border-left-color', accentBorder, 'important');
+  div.style.setProperty('border-top-color', '#2a2a2a', 'important');
+}
+
+function clearNormalSelectedActStyle(div) {
+  div.style.removeProperty('--accent-bg');
+  div.style.removeProperty('--accent-border');
+  div.style.removeProperty('--accent');
+  div.style.removeProperty('background');
+  div.style.removeProperty('border-left-color');
+  div.style.removeProperty('border-top-color');
+}
+
+function applySavedFavorite(div, favs, mode = 'normal') {
+  if (!favs.includes(div.id)) return;
+  div.classList.add('selected');
+  if (mode === 'disco') return;
+
+  setNormalSelectedActStyle(div);
+}
+
+function createActElement({ id, name, start, end, className = 'act', borderLeftColor = '', favs = [], favMode = 'normal' }) {
+  const div = document.createElement('div');
+  div.id = id;
+  div.className = className;
+  div.dataset.start = start;
+  div.dataset.end = end;
+  if (borderLeftColor) div.style.borderLeftColor = borderLeftColor;
+  div.innerHTML = `${createActNameHTML(name)}${(end - start) >= 0.5 ? `<div class="act-time">${fmtH(start)} – ${fmtH(end)}</div>` : ''}`;
+  applySavedFavorite(div, favs, favMode);
+  addActBehavior(div);
+  return div;
+}
 
 function parseCSVRow(row) {
   const result = [];
@@ -329,6 +762,7 @@ async function loadOverrides() {
     const tid = setTimeout(() => ctrl.abort(), 5000);
     const res = await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv`, { signal: ctrl.signal });
     clearTimeout(tid);
+    if (!res.ok) throw new Error(res.status);
     const text = await res.text();
     overrides = parseOverridesFromCsv(text);
   } catch (e) {
@@ -338,251 +772,53 @@ async function loadOverrides() {
   return overrides;
 }
 
+const easter = (opacity, accent, bg, border, glow, opts = {}) => ({ opacity, accent, bg, border, glow, ...opts });
 const EASTER_EVENTS = {
-  shrek:     { img: 'shrek.png',     opacity: '0.50', accent: '#3d9e3d', bg: '#0d1f0d', border: '#3d9e3d', glow: 'rgba(61,158,61,0.4)',   comic: true,  triggers: [{h:0, m:0,  endH:0, endM:1}] },
-  alien:     { img: 'alien.png',     opacity: '0.70', accent: '#9200e0', bg: '#260045', border: '#9200e0', glow: 'rgba(146,0,224,0.4)', comic: true,  triggers: [{h:4, m:20, endH:4, endM:21},{h:16,m:20,endH:16,endM:21}] },
-  fr:        { img: 'fr.png',        opacity: '0.80', accent: '#0055a4', bg: '#001833', border: '#0055a4', glow: 'rgba(0,85,164,0.4)',   comic: false, triggers: [] },
-  en:        { img: 'en.png',        opacity: '0.70', accent: '#cf142b', bg: '#3d0008', border: '#cf142b', glow: 'rgba(207,20,43,0.4)',  comic: false, triggers: [{h:2, m:0, endH:2, endM:1},{h:3, m:0, endH:3, endM:1},{h:4, m:0, endH:4, endM:1}] },
-  zh:        { img: 'zh.png',        opacity: '0.70', accent: '#eb0028', bg: '#4b000e', border: '#eb0028', glow: 'rgba(235,0,40,0.4)',   comic: false, triggers: [] },
-  disco:     { img: 'disco.png',     opacity: '0.24', accent: '#ffffff', bg: '#1a1a1a', border: '#ffffff', glow: 'rgba(255,255,255,0.15)', comic: false, blackBg: true, activeDates: ['2026-07-04','2026-07-05','2026-07-06'], triggers: [] },
-  runescape: { img: 'runescape.png', opacity: '0.80', accent: '#c8a94e', bg: '#3a2800', border: '#c8a94e', glow: 'rgba(200,169,78,0.4)',  comic: true, activeDates: ['2026-07-03'], triggers: [{h:16, m:0, endH:17, endM:0}] },
+  shrek: easter('0.50', '#3d9e3d', '#0d1f0d', '#3d9e3d', 'rgba(61,158,61,0.4)', { comic: true, triggers: [{h:0, m:0, endH:0, endM:1}] }),
+  alien: easter('0.70', '#9200e0', '#260045', '#9200e0', 'rgba(146,0,224,0.4)', { comic: true, triggers: [{h:4, m:20, endH:4, endM:21},{h:16,m:20,endH:16,endM:21}] }),
+  fr: easter('0.80', '#0055a4', '#001833', '#0055a4', 'rgba(0,85,164,0.4)', { triggers: [] }),
+  en: easter('0.70', '#cf142b', '#3d0008', '#cf142b', 'rgba(207,20,43,0.4)', { triggers: [{h:2, m:0, endH:2, endM:1},{h:3, m:0, endH:3, endM:1},{h:4, m:0, endH:4, endM:1}] }),
+  zh: easter('0.70', '#eb0028', '#4b000e', '#eb0028', 'rgba(235,0,40,0.4)', { triggers: [] }),
+  disco: easter('0.24', '#ffffff', '#1a1a1a', '#ffffff', 'rgba(255,255,255,0.15)', { blackBg: true, activeDates: ['2026-07-04','2026-07-05','2026-07-06'], triggers: [] }),
+  runescape: easter('0.80', '#c8a94e', '#3a2800', '#c8a94e', 'rgba(200,169,78,0.4)', { comic: true, activeDates: ['2026-07-03'], triggers: [{h:16, m:0, endH:17, endM:0}] }),
 };
 
+function makeDay(startHour, endHour, stages) {
+  return {
+    gridCols: `60px ${'1fr '.repeat(stages.length).trim()}`,
+    startHour,
+    endHour,
+    stages: stages.map(([name, sub = '']) => ({ name, sub }))
+  };
+}
+
 const DAYS = {
-  jeudi: {
-    gridCols: '60px 1fr 1fr 1fr',
-    startHour: 18, endHour: 25,
-    stages: [
-      { name: 'Dome', sub: 'By Radar', acts: [
-        { name: 'MÆDM', start: 18, end: 19 },
-        { name: 'Gracie van Brunt', start: 19, end: 20 },
-        { name: 'Maze', start: 20, end: 21 },
-        { name: 'T & Sugah', start: 21, end: 22 },
-        { name: 'Murdock b2b Riot Ten', start: 22, end: 23 },
-        { name: 'Captain Bass', start: 23, end: 24 },
-        { name: 'Macky Gee', start: 24, end: 25 },
-      ]},
-      { name: 'Church', sub: '', acts: [
-        { name: 'LeZed B2B MixSaj', start: 18, end: 19.5 },
-        { name: 'Ondulada b2b Rune Evens', start: 19.5, end: 21 },
-        { name: 'KAAI', start: 21, end: 22.5 },
-        { name: 'Volunt Barbati', start: 22.5, end: 24 },
-        { name: 'Burr Oak', start: 24, end: 25 },
-      ]},
-      { name: 'Tunnel', sub: 'Dubstep NL × Space Invaderz', acts: [
-        { name: 'Atex b2b Chenzo b2b TwoPhazed', start: 18, end: 19 },
-        { name: 'Ricky West', start: 19, end: 20 },
-        { name: 'Claybrook', start: 20, end: 21 },
-        { name: 'Obey', start: 21, end: 22 },
-        { name: 'Bommer', start: 22, end: 23 },
-        { name: 'Automhate', start: 23, end: 24 },
-        { name: 'Tape B', start: 24, end: 25 },
-      ]},
-    ]
-  },
-  vendredi: {
-    gridCols: '60px 1fr 1fr 1fr 1fr 1fr',
-    startHour: 14, endHour: 25,
-    stages: [
-      { name: 'Mainstage', sub: 'By MHITR', acts: [
-        { name: 'EXCEPTION', start: 14, end: 15 },
-        { name: 'BOUJEE BASS: ACP b2b Noir b2b VDV', start: 15, end: 16 },
-        { name: 'FM6 6 deck set', start: 16, end: 17 },
-        { name: 'Arcando b2b Primate', start: 17, end: 18 },
-        { name: 'Turno presents Gametime', start: 18, end: 19 },
-        { name: 'Jessica Audiffred b2b Riot Ten', start: 19, end: 20 },
-        { name: 'A Little Sound', start: 20, end: 21 },
-        { name: 'Camo & Krooked', start: 21, end: 22 },
-        { name: 'USED', start: 22, end: 23 },
-        { name: 'Hedex & Eksman', start: 23, end: 24 },
-        { name: 'Slander b2b NGHTMRE', start: 24, end: 25 },
-      ]},
-      { name: 'Dome', sub: 'By RUN', acts: [
-        { name: 'Kyli b2b Construktiv', start: 14, end: 15 },
-        { name: 'Abyssal vs Midas Touch', start: 15, end: 16 },
-        { name: 'Detrix b2b Miscall', start: 16, end: 17 },
-        { name: 'Atmos b2b Latte', start: 17, end: 18 },
-        { name: 'Natty Lou b2b Titan', start: 18, end: 19 },
-        { name: 'SubSonic', start: 19, end: 20 },
-        { name: 'S.P.Y', start: 20, end: 21 },
-        { name: 'Distorted Minds', start: 21, end: 22 },
-        { name: 'Aeonmode b2b ShockOne', start: 22, end: 23 },
-        { name: 'Mefjus', start: 23, end: 24 },
-        { name: 'Black Sun Empire', start: 24, end: 25 },
-      ]},
-      { name: 'Storm', sub: 'By DMZ', acts: [
-        { name: 'SYNLDN: Baitz b2b SiKora', start: 14, end: 15 },
-        { name: 'KAGURA', start: 15, end: 16 },
-        { name: 'iityx b2b Ophion', start: 16, end: 17 },
-        { name: 'Dr.Ushuu b2b Madcore', start: 17, end: 18 },
-        { name: 'DMZ News Official & SweetTooth', start: 18, end: 19 },
-        { name: 'Shockone Dubstep set', start: 19, end: 20 },
-        { name: 'Blanke', start: 20, end: 21 },
-        { name: 'Muerte b2b Stoned Level', start: 21, end: 22 },
-        { name: 'Barely Alive b2b Kompany', start: 22, end: 23 },
-        { name: 'Midnight Tyrannosaurus', start: 23, end: 24 },
-      ]},
-      { name: 'Church', sub: 'By Vision', acts: [
-        { name: 'Groningen Soundsystem (BANOOZLED / DEETS / S.MAZE / SACHIKO / SEVEN-…)', start: 15, end: 17 },
-        { name: 'Sorza', start: 17, end: 18 },
-        { name: 'ɒi|uႱ ɘǫiɒꟼ', start: 18, end: 19 },
-        { name: 'Syzy', start: 19, end: 20 },
-        { name: 'Thys', start: 20, end: 21 },
-        { name: 'Ivy Lab Farewell Tour', start: 21, end: 22 },
-        { name: 'Zeke Beats', start: 22, end: 23 },
-        { name: 'Jon Casey', start: 23, end: 24 },
-        { name: 'Audio', start: 24, end: 25 },
-      ]},
-      { name: 'Tunnel', sub: 'By Vissa', acts: [
-        { name: 'Jetyx', start: 14, end: 15 },
-        { name: 'DEXX', start: 15, end: 16 },
-        { name: 'RuneScape Rave', start: 16, end: 17 },
-        { name: 'Crumb Pit', start: 17, end: 18 },
-        { name: 'Explorers of the Internet', start: 18, end: 19 },
-        { name: 'Unicorn On Ketamine', start: 19, end: 20 },
-        { name: 'GPF', start: 20, end: 21 },
-        { name: 'Audio', start: 21, end: 22 },
-        { name: 'Gladde Paling', start: 22, end: 23 },
-        { name: 'Dr Donk pres. ZAAGSTEP', start: 23, end: 24 },
-        { name: 'MEGA B2B', start: 24, end: 25 },
-      ]},
-    ]
-  },
-  samedi: {
-    gridCols: '60px 1fr 1fr 1fr 1fr 1fr',
-    startHour: 14, endHour: 25,
-    stages: [
-      { name: 'Mainstage', sub: 'By Rampage Recordings', acts: [
-        { name: 'Loboski', start: 14, end: 15 },
-        { name: 'V.O.E', start: 15, end: 16 },
-        { name: 'Freaks & Geeks', start: 16, end: 17 },
-        { name: 'PIRAPUS PRESENTS: FUTURE', start: 17, end: 18 },
-        { name: 'San Holo (Wholesome Riddim)', start: 18, end: 19 },
-        { name: 'Murdock', start: 19, end: 20 },
-        { name: 'Modestep', start: 20, end: 21 },
-        { name: 'KOVEN', start: 21, end: 22 },
-        { name: 'A.M.C ft Phantom', start: 22, end: 23 },
-        { name: 'Mozey', start: 23, end: 24 },
-        { name: 'Kanine b2b Sota', start: 24, end: 25 },
-      ]},
-      { name: 'Dome', sub: 'By Crucast', acts: [
-        { name: 'Fynesse', start: 14, end: 14.5 },
-        { name: 'X-ESS', start: 14.5, end: 15 },
-        { name: '3 After Midnight', start: 15, end: 16 },
-        { name: 'VDV', start: 16, end: 17 },
-        { name: 'Anticipate b2b Lixed b2b Nora', start: 17, end: 18 },
-        { name: 'Sub Zero', start: 18, end: 19 },
-        { name: 'Harriet Jaxxon', start: 19, end: 20 },
-        { name: 'Logan D b2b T-Lex', start: 20, end: 21 },
-        { name: 'Born On Road', start: 21, end: 22 },
-        { name: 'REAPER', start: 22, end: 23 },
-        { name: 'Gentlemens Club', start: 23, end: 24 },
-        { name: 'Disrupta b2b Skepsis', start: 24, end: 25 },
-      ]},
-      { name: 'Storm', sub: 'By Blacklist', acts: [
-        { name: 'Blacklist Showcase Autodrive b2b Sekula', start: 14, end: 16 },
-        { name: 'Elle Rich', start: 16, end: 17 },
-        { name: 'Onara b2b Roi*', start: 17, end: 18 },
-        { name: 'Whales', start: 18, end: 19 },
-        { name: 'Code: Pandorum', start: 19, end: 20 },
-        { name: 'HeSh', start: 20, end: 21 },
-        { name: 'Doctor P.', start: 21, end: 22 },
-        { name: 'Jessica Audiffred', start: 22, end: 23 },
-        { name: 'Nimda', start: 23, end: 24 },
-        { name: 'Space Laces', start: 24, end: 25 },
-      ]},
-      { name: 'Church', sub: 'World Of Drum&Bass 35Y', acts: [
-        { name: 'Fabrict b2b High Roll', start: 15, end: 16 },
-        { name: 'Dub Elements', start: 16, end: 17 },
-        { name: 'Document One', start: 17, end: 18 },
-        { name: 'This Is Inja', start: 18, end: 19 },
-        { name: 'Drumsound & Bassline Smith', start: 19, end: 20 },
-        { name: 'Grooverider', start: 20, end: 21 },
-        { name: 'DJ SS', start: 21, end: 22 },
-        { name: 'Danny Byrd', start: 22, end: 23 },
-        { name: 'Bladerunner b2b DJ Hybrid', start: 23, end: 24 },
-        { name: 'Matrix  Futurebound', start: 24, end: 25 },
-      ]},
-      { name: 'Tunnel', sub: 'By Hardstyle Daily', acts: [
-        { name: 'ARK8', start: 15, end: 16.5 },
-        { name: 'Ecstatic', start: 16.5, end: 17.5 },
-        { name: 'More Kords', start: 17.5, end: 18.5 },
-        { name: 'Cardination', start: 18.5, end: 19.5 },
-        { name: 'Da Tweekaz', start: 19.5, end: 20.5 },
-        { name: 'Hard Driver', start: 20.5, end: 21.5 },
-        { name: 'Audiofreq', start: 21.5, end: 23 },
-        { name: 'Mish', start: 23, end: 24 },
-        { name: '99PRBLMZ', start: 24, end: 25 },
-      ]},
-    ]
-  },
-  dimanche: {
-    gridCols: '60px 1fr 1fr 1fr 1fr 1fr',
-    startHour: 14, endHour: 25,
-    stages: [
-      { name: 'Mainstage', sub: 'By Monstercat', acts: [
-        { name: 'Protostar', start: 14, end: 15 },
-        { name: 'Ultralight AV', start: 15, end: 16 },
-        { name: 'Elipsa', start: 16, end: 17 },
-        { name: 'Cartoon', start: 17, end: 18 },
-        { name: 'Eskei83', start: 18, end: 19 },
-        { name: 'Basstripper Presents: Area Code', start: 19, end: 20 },
-        { name: 'Fox Stevenson DJ Set', start: 20, end: 21 },
-        { name: 'Infekt b2b Samplifire', start: 21, end: 22 },
-        { name: 'Murdock b2b Reaper', start: 22, end: 23 },
-        { name: 'Dirtyphonics', start: 23, end: 24 },
-        { name: 'Sub Focus', start: 24, end: 25 },
-      ]},
-      { name: 'Dome', sub: 'By Club Mozey', acts: [
-        { name: 'Solid State', start: 14, end: 15 },
-        { name: 'Nersha b2b Rendah', start: 15, end: 16 },
-        { name: 'Herbz b2b Jaybee', start: 16, end: 17 },
-        { name: 'Waeys', start: 17, end: 18 },
-        { name: 'Jewelz Blu b2b Sudley', start: 18, end: 19 },
-        { name: 'ACI3 b2b Don Darkoe', start: 19, end: 20 },
-        { name: '[IVY]', start: 20, end: 21 },
-        { name: 'P Money x Whiney', start: 21, end: 22 },
-        { name: 'Circadian', start: 22, end: 23 },
-        { name: 'Lens', start: 23, end: 24 },
-        { name: 'Friction b2b Mozey', start: 24, end: 25 },
-      ]},
-      { name: 'Storm', sub: 'By Dubstep FBI', acts: [
-        { name: 'Dubstep FBI DJ Contest', start: 14, end: 15 },
-        { name: 'Crysomemore b2b Shockwav', start: 15, end: 16 },
-        { name: 'Kerosene b2b Warlord', start: 16, end: 17 },
-        { name: 'Bizo b2b Hammerhead', start: 17, end: 18 },
-        { name: 'Gorilla T', start: 18, end: 19 },
-        { name: 'Ivory', start: 19, end: 20 },
-        { name: 'Shiverz', start: 20, end: 21 },
-        { name: 'Seven Lions', start: 21, end: 22 },
-        { name: 'Hol!', start: 22, end: 23 },
-        { name: 'Eptic', start: 23, end: 24 },
-        { name: 'Virtual Riot', start: 24, end: 25 },
-      ]},
-      { name: 'Church', sub: 'By Ampere Invites', acts: [
-        { name: 'Headspace', start: 15, end: 16 },
-        { name: 'Lauravioli', start: 16, end: 17 },
-        { name: 'Cheyanne Hudson', start: 17, end: 18 },
-        { name: 'Shawiya Tribe', start: 18, end: 19 },
-        { name: 'Dr.Ushuu 140 set', start: 19, end: 20 },
-        { name: 'Die', start: 20, end: 21 },
-        { name: 'Mary Droppinz', start: 21, end: 22 },
-        { name: '33 Below', start: 22, end: 23 },
-        { name: 'IMANU', start: 23, end: 24 },
-        { name: 'Joker', start: 24, end: 25 },
-      ]},
-      { name: 'Tunnel', sub: 'By Unfaced', acts: [
-        { name: 'Venox', start: 14, end: 15 },
-        { name: 'Vespera', start: 15, end: 16 },
-        { name: 'Luna Fields', start: 16, end: 17.5 },
-        { name: 'VIDO', start: 17.5, end: 19 },
-        { name: 'JacidOrex', start: 19, end: 20.5 },
-        { name: 'BYØRN', start: 20.5, end: 22 },
-        { name: 'Creeds', start: 22, end: 23.5 },
-        { name: 'Lena de Roose', start: 23.5, end: 25 },
-      ]},
-    ]
-  }
+  jeudi: makeDay(18, 25, [
+    ['Dome', 'By Radar'],
+    ['Church'],
+    ['Tunnel', 'Dubstep NL × Space Invaderz'],
+  ]),
+  vendredi: makeDay(14, 25, [
+    ['Mainstage', 'By MHITR'],
+    ['Dome', 'By RUN'],
+    ['Storm', 'By DMZ'],
+    ['Church', 'By Vision'],
+    ['Tunnel', 'By Vissa'],
+  ]),
+  samedi: makeDay(14, 25, [
+    ['Mainstage', 'By Rampage Recordings'],
+    ['Dome', 'By Crucast'],
+    ['Storm', 'By Blacklist'],
+    ['Church', 'World Of Drum&Bass 35Y'],
+    ['Tunnel', 'By Hardstyle Daily'],
+  ]),
+  dimanche: makeDay(14, 25, [
+    ['Mainstage', 'By Monstercat'],
+    ['Dome', 'By Club Mozey'],
+    ['Storm', 'By Dubstep FBI'],
+    ['Church', 'By Ampere Invites'],
+    ['Tunnel', 'By Unfaced'],
+  ]),
 };
 
 function getNow() {
@@ -591,6 +827,10 @@ function getNow() {
   const normalized = p.split(':').length === 2 ? p + ':00' : p;
   const d = new Date(normalized);
   return isNaN(d) ? new Date() : d;
+}
+
+function ymd(date) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
 }
 
 function parseTimeStr(str) {
@@ -609,352 +849,300 @@ function fmtH(h) {
   return String(Math.floor(hh)).padStart(2,'0') + ':' + String(totalMin).padStart(2,'0');
 }
 
-function applyActNameClamp(nameEl, heightPx) {
-  const lines = Math.max(1, Math.floor((heightPx - 20 - 18) / 26));
-  nameEl.style.webkitLineClamp = lines;
-}
-
-function showActNameToast(name) {
-  const scaler = document.getElementById('scaler');
-  let toast = document.getElementById('act-name-toast');
-  if (!toast) {
-    toast = document.createElement('div');
-    toast.id = 'act-name-toast';
-    scaler.appendChild(toast);
-  }
-  toast.textContent = name;
-  toast.style.background = accentBg;
-  toast.style.border = `2px solid ${accentColor}`;
-  toast.style.boxShadow = `0 0 28px ${accentColor}, 0 4px 32px rgba(0,0,0,0.6)`;
-  toast.classList.add('visible');
-  clearTimeout(window._actNameToastTimer);
-  window._actNameToastTimer = setTimeout(() => toast.classList.remove('visible'), 2500);
-}
-
 function addActBehavior(div) {
   div.addEventListener('click', () => {
-    const nameEl = div.querySelector('.act-name');
-    if (nameEl && nameEl.scrollHeight > nameEl.clientHeight) {
-      showActNameToast(nameEl.textContent);
-    }
     div.classList.toggle('selected');
-    const sel = div.classList.contains('selected');
-    const isRuneRave = div.querySelector('.act-name')?.textContent.trim() === 'RuneScape Rave'
-                    && !document.body.classList.contains('runescape-active') && !document.body.classList.contains('runescape-unlocked');
-    const isDiscoAct = div.classList.contains('act-disco-r') || div.classList.contains('act-disco-b') || div.classList.contains('act-disco-g');
-    div.style.background = sel ? (isRuneRave ? '#555' : isDiscoAct ? '' : accentBg) : '';
-    if (sel) {
-      div.style.borderLeftColor = isRuneRave ? '#fff' : accentBorder;
+    const selected = div.classList.contains('selected');
+    const discoColor = discoActColor(div);
+
+    if (selected) {
+      if (discoColor) {
+        div.style.background = '';
+        div.style.borderLeftColor = '#fff';
+      } else {
+        setNormalSelectedActStyle(div);
+      }
     } else {
+      clearNormalSelectedActStyle(div);
+      div.style.borderLeftColor = '';
+    }
+
+    if (!selected) {
       const isNow = div.classList.contains('act-now');
       const isFS = document.body.classList.contains('is-fullscreen');
-      const discoColor = div.classList.contains('act-disco-r') ? '#e63939' : div.classList.contains('act-disco-b') ? '#3399ff' : div.classList.contains('act-disco-g') ? '#00c853' : null;
       div.style.borderLeftColor = discoColor || ((isNow && !isFS) ? accentColor : '');
       div.style.borderTopColor = (!discoColor && isNow && !isFS) ? accentColor : '';
     }
-    try {
-      const stored = JSON.parse(localStorage.getItem('favs'));
-      let favs = Array.isArray(stored) ? stored : [];
-      if (sel) favs.push(div.id);
-      else favs = favs.filter(f => f !== div.id);
-      localStorage.setItem('favs', JSON.stringify(favs));
-    } catch(e) {}
+
+    const favs = getFavs();
+    saveFavs(selected ? [...favs, div.id] : favs.filter(f => f !== div.id));
     updateResetBtn();
   });
+}
+
+function escapeHTML(v) {
+  return String(v || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+}
+
+function classifyActName(name) {
+  const words = String(name || '').split(' ');
+  const longest = Math.max(0, ...words.map(w => w.length));
+  if (longest >= 13) return 'name-long-b';
+  if (longest === 12) return 'name-xl';
+  if (longest === 11) return 'name-long';
+  if (longest === 10) return '';
+  if (longest === 9)  return 'name-md';
+  if (longest === 8)  return 'name-semi';
+  if (longest === 7)  return 'name-lg7';
+  return 'name-lg6';
+}
+
+function createActNameHTML(name) {
+  const clean = name === '?' ? '' : String(name || '');
+  const safe  = escapeHTML(clean);
+  const cls   = classifyActName(clean);
+  return `<div class="act-name${cls ? ' ' + cls : ''}" title="${safe}">${safe}</div>`;
 }
 
 function renderDay(dayKey) {
   const day = DAYS[dayKey];
-  const stageRow = document.getElementById('stage-row');
-  const tl = document.getElementById('tl');
-  const axis = document.getElementById('axis');
+  const stageRow = $('stage-row');
+  const tl = $('tl');
+  const axis = $('axis');
+  const favs = getFavs();
+  const overrideEntries = Object.entries(overrides);
 
-  stageRow.innerHTML = '';
-  tl.querySelectorAll('.stage-col').forEach(e => e.remove());
-  axis.innerHTML = '';
+  document.body.classList.remove(...DAY_KEYS.map(d => 'day-' + d));
+  document.body.classList.add('day-' + dayKey);
+  setScheduleGrid(stageRow, tl, day.gridCols);
 
-  stageRow.style.gridTemplateColumns = day.gridCols;
-  tl.style.gridTemplateColumns = day.gridCols;
+  const stageFrag = buildStageHeaderFragment(day.stages, s => buildStageHeader(s.name, s.sub));
+  const axisFrag = buildAxisFragment(day.startHour, day.endHour);
+  const timelineFrag = document.createDocumentFragment();
 
-  stageRow.appendChild(document.createElement('div'));
-  day.stages.forEach(s => {
-    const d = document.createElement('div');
-    d.className = 'stage-header';
-    d.style.borderTopColor = accentColor;
-    d.innerHTML = `<div class="sh-name">${s.name}</div>${s.sub ? `<div class="sh-sub">${s.sub}</div>` : ''}`;
-    d.querySelector('.sh-name').style.color = accentColor;
-    stageRow.appendChild(d);
-  });
+  day.stages.forEach(stage => {
+    const col = document.createElement('div');
+    col.className = 'stage-col';
 
-  requestAnimationFrame(() => {
-    const totalH = tl.clientHeight;
-    const totalMin = (day.endHour - day.startHour) * 60;
-    const pxPerMin = totalH / totalMin;
-    const GAP = 2;
-
-    for (let h = day.startHour; h <= day.endHour; h++) {
-      const minOffset = (h - day.startHour) * 60;
-      const topPx = minOffset * pxPerMin;
-      const span = document.createElement('span');
-      span.className = 'tick-label';
-      span.textContent = fmtH(h);
-      span.style.top = topPx + 'px';
-      axis.appendChild(span);
-    }
-
-    let favs = [];
-    try { const s = JSON.parse(localStorage.getItem('favs')); if (Array.isArray(s)) favs = s; } catch(e) {}
-
-    day.stages.forEach(s => {
-      const col = document.createElement('div');
-      col.className = 'stage-col';
-
-      // Build a local acts array and inject any overrides that refer to times not present in the default schedule
-      const acts = s.acts.slice();
-      Object.keys(overrides).forEach(k => {
-        const parts = k.split('|');
-        if (parts.length !== 3) return;
-        const [d, stageName, startStr] = parts;
-        if (d !== dayKey || stageName !== s.name) return;
-        const startNum = parseFloat(startStr);
-        if (Number.isNaN(startNum)) return;
-        const exists = acts.some(act => Math.abs((act.start || 0) - startNum) < 0.0001);
-        if (!exists) {
-          const ov = overrides[k];
-          const endNum = ov && typeof ov.end === 'number' ? ov.end : (startNum + 1);
-          acts.push({ name: (ov && ov.name) || '', start: startNum, end: endNum });
-        }
+    getActsFromOverrides(dayKey, stage.name, overrideEntries).forEach(act => {
+      const div = createActElement({
+        id: `${dayKey}-${stage.name}-${act.start}`,
+        name: act.name,
+        start: act.start,
+        end: act.end,
+        className: 'act' + (act.name === 'RuneScape Rave' ? ' act-runescape' : ''),
+        favs,
       });
-
-      acts.sort((a,b) => a.start - b.start);
-
-      acts.forEach(a => {
-        const key = `${dayKey}|${s.name}|${a.start}`;
-        const ov = overrides[key];
-        const displayName = ov ? (ov.name || a.name) : a.name;
-        const displayEnd = ov && typeof ov.end === 'number' ? ov.end : a.end;
-
-        const topMin = (a.start - day.startHour) * 60;
-        const durMin = (displayEnd - a.start) * 60;
-        const topPx = topMin * pxPerMin;
-        const heightPx = durMin * pxPerMin - GAP;
-
-        const div = document.createElement('div');
-        div.id = `${dayKey}-${s.name}-${a.start}`;
-        div.className = 'act' + (a.name === 'RuneScape Rave' ? ' act-runescape' : '');
-        if (favs.includes(div.id)) {
-          div.classList.add('selected');
-          const isRR = a.name === 'RuneScape Rave' && !document.body.classList.contains('runescape-active') && !document.body.classList.contains('runescape-unlocked');
-          div.style.background = isRR ? '#555' : accentBg;
-          div.style.borderLeftColor = isRR ? '#fff' : accentBorder;
-        }
-        div.dataset.start = a.start;
-        div.dataset.end = displayEnd;
-        div.style.top = topPx + 'px';
-        div.style.height = heightPx + 'px';
-        div.innerHTML = `<div class="act-name">${displayName === '?' ? '' : displayName}</div><div class="act-time">${fmtH(a.start)} – ${fmtH(displayEnd)}</div>`;
-        applyActNameClamp(div.querySelector('.act-name'), heightPx);
-        addActBehavior(div);
-        col.appendChild(div);
-      });
-
-      tl.appendChild(col);
+      positionAct(div, act.start, act.end, day.startHour, day.endHour);
+      col.appendChild(div);
     });
 
-    updateNowLine();
-
-    updateResetBtn();
+    timelineFrag.appendChild(col);
   });
+
+  swapSchedule(stageRow, axis, tl, stageFrag, axisFrag, timelineFrag);
+  updateNowLine();
+  updateResetBtn();
 }
 
 function getDiscoActs(dayKey) {
   const result = { DiscoR: [], DiscoB: [], DiscoG: [] };
-  Object.keys(overrides).forEach(key => {
+
+  Object.entries(overrides).forEach(([key, ov]) => {
     const [d, stage, startStr] = key.split('|');
     if (d !== dayKey) return;
+
     const norm = stage.toLowerCase();
-    if (norm !== 'discor' && norm !== 'discob' && norm !== 'discog') return;
-    const bucket = norm === 'discor' ? 'DiscoR' : norm === 'discob' ? 'DiscoB' : 'DiscoG';
-    const ov = overrides[key];
+    const bucket = norm === 'discor' ? 'DiscoR' : norm === 'discob' ? 'DiscoB' : norm === 'discog' ? 'DiscoG' : null;
+    if (!bucket) return;
+
     const rawStart = parseFloat(startStr);
-    const start = rawStart < 6 ? rawStart + 24 : rawStart;
+    if (!Number.isFinite(rawStart)) return;
     const rawEnd = typeof ov.end === 'number' ? ov.end : rawStart + 1;
-    const end = rawEnd < 6 ? rawEnd + 24 : rawEnd;
-    result[bucket].push({ name: ov.name || '', start, end });
+    result[bucket].push({
+      name: ov.name || '',
+      start: rawStart < 6 ? rawStart + 24 : rawStart,
+      end: rawEnd < 6 ? rawEnd + 24 : rawEnd,
+    });
   });
-  result.DiscoR.sort((a, b) => a.start - b.start);
-  result.DiscoB.sort((a, b) => a.start - b.start);
-  result.DiscoG.sort((a, b) => a.start - b.start);
+
+  Object.values(result).forEach(list => list.sort((a, b) => a.start - b.start));
   return result;
 }
 
 function renderDisco(dayKey) {
   const acts = getDiscoActs(dayKey);
-
-  const stageRow = document.getElementById('stage-row');
-  const tl       = document.getElementById('tl');
-  const axis     = document.getElementById('axis');
-
-  stageRow.innerHTML = '';
-  tl.querySelectorAll('.stage-col, #now-line').forEach(e => e.remove());
-  axis.innerHTML = '';
-
+  const stageRow = $('stage-row');
+  const tl = $('tl');
+  const axis = $('axis');
+  const favs = getFavs();
   const dayStyles = discoStyles[dayKey] || {};
-  const ALL_STAGES = [
-    { key: 'DiscoR', cssClass: 'act-disco-r', label: currentLang === 'zh' ? '红' : currentLang === 'en' ? 'RED'   : 'ROUGE', color: '#e63939', style: dayStyles['DiscoR'] || '' },
-    { key: 'DiscoB', cssClass: 'act-disco-b', label: currentLang === 'zh' ? '蓝' : currentLang === 'en' ? 'BLUE'  : 'BLEU',  color: '#3399ff', style: dayStyles['DiscoB'] || '' },
-    { key: 'DiscoG', cssClass: 'act-disco-g', label: currentLang === 'zh' ? '绿' : currentLang === 'en' ? 'GREEN' : 'VERT',  color: '#00c853', style: dayStyles['DiscoG'] || '' },
-  ];
 
-  const DISCO_STAGES = ALL_STAGES.filter(s => acts[s.key].some(a => a.name !== ''));
-  const allActs = DISCO_STAGES.flatMap(s => acts[s.key]);
+  const stages = Object.entries(DISCO_STAGE_META)
+    .map(([key, meta]) => ({ key, ...meta, label: meta.labels[currentLang], style: dayStyles[key] || '' }))
+    .filter(stage => acts[stage.key].some(a => a.name !== ''));
 
-  const colCount = DISCO_STAGES.length;
-  const gridCols = `60px ${'1fr '.repeat(Math.max(colCount, 1)).trim()}`;
-  stageRow.style.gridTemplateColumns = gridCols;
-  tl.style.gridTemplateColumns       = gridCols;
+  const allActs = stages.flatMap(stage => acts[stage.key]);
+  const gridCols = `60px ${'1fr '.repeat(Math.max(stages.length, 1)).trim()}`;
+  setScheduleGrid(stageRow, tl, gridCols);
 
-  stageRow.appendChild(document.createElement('div'));
-  DISCO_STAGES.forEach(s => {
-    const d = document.createElement('div');
-    d.className = 'stage-header';
-    d.style.borderTopColor = s.color;
-    d.innerHTML = `<div class="sh-name" style="color:${s.color}">${s.label}</div>${s.style ? `<div class="sh-sub" style="color:${s.color}">${s.style}</div>` : ''}`;
-    stageRow.appendChild(d);
-  });
-
-  if (!allActs.length) return;
+  const stageFrag = buildStageHeaderFragment(stages, stage => buildStageHeader(stage.label, stage.style, stage.color, stage.color));
+  if (!allActs.length) {
+    clearSchedule(stageRow, axis, tl);
+    stageRow.appendChild(stageFrag);
+    return;
+  }
 
   const startHour = Math.floor(Math.min(...allActs.map(a => a.start)));
-  const endHour   = Math.ceil( Math.max(...allActs.map(a => a.end)));
+  const endHour = Math.ceil(Math.max(...allActs.map(a => a.end)));
   discoHours = { start: startHour, end: endHour };
 
-  requestAnimationFrame(() => {
-    const totalH   = tl.clientHeight;
-    const totalMin = (endHour - startHour) * 60;
-    const pxPerMin = totalH / totalMin;
-    const GAP = 2;
+  const axisFrag = buildAxisFragment(startHour, endHour);
+  const timelineFrag = document.createDocumentFragment();
 
-    for (let h = startHour; h <= endHour; h++) {
-      const span = document.createElement('span');
-      span.className = 'tick-label';
-      span.textContent = fmtH(h);
-      span.style.top = ((h - startHour) * 60 * pxPerMin) + 'px';
-      axis.appendChild(span);
-    }
+  stages.forEach(stage => {
+    const col = document.createElement('div');
+    col.className = 'stage-col';
 
-    let favs = [];
-    try { const s = JSON.parse(localStorage.getItem('favs')); if (Array.isArray(s)) favs = s; } catch(e) {}
-
-    DISCO_STAGES.forEach(s => {
-      const col = document.createElement('div');
-      col.className = 'stage-col';
-      acts[s.key].forEach(a => {
-        if (!a.name) return;
-        const topPx    = (a.start - startHour) * 60 * pxPerMin;
-        const heightPx = (a.end   - a.start)   * 60 * pxPerMin - GAP;
-        const div = document.createElement('div');
-        div.id = `${dayKey}-${s.key}-${a.start}`;
-        div.className = `act ${s.cssClass}`;
-        div.dataset.start = a.start;
-        div.dataset.end   = a.end;
-        div.style.top     = topPx + 'px';
-        div.style.height  = heightPx + 'px';
-        div.style.borderLeftColor = s.color;
-        if (favs.includes(div.id)) {
-          div.classList.add('selected');
-        }
-        div.innerHTML = `<div class="act-name">${a.name === '?' ? '' : a.name}</div><div class="act-time">${fmtH(a.start)} – ${fmtH(a.end)}</div>`;
-        applyActNameClamp(div.querySelector('.act-name'), heightPx);
-        addActBehavior(div);
-        col.appendChild(div);
+    acts[stage.key].forEach(act => {
+      if (!act.name) return;
+      const div = createActElement({
+        id: `${dayKey}-${stage.key}-${act.start}`,
+        name: act.name,
+        start: act.start,
+        end: act.end,
+        className: `act ${stage.cssClass}`,
+        borderLeftColor: stage.color,
+        favs,
+        favMode: 'disco',
       });
-      tl.appendChild(col);
+      positionAct(div, act.start, act.end, startHour, endHour);
+      col.appendChild(div);
     });
 
-    updateNowLine();
-    updateResetBtn();
+    timelineFrag.appendChild(col);
   });
+
+  swapSchedule(stageRow, axis, tl, stageFrag, axisFrag, timelineFrag);
+  updateNowLine();
+  updateResetBtn();
 }
 
 function updateResetBtn() {
-  const btn = document.getElementById('reset-btn');
-  if (!btn) return;
-  try {
-    const favs = JSON.parse(localStorage.getItem('favs'));
-    btn.style.display = Array.isArray(favs) && favs.length > 0 ? 'flex' : 'none';
-  } catch(e) { btn.style.display = 'none'; }
+  const wrap = $('reset-wrap');
+  if (wrap) wrap.style.display = getFavs().length > 0 ? 'block' : 'none';
 }
 
-
 function getCurrentFestivalDay() {
-  const now = getNow();
-  const d = new Date(now);
-  if (now.getHours() < 2) d.setDate(d.getDate() - 1);
-  if (d.getFullYear() !== 2026 || d.getMonth() !== 6) return null;
-  return { 2: 'jeudi', 3: 'vendredi', 4: 'samedi', 5: 'dimanche' }[d.getDate()] || null;
+  return getJuly2026Day(2, FESTIVAL_DAYS, null);
 }
 
 function getDiscoDay() {
+  return getJuly2026Day(6, DISCO_DAYS, 'vendredi');
+}
+
+function getDefaultDay() {
+  return getCurrentFestivalDay() || 'jeudi';
+}
+
+function setActiveDay(day) {
+  document.querySelectorAll('.day-item').forEach(d => {
+    const active = d.dataset.day === day;
+    d.classList.toggle('active', active);
+    if (active) $('current-date').textContent = d.dataset[activeDateKey()] || '';
+  });
+}
+
+function setUtilityButtonState(btn, isActive) {
+  if (!btn) return;
+  btn.style.opacity = isActive ? '1' : '0.85';
+  btn.style.borderColor = isActive ? 'rgba(255,255,255,0.6)' : '#ffffff30';
+  btn.style.background = isActive ? accentBg : '#ffffff12';
+}
+
+function getCurrentInfoDay() {
+  return getJuly2026Day(6, FESTIVAL_DAYS, null);
+}
+
+function isInfoItemActive(item, h) {
+  const start = Number(item && item.start);
+  const end = Number(item && item.end);
+
+  if (!Number.isFinite(start) || !Number.isFinite(end)) return false;
+
+  return start <= h && h < end;
+}
+
+function isSilentDiscoInfoItem(item) {
+  const label = String(item && item.label || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+  return /silent\s*disco/.test(label);
+}
+
+function isInfoCurrentlyActive() {
   const now = getNow();
-  const d = new Date(now);
-  if (now.getHours() < 6) d.setDate(d.getDate() - 1);
-  if (d.getFullYear() !== 2026 || d.getMonth() !== 6) return 'vendredi';
-  const day = { 3: 'vendredi', 4: 'samedi', 5: 'dimanche' }[d.getDate()];
-  return day || 'vendredi';
+  let h = now.getHours() + now.getMinutes() / 60;
+  if (h < 6) h += 24;
+  const dayKey = getCurrentInfoDay();
+  if (!dayKey) return false;
+  const items = infoData[dayKey] || [];
+  return items.some(item => !isSilentDiscoInfoItem(item) && isInfoItemActive(item, h));
+}
+
+function getCurrentDiscoState() {
+  const now = getNow();
+  const active = now.getFullYear() === 2026 && now.getMonth() === 6 && now.getHours() >= 0 && now.getHours() < 6;
+  if (!active) return { active: false, inPeak: false, dayKey: null };
+
+  const dayKey = DISCO_NIGHT_DAYS[now.getDate()] || null;
+  return dayKey ? { active: true, inPeak: true, dayKey } : { active: false, inPeak: false, dayKey: null };
 }
 
 function updateDiscoBtn() {
-  const btn = document.getElementById('disco-btn');
-  if (!btn) return;
-  if (discoMode) { btn.style.display = 'flex'; return; }
-  const now = getNow();
-  const h = now.getHours() + now.getMinutes() / 60;
-  const d = now.getDate(), m = now.getMonth(), y = now.getFullYear();
-  const visible = y === 2026 && m === 6 && (
-    ((d === 4 || d === 5) && h < 6) ||
-    (d === 6 && h < 4.5)
-  );
-  btn.style.display = visible ? 'flex' : 'none';
+  const btn = $('disco-btn');
+  if (!btn) return false;
+  const state = getCurrentDiscoState();
+  document.body.classList.toggle('disco-peak', discoMode && state.inPeak && state.active);
+  setUtilityButtonState(btn, state.active);
+  return state.active;
 }
 
+function updateCampingBtn() {
+  const btn = $('camping-btn');
+  if (!btn) return false;
+  const hasActive = isInfoCurrentlyActive();
+  setUtilityButtonState(btn, hasActive);
+  return hasActive;
+}
 
 function renderCamping(dayKey) {
-  const stageRow = document.getElementById('stage-row');
-  const tl       = document.getElementById('tl');
-  const axis      = document.getElementById('axis');
+  const stageRow = $('stage-row');
+  const tl = $('tl');
+  const axis = $('axis');
+  clearSchedule(stageRow, axis, tl);
+  setScheduleGrid(stageRow, tl, '60px 1fr');
 
-  stageRow.innerHTML = '';
-  tl.querySelectorAll('.stage-col, #now-line').forEach(e => e.remove());
-  axis.innerHTML = '';
-
-  const gridCols = '60px 1fr';
-  stageRow.style.gridTemplateColumns = gridCols;
-  tl.style.gridTemplateColumns = gridCols;
-
-  stageRow.appendChild(document.createElement('div')); // axis placeholder
-  const header = document.createElement('div');
-  header.className = 'stage-header';
-  header.style.borderTopColor = accentColor;
-  header.innerHTML = `<div class="sh-name" style="color:${accentColor}">INFOS</div>`;
-  stageRow.appendChild(header);
+  const stageFrag = buildStageHeaderFragment([{ name: 'INFOS', sub: '' }], s => buildStageHeader(s.name, s.sub));
+  stageRow.appendChild(stageFrag);
 
   const col = document.createElement('div');
-  col.className = 'stage-col';
-  col.style.cssText = 'display:flex;flex-direction:column;gap:14px;padding:16px 0;';
+  col.className = 'stage-col info-col';
 
   const now = getNow();
   let h = now.getHours() + now.getMinutes() / 60;
   if (h < 6) h += 24;
-  const todayKey = getCurrentFestivalDay();
 
+  const todayKey = getCurrentInfoDay();
+  const forceActive = document.body.classList.contains('is-fullscreen');
   (infoData[dayKey] || []).forEach(item => {
-    const isActive = todayKey === dayKey && h >= item.start && (item.end === null || h < item.end);
+    const isActive = forceActive || (todayKey === dayKey && isInfoItemActive(item, h));
     const card = document.createElement('div');
     card.className = 'camping-card' + (isActive ? ' camping-card-active' : '');
     if (isActive) card.style.borderLeftColor = accentColor;
     const timeStr = item.end !== null ? `${fmtH(item.start)} - ${fmtH(item.end)}` : fmtH(item.start);
-    card.innerHTML = `<div class="camping-label">${item.label}</div><div class="camping-time">${timeStr}</div>`;
+    card.innerHTML = `<div class="camping-label">${escapeHTML(item.label)}</div><div class="camping-time">${timeStr}</div>`;
     col.appendChild(card);
   });
 
@@ -962,9 +1150,22 @@ function renderCamping(dayKey) {
   updateResetBtn();
 }
 
+function normalizeFullscreenActBorders() {
+  if (!document.body.classList.contains('is-fullscreen') || discoMode) return;
+  document.querySelectorAll('.act').forEach(act => {
+    if (discoActColor(act)) return;
+    act.style.borderTopColor = '';
+    if (act.classList.contains('selected')) {
+      setNormalSelectedActStyle(act);
+    } else {
+      act.style.borderLeftColor = '';
+    }
+  });
+}
+
 function updateNowLine() {
-  const tl = document.getElementById('tl');
-  const existing = document.getElementById('now-line');
+  const tl = $('tl');
+  const existing = $('now-line');
 
   if (discoMode) {
     const renderedDay = document.querySelector('.day-item.active')?.dataset.day;
@@ -976,9 +1177,11 @@ function updateNowLine() {
       return;
     }
     const now = getNow();
-    let h = now.getHours() + now.getMinutes() / 60;
+    const nd = now.getDate(), nm = now.getMonth(), ny = now.getFullYear(), nh = now.getHours();
+    const inFestival = ny === 2026 && nm === 6 && (((nd === 4 || nd === 5) && nh < 6) || (nd === 6 && nh < 5));
+    let h = nh + now.getMinutes() / 60;
     if (h < 6) h += 24;
-    if (h < discoHours.start || h >= discoHours.end) {
+    if (!inFestival || h < discoHours.start || h >= discoHours.end) {
       if (existing) existing.remove();
       document.querySelectorAll('.act').forEach(act => {
         act.classList.remove('act-now');
@@ -986,16 +1189,18 @@ function updateNowLine() {
       });
       return;
     }
-    const totalH   = tl.clientHeight;
     const totalMin = (discoHours.end - discoHours.start) * 60;
-    const topPx    = ((h - discoHours.start) * 60) / totalMin * totalH;
+    const topPct   = ((h - discoHours.start) * 60) / totalMin * 100;
     const line = existing || document.createElement('div');
     line.id = 'now-line';
     if (!existing) {
-      Object.assign(line.style, { position: 'absolute', left: '0', right: '0', height: '2px', background: 'var(--accent)', boxShadow: '0 0 8px var(--accent)', zIndex: '10', pointerEvents: 'none' });
+      Object.assign(line.style, { position: 'absolute', left: '0', right: '0', height: '4px', background: 'var(--accent)', boxShadow: '0 0 12px var(--accent)', zIndex: '10', pointerEvents: 'none', transform: 'translateY(-50%)' });
       tl.appendChild(line);
     }
-    line.style.top = topPx + 'px';
+    line.style.height = '4px';
+    line.style.transform = 'translateY(-50%)';
+    line.style.boxShadow = '0 0 12px var(--accent)';
+    line.style.top = topPct + '%';
     document.querySelectorAll('.act').forEach(act => {
       const s = parseFloat(act.dataset.start), e = parseFloat(act.dataset.end);
       act.classList.toggle('act-now',  h >= s && h < e);
@@ -1007,9 +1212,8 @@ function updateNowLine() {
   const festivalDay = getCurrentFestivalDay();
   const activeDay = document.querySelector('.day-item.active');
 
-  const dayOrder = ['jeudi', 'vendredi', 'samedi', 'dimanche'];
-  const festivalIdx = festivalDay ? dayOrder.indexOf(festivalDay) : -1;
-  const viewedIdx = activeDay ? dayOrder.indexOf(activeDay.dataset.day) : -1;
+  const festivalIdx = festivalDay ? DAY_KEYS.indexOf(festivalDay) : -1;
+  const viewedIdx = activeDay ? DAY_KEYS.indexOf(activeDay.dataset.day) : -1;
 
   if (festivalDay && viewedIdx < festivalIdx) {
     if (existing) existing.remove();
@@ -1035,22 +1239,24 @@ function updateNowLine() {
     return;
   }
 
-  const totalH = tl.clientHeight;
   const totalMin = (day.endHour - day.startHour) * 60;
-  const topPx = ((h - day.startHour) * 60) / totalMin * totalH;
+  const topPct = ((h - day.startHour) * 60) / totalMin * 100;
 
   const line = existing || document.createElement('div');
   line.id = 'now-line';
   if (!existing) {
     Object.assign(line.style, {
       position: 'absolute', left: '0', right: '0',
-      height: '2px', background: 'var(--accent)',
-      boxShadow: '0 0 8px var(--accent)',
-      zIndex: '10', pointerEvents: 'none'
+      height: '4px', background: 'var(--accent)',
+      boxShadow: '0 0 12px var(--accent)',
+      zIndex: '10', pointerEvents: 'none', transform: 'translateY(-50%)'
     });
     tl.appendChild(line);
   }
-  line.style.top = topPx + 'px';
+  line.style.height = '4px';
+  line.style.transform = 'translateY(-50%)';
+  line.style.boxShadow = '0 0 12px var(--accent)';
+  line.style.top = topPct + '%';
 
   const isFS = document.body.classList.contains('is-fullscreen');
   document.querySelectorAll('.act').forEach(act => {
@@ -1059,41 +1265,48 @@ function updateNowLine() {
     const isNow = h >= s && h < e;
     act.classList.toggle('act-now', isNow);
     act.classList.toggle('act-past', h >= e);
-    act.style.borderLeftColor = (isNow && !isFS) ? accentColor : '';
-    act.style.borderTopColor = (isNow && !isFS) ? accentColor : '';
+    if (act.classList.contains('selected') && !discoActColor(act)) {
+      setNormalSelectedActStyle(act);
+    } else {
+      act.style.borderLeftColor = (isNow && !isFS) ? accentColor : '';
+      act.style.borderTopColor = (isNow && !isFS) ? accentColor : '';
+    }
   });
+  normalizeFullscreenActBorders();
 }
 
 window.addEventListener('load', () => {
   let lang = localStorage.getItem('lang') || 'fr';
   currentLang = lang;
-  let activeDayKey = getCurrentFestivalDay() || 'jeudi';
+  normalDayKey = getDefaultDay();
+  discoDayKey = getDiscoDay();
+  campingDayKey = normalDayKey;
 
   try {
     const saved = JSON.parse(localStorage.getItem('color'));
     if (saved) {
       accentColor = saved.accent; accentBg = saved.bg; accentBorder = saved.border;
-      document.documentElement.style.setProperty('--accent', accentColor);
-      document.documentElement.style.setProperty('--accent-bg', accentBg);
-      document.documentElement.style.setProperty('--accent-border', accentBorder);
+      setThemeVars();
       document.querySelector('.bg-full').style.background = `linear-gradient(to bottom, #0d0d0d 0%, transparent 15%, transparent 85%, #0d0d0d 100%), radial-gradient(ellipse at 50% 50%, ${saved.glow} 0%, #0d0d0d 70%)`;
       document.querySelectorAll('.color-option').forEach(o => o.classList.toggle('current', o.dataset.accent === accentColor));
       document.querySelectorAll('.label').forEach(el => el.style.color = accentColor);
-      const dlEl = document.getElementById('days-left');
+      const dlEl = $('days-left');
       if (dlEl) dlEl.style.color = accentColor;
-      const cb = document.getElementById('color-btn');
+      const cb = $('color-btn');
       if (cb) cb.style.background = accentColor;
+      paintThemedButtons();
     }
   } catch(e) {}
+  setThemeVars();
+  paintThemedButtons();
 
   document.querySelectorAll('.day-item').forEach(el => {
-    el.classList.toggle('active', el.dataset.day === activeDayKey);
+    el.classList.toggle('active', el.dataset.day === normalDayKey);
     el.textContent = el.dataset[lang];
   });
-  const activeDayEl = document.querySelector(`.day-item[data-day="${activeDayKey}"]`);
+  const activeDayEl = document.querySelector(`.day-item[data-day="${normalDayKey}"]`);
   if (activeDayEl) {
-    const dateKey = 'date' + lang.charAt(0).toUpperCase() + lang.slice(1);
-    document.getElementById('current-date').textContent = activeDayEl.dataset[dateKey];
+    $('current-date').textContent = activeDayEl.dataset[activeDateKey()];
   }
   let pageRevealed = false;
   function revealPage() {
@@ -1101,11 +1314,12 @@ window.addEventListener('load', () => {
     pageRevealed = true;
     document.body.style.opacity = '1';
   }
-  setTimeout(revealPage, 800); // fallback si tout prend trop longtemps
+  setTimeout(revealPage, 6500);
 
   loadOverrides().then(() => {
-    renderDay(activeDayKey);
+    renderDay(normalDayKey);
     updateNowLine();
+    updateCampingBtn();
     requestAnimationFrame(() => requestAnimationFrame(() => {
       const fonts = (document.fonts && document.fonts.ready) || Promise.resolve();
       Promise.race([fonts, new Promise(r => setTimeout(r, 300))]).then(revealPage);
@@ -1114,7 +1328,7 @@ window.addEventListener('load', () => {
   if (localStorage.getItem('rs_unlocked')) document.body.classList.add('runescape-unlocked');
 
   function updateDaysLeft() {
-    const el = document.getElementById('days-left');
+    const el = $('days-left');
     if (!el) return;
     const now = getNow();
     const today = new Date(now); today.setHours(0, 0, 0, 0);
@@ -1125,11 +1339,22 @@ window.addEventListener('load', () => {
   }
   updateDaysLeft();
   updateDiscoBtn();
+  updateCampingBtn();
 
-  setInterval(() => { updateNowLine(); updateDiscoBtn(); }, 60000);
+  setInterval(() => { updateNowLine(); updateDiscoBtn(); updateCampingBtn(); }, 60000);
 
-  // Auto-refresh : données jamais plus vieilles que 15 min
-  const REFRESH_MS = 15 * 60 * 1000;
+  const setTitle = title => document.querySelector('.label span').textContent = title;
+  const selectDefaultDay = () => { normalDayKey = getDefaultDay(); setActiveDay(normalDayKey); };
+  const showDefaultDay = () => { selectDefaultDay(); renderDay(normalDayKey); };
+  function stopDisco(renderNormal = true) {
+    discoMode = false;
+    updateDiscoBtn();
+    setTitle('Rampage Open Air 2026');
+    document.body.classList.remove('disco-mode');
+    if (easterActive === 'disco') triggerEaster('disco');
+    if (renderNormal) showDefaultDay();
+  }
+
   localStorage.setItem('lastLoadTime', Date.now());
   setTimeout(() => location.reload(), REFRESH_MS);
   document.addEventListener('visibilitychange', () => {
@@ -1141,18 +1366,27 @@ window.addEventListener('load', () => {
 
   document.querySelectorAll('.day-item').forEach(el => {
     el.addEventListener('click', () => {
-      activeDayKey = el.dataset.day;
-      document.querySelectorAll('.day-item').forEach(d => d.classList.remove('active'));
-      el.classList.add('active');
-      const dateKey = 'date' + lang.charAt(0).toUpperCase() + lang.slice(1);
-      document.getElementById('current-date').textContent = el.dataset[dateKey];
-      if (discoMode) renderDisco(activeDayKey);
-      else if (campingMode) renderCamping(activeDayKey);
-      else renderDay(activeDayKey);
+      const selectedDay = el.dataset.day;
+      if (discoMode) {
+        discoDayKey = selectedDay;
+        setActiveDay(discoDayKey);
+        renderDisco(discoDayKey);
+        return;
+      }
+      if (campingMode) {
+        campingDayKey = selectedDay;
+        setActiveDay(campingDayKey);
+        renderCamping(campingDayKey);
+        return;
+      }
+      normalDayKey = selectedDay;
+      setActiveDay(normalDayKey);
+      renderDay(normalDayKey);
+      updateCampingBtn();
     });
   });
 
-  const langBtn = document.getElementById('lang-btn');
+  const langBtn = $('lang-btn');
   langBtn.textContent = lang.toUpperCase();
   document.body.classList.toggle('lang-zh', lang === 'zh');
   langBtn.addEventListener('click', e => {
@@ -1173,12 +1407,11 @@ window.addEventListener('load', () => {
     });
     const active = document.querySelector('.day-item.active');
     if (active) {
-      const dateKey = 'date' + lang.charAt(0).toUpperCase() + lang.slice(1);
-      document.getElementById('current-date').textContent = active.dataset[dateKey];
+      $('current-date').textContent = active.dataset[activeDateKey()];
     }
     updateDaysLeft();
-    if (discoMode) renderDisco(activeDayKey);
-    else if (campingMode) renderCamping(activeDayKey);
+    if (discoMode) renderDisco(discoDayKey);
+    else if (campingMode) renderCamping(campingDayKey);
   });
 
   let langPressTimer = null, langDidLong = false, manualLangEaster = null;
@@ -1195,78 +1428,56 @@ window.addEventListener('load', () => {
   langBtn.addEventListener('pointerup',     () => clearTimeout(langPressTimer));
   langBtn.addEventListener('pointercancel', () => clearTimeout(langPressTimer));
 
-  const colorBtn = document.getElementById('color-btn');
-  const colorMenu = document.getElementById('color-menu');
+  const colorBtn = $('color-btn');
+  const colorMenu = $('color-menu');
   colorBtn.addEventListener('click', e => {
     e.stopPropagation();
-    colorMenu.style.top = (colorBtn.offsetTop + colorBtn.offsetHeight + 8) + 'px';
     colorMenu.classList.toggle('open');
   });
 
-  const discoBtn = document.getElementById('disco-btn');
-  discoBtn.addEventListener('click', e => {
+  const settingsBtn = $('settings-btn');
+  const bottomBar = $('bottom-bar');
+  settingsBtn.addEventListener('click', e => {
     e.stopPropagation();
-    if (campingMode) {
-      campingMode = false;
-      const cb = document.getElementById('camping-btn');
-      cb.style.opacity = '0.7';
-      cb.style.borderColor = '#ffffff20';
-      cb.style.background  = '#ffffff12';
-    }
-    discoMode = !discoMode;
-    if (discoMode) {
-      discoBtn.style.opacity = '1';
-      discoBtn.style.borderColor = 'rgba(255,255,255,0.6)';
-      discoBtn.style.background  = '#1a1a1a';
-      document.body.classList.add('disco-mode');
-      if (easterActive !== 'disco') triggerEaster('disco');
-      const discoDay = getDiscoDay();
-      activeDayKey = discoDay;
-      document.querySelectorAll('.day-item').forEach(d => {
-        const active = d.dataset.day === discoDay;
-        d.classList.toggle('active', active);
-        if (active) {
-          const dateKey = 'date' + lang.charAt(0).toUpperCase() + lang.slice(1);
-          document.getElementById('current-date').textContent = d.dataset[dateKey] || '';
-        }
-      });
-      document.querySelector('.label span').textContent = 'Silent Disco';
-      renderDisco(activeDayKey);
-    } else {
-      discoBtn.style.opacity = '0.7';
-      discoBtn.style.borderColor = '#ffffff20';
-      discoBtn.style.background  = '#ffffff12';
-      document.querySelector('.label span').textContent = 'Rampage Open Air 2026';
-      document.body.classList.remove('disco-mode');
-      if (easterActive === 'disco') triggerEaster('disco');
-      renderDay(activeDayKey);
-    }
+    const open = bottomBar.classList.toggle('settings-open');
+    settingsBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    $('settings-popover').setAttribute('aria-hidden', open ? 'false' : 'true');
+    if (!open) colorMenu.classList.remove('open');
   });
 
-  const campingBtn = document.getElementById('camping-btn');
+  const discoBtn = $('disco-btn');
+  discoBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    if (campingMode) { campingMode = false; updateCampingBtn(); }
+
+    discoMode = !discoMode;
+    if (!discoMode) { stopDisco(true); return; }
+
+    document.body.classList.add('disco-mode');
+    if (easterActive !== 'disco') triggerEaster('disco');
+    discoDayKey = getDiscoDay();
+    setActiveDay(discoDayKey);
+    setTitle('Silent Disco');
+    renderDisco(discoDayKey);
+    updateDiscoBtn();
+  });
+
+  const campingBtn = $('camping-btn');
   campingBtn.addEventListener('click', e => {
     e.stopPropagation();
-    if (discoMode) {
-      discoMode = false;
-      discoBtn.style.opacity = '0.7';
-      discoBtn.style.borderColor = '#ffffff20';
-      discoBtn.style.background  = '#ffffff12';
-      document.querySelector('.label span').textContent = 'Rampage Open Air 2026';
-      document.body.classList.remove('disco-mode');
-      if (easterActive === 'disco') triggerEaster('disco');
-    }
+    if (discoMode) { stopDisco(false); selectDefaultDay(); updateDiscoBtn(); }
+
     campingMode = !campingMode;
     if (campingMode) {
-      campingBtn.style.opacity = '1';
-      campingBtn.style.borderColor = 'rgba(255,255,255,0.6)';
-      campingBtn.style.background  = '#1a1a1a';
-      renderCamping(activeDayKey);
-    } else {
-      campingBtn.style.opacity = '0.7';
-      campingBtn.style.borderColor = '#ffffff20';
-      campingBtn.style.background  = '#ffffff12';
-      renderDay(activeDayKey);
+      updateCampingBtn();
+      campingDayKey = normalDayKey;
+      setActiveDay(campingDayKey);
+      renderCamping(campingDayKey);
+      return;
     }
+
+    showDefaultDay();
+    updateCampingBtn();
   });
 
   document.addEventListener('click', () => colorMenu.classList.remove('open'));
@@ -1274,19 +1485,8 @@ window.addEventListener('load', () => {
     opt.addEventListener('click', e => {
       e.stopPropagation();
       accentColor = opt.dataset.accent; accentBg = opt.dataset.bg; accentBorder = opt.dataset.border;
-      document.documentElement.style.setProperty('--accent', accentColor);
-      document.documentElement.style.setProperty('--accent-bg', accentBg);
-      document.documentElement.style.setProperty('--accent-border', accentBorder);
       document.querySelector('.bg-full').style.background = `linear-gradient(to bottom, #0d0d0d 0%, transparent 15%, transparent 85%, #0d0d0d 100%), radial-gradient(ellipse at 50% 50%, ${opt.dataset.glow} 0%, #0d0d0d 70%)`;
-      colorBtn.style.background = accentColor;
-      document.querySelectorAll('.label').forEach(el => el.style.color = accentColor);
-      const dlEl = document.getElementById('days-left'); if (dlEl) dlEl.style.color = accentColor;
-      document.querySelectorAll('.sh-name').forEach(el => el.style.color = accentColor);
-      document.querySelectorAll('.stage-header').forEach(el => el.style.borderTopColor = accentColor);
-      document.querySelectorAll('.act.act-now').forEach(el => { if (el.classList.contains('act-disco-r') || el.classList.contains('act-disco-b') || el.classList.contains('act-disco-g')) return; el.style.borderLeftColor = accentColor; el.style.borderTopColor = accentColor; });
-      document.querySelectorAll('.act.selected').forEach(el => { const rr = el.querySelector('.act-name')?.textContent.trim() === 'RuneScape Rave' && !document.body.classList.contains('runescape-active') && !document.body.classList.contains('runescape-unlocked'); el.style.background = rr ? '#555' : accentBg; el.style.borderLeftColor = rr ? '#fff' : accentBorder; });
-      const nl = document.getElementById('now-line');
-      if (nl) { nl.style.background = accentColor; nl.style.boxShadow = `0 0 8px ${accentColor}`; }
+      applyAccentToElements();
       document.querySelectorAll('.color-option').forEach(o => o.classList.remove('current'));
       opt.classList.add('current');
       colorMenu.classList.remove('open');
@@ -1295,29 +1495,88 @@ window.addEventListener('load', () => {
   });
 
   function applyScale() {
-    const scaler = document.getElementById('scaler');
+    const scaler = $('scaler');
     const vw = window.visualViewport ? window.visualViewport.width  : window.innerWidth;
     const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-    const scale = Math.min(vw / 1080, vh / 1920);
+    const baseW = 1080;
+    const baseH = 1920;
+    const isAppFullscreen = document.body.classList.contains('is-fullscreen');
+    const viewportRatio = vw / vh;
+    const designRatio = baseW / baseH;
+
+    let scale;
+    let virtualH = baseH;
+    let left = 0;
+    let top = 0;
+
+    if (isAppFullscreen && viewportRatio < designRatio) {
+      scale = vw / baseW;
+      virtualH = Math.max(baseH, vh / scale);
+      left = 0;
+      top = 0;
+    } else {
+      scale = Math.min(vw / baseW, vh / baseH);
+      virtualH = baseH;
+      left = (vw - baseW * scale) / 2;
+      top = isAppFullscreen ? 0 : (vh - baseH * scale) / 2;
+    }
+
+    const desiredPhysicalTop = isAppFullscreen ? 10 : 0;
+    const desiredPhysicalBottom = isAppFullscreen ? 30 : 0;
+    const topPad = isAppFullscreen
+      ? Math.max(10, Math.min(360, desiredPhysicalTop / Math.max(scale, 0.001)))
+      : 25;
+    const bottomPad = isAppFullscreen
+      ? Math.max(30, Math.min(360, desiredPhysicalBottom / Math.max(scale, 0.001)))
+      : 100;
+
+    const leftPad = isAppFullscreen ? 90 : 62;
+    const rightPad = isAppFullscreen ? 90 : 62;
+
+    const extraHeightRatio = Math.max(0, virtualH / baseH - 1);
+    const textBoost = isAppFullscreen
+      ? Math.max(1.08, Math.min(1.78, 1.08 + extraHeightRatio * 3.0))
+      : 1;
+
+    document.documentElement.style.setProperty('--fs-top-pad', topPad.toFixed(1) + 'px');
+    document.documentElement.style.setProperty('--fs-bottom-pad', bottomPad.toFixed(1) + 'px');
+    document.documentElement.style.setProperty('--fs-left-pad', leftPad.toFixed(1) + 'px');
+    document.documentElement.style.setProperty('--fs-right-pad', rightPad.toFixed(1) + 'px');
+    document.documentElement.style.setProperty('--fs-text-boost', textBoost.toFixed(3));
+
+    scaler.style.width = baseW + 'px';
+    scaler.style.height = virtualH + 'px';
     scaler.style.transform = `scale(${scale})`;
-    scaler.style.left = ((vw - 1080 * scale) / 2) + 'px';
-    scaler.style.top  = ((vh - 1920 * scale) / 2) + 'px';
+    scaler.style.left = left + 'px';
+    scaler.style.top  = top + 'px';
   }
+
+  function refreshFullscreenState() {
+    updateEasterVisualBoost();
+    if (campingMode) renderCamping(campingDayKey);
+    else updateNowLine();
+    normalizeFullscreenActBorders();
+  }
+
+  let responsiveLayoutRAF = 0;
+  function queueResponsiveLayout() {
+    cancelAnimationFrame(responsiveLayoutRAF);
+    responsiveLayoutRAF = requestAnimationFrame(applyScale);
+  }
+
   applyScale();
-  window.addEventListener('resize', applyScale);
-  if (window.visualViewport) window.visualViewport.addEventListener('resize', applyScale);
+  window.addEventListener('resize', queueResponsiveLayout);
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', queueResponsiveLayout);
 
-  const fsBtn = document.getElementById('fs-btn');
-  const rightPanel = document.getElementById('right-panel');
-
+  const fsBtn = $('fs-btn');
   let appFS = false;
 
   function enterFS() {
     appFS = true;
     document.body.classList.add('is-fullscreen');
-    rightPanel.style.visibility = 'hidden';
     applyScale();
-    updateNowLine();
+    refreshFullscreenState();
+    applyAccentToElements();
     document.addEventListener('click', exitOnClick);
     const el = document.documentElement;
     const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen;
@@ -1327,9 +1586,9 @@ window.addEventListener('load', () => {
   function leaveFS() {
     appFS = false;
     document.body.classList.remove('is-fullscreen');
-    rightPanel.style.visibility = 'visible';
     applyScale();
-    updateNowLine();
+    refreshFullscreenState();
+    applyAccentToElements();
     document.removeEventListener('click', exitOnClick);
     const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen;
     if (exit && (document.fullscreenElement || document.webkitFullscreenElement)) exit.call(document).catch(() => {});
@@ -1347,8 +1606,8 @@ window.addEventListener('load', () => {
   document.addEventListener('fullscreenchange', onFSChange);
   document.addEventListener('webkitfullscreenchange', onFSChange);
 
-  const resetBtn = document.getElementById('reset-btn');
-  const resetLabel = document.getElementById('reset-label');
+  const resetBtn = $('reset-btn');
+  const resetLabel = $('reset-label');
   let resetStep = 0, resetTimer = null;
   const resetDeactivate = () => {
     resetStep = 0;
@@ -1378,30 +1637,42 @@ window.addEventListener('load', () => {
       document.body.classList.remove('runescape-unlocked');
       document.querySelectorAll('.act.selected').forEach(el => {
         el.classList.remove('selected');
-        el.style.background = '';
+        clearNormalSelectedActStyle(el);
         el.style.borderLeftColor = '';
       });
-      resetBtn.style.display = 'none';
+      updateResetBtn();
     }
   });
 
   let easterActive = null;
   let preEasterState = null;
+  const boostedEasterEvents = new Set(['shrek', 'alien', 'runescape', 'fr', 'en', 'zh']);
+
+  function updateEasterVisualBoost() {
+    document.body.classList.toggle(
+      'easter-visual-boost',
+      document.body.classList.contains('is-fullscreen') && boostedEasterEvents.has(easterActive)
+    );
+  }
 
   function applyAccentToElements() {
-    document.documentElement.style.setProperty('--accent', accentColor);
-    document.documentElement.style.setProperty('--accent-bg', accentBg);
-    document.documentElement.style.setProperty('--accent-border', accentBorder);
-    colorBtn.style.background = accentColor;
+    setThemeVars();
+    if (colorBtn) colorBtn.style.background = accentColor;
+    paintThemedButtons();
     document.querySelectorAll('.label').forEach(el => el.style.color = accentColor);
-    const dlElA = document.getElementById('days-left'); if (dlElA) dlElA.style.color = accentColor;
+    const dlElA = $('days-left'); if (dlElA) dlElA.style.color = accentColor;
     document.querySelectorAll('.sh-name').forEach(el => el.style.color = accentColor);
     document.querySelectorAll('.stage-header').forEach(el => el.style.borderTopColor = accentColor);
-    document.querySelectorAll('.act.selected').forEach(el => { const rr = el.querySelector('.act-name')?.textContent.trim() === 'RuneScape Rave' && !document.body.classList.contains('runescape-active') && !document.body.classList.contains('runescape-unlocked'); el.style.background = rr ? '#555' : accentBg; el.style.borderLeftColor = rr ? '#fff' : accentBorder; });
+    document.querySelectorAll('.act.selected').forEach(el => { if (!discoActColor(el)) setNormalSelectedActStyle(el); });
     const isFS = document.body.classList.contains('is-fullscreen');
-    document.querySelectorAll('.act.act-now').forEach(el => { if (el.classList.contains('act-disco-r') || el.classList.contains('act-disco-b') || el.classList.contains('act-disco-g')) return; el.style.borderLeftColor = isFS ? '' : accentColor; el.style.borderTopColor = isFS ? '' : accentColor; });
-    const nl = document.getElementById('now-line');
-    if (nl) { nl.style.background = accentColor; nl.style.boxShadow = `0 0 8px ${accentColor}`; }
+    document.querySelectorAll('.act.act-now').forEach(el => {
+      if (el.classList.contains('act-disco-r') || el.classList.contains('act-disco-b') || el.classList.contains('act-disco-g')) return;
+      if (el.classList.contains('selected')) { setNormalSelectedActStyle(el); return; }
+      el.style.borderLeftColor = isFS ? '' : accentColor;
+      el.style.borderTopColor = isFS ? '' : accentColor;
+    });
+    const nl = $('now-line');
+    if (nl) { nl.style.background = accentColor; nl.style.boxShadow = `0 0 12px ${accentColor}`; }
     document.querySelectorAll('.camping-card-active').forEach(el => el.style.borderLeftColor = accentColor);
   }
 
@@ -1409,10 +1680,11 @@ window.addEventListener('load', () => {
     const wasActive = easterActive;
     easterActive = easterActive === mode ? null : mode;
     Object.entries(EASTER_EVENTS).forEach(([k, cfg]) => {
-      document.getElementById(k + '-img').style.opacity = easterActive === k ? cfg.opacity : '0';
+      $(k + '-img').style.opacity = easterActive === k ? cfg.opacity : '0';
     });
     document.body.classList.toggle('easter-active', easterActive !== null);
     document.body.classList.toggle('runescape-active', easterActive === 'runescape');
+    updateEasterVisualBoost();
     if (easterActive === 'runescape') document.body.classList.add('runescape-unlocked');
     if (easterActive) {
       const cfg = EASTER_EVENTS[easterActive];
@@ -1435,14 +1707,14 @@ window.addEventListener('load', () => {
     else manuallyTriggered.add(key);
     setEaster(key);
     const cfg = EASTER_EVENTS[key];
-    if (cfg.comic) document.getElementById('scaler').classList.toggle('comic-sans', !wasActive);
+    if (cfg.comic) { $('scaler').classList.toggle('comic-sans', !wasActive); }
   }
 
   let shrekClicks = 0, shrekTimer;
   let comicClicks = 0, comicTimer;
   let runeClicks = 0, runeTimer;
   const easterLabel = document.querySelector('.label');
-  const easterDate = document.getElementById('current-date');
+  const easterDate = $('current-date');
 
   document.addEventListener('pointerdown', (e) => {
     if (e.target.closest('.label')) {
@@ -1478,7 +1750,7 @@ window.addEventListener('load', () => {
     const now = getNow();
     const h = now.getHours(), m = now.getMinutes();
     const nowMins = h * 60 + m;
-    const todayStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+    const todayStr = ymd(now);
     let exactKey = null, windowKey = null;
     Object.entries(EASTER_EVENTS).forEach(([key, cfg]) => {
       if (cfg.activeDates && !cfg.activeDates.includes(todayStr)) return;
@@ -1491,7 +1763,7 @@ window.addEventListener('load', () => {
     const toActivate = exactKey ?? windowKey;
     if (toActivate) {
       setEaster(toActivate);
-      if (EASTER_EVENTS[toActivate].comic) document.getElementById('scaler').classList.add('comic-sans');
+      if (EASTER_EVENTS[toActivate].comic) { $('scaler').classList.add('comic-sans'); }
     }
   })();
 
@@ -1499,7 +1771,7 @@ window.addEventListener('load', () => {
     const now = getNow();
     const h = now.getHours(), m = now.getMinutes();
     const nowMins = h * 60 + m;
-    const todayStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+    const todayStr = ymd(now);
     Object.entries(EASTER_EVENTS).forEach(([key, cfg]) => {
       if (manuallyTriggered.has(key)) return;
       if (cfg.activeDates && !cfg.activeDates.includes(todayStr)) return;
