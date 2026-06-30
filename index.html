@@ -1,12 +1,12 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#0d0d0d">
-<script>try{document.documentElement.dataset.lang=localStorage.getItem('lang')||'fr';}catch(e){}</script>
+<meta name="theme-color" content="#000000">
+<script>try{document.documentElement.dataset.lang=localStorage.getItem('lang')||'fr';}catch(e){}try{document.documentElement.dataset.bootTheme=localStorage.getItem('sunMode')==='1'?'sun':'dark';}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700&family=Comic+Neue:wght@400;700&family=Share+Tech+Mono&display=swap">
@@ -14,7 +14,7 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   html {
-    background: #0d0d0d;
+    background: #000000;
     width: 100%; height: 100%;
     overflow: hidden;
   }
@@ -24,21 +24,23 @@
     --accent-bg: #4b000e;
     --accent-border: #eb0028;
     --header-gap: 6px;
-    --day-date-gap: 3px;
+    --day-date-gap: 13px;
     --day-date-pull: -10px;
+    --summary-bg: rgba(255,255,255,0.94);
+    --summary-text: #050505;
     --muted-time: #f0f0f0;
-    --future-act-bg: #323232;
-    --future-act-border: #787878;
-    --future-act-top: #4a4a4a;
+    --future-act-bg: #5e5e5ebd;
+    --future-act-border: #8c8c8c;
+    --future-act-top: #585858;
     --future-act-left-width: 3px;
-    --future-act-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
-    --past-act-bg: #131313;
-    --past-act-border: #2b2b2b;
-    --past-act-top: #202020;
-    --past-act-text: #7f7f7f;
-    --past-act-time: #6f6f6f;
-    --past-act-opacity: 0.52;
-    --past-act-filter: saturate(0.5) brightness(0.7);
+    --future-act-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+    --past-act-bg: #1a1a1a;
+    --past-act-border: #353535;
+    --past-act-top: #272727;
+    --past-act-text: #959595;
+    --past-act-time: #888888;
+    --past-act-opacity: 0.55;
+    --past-act-filter: saturate(0.60) brightness(0.65);
     --past-act-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
     --selected-act-bg: var(--accent-bg);
     --selected-act-text: #fff;
@@ -65,6 +67,7 @@
     --control-active-border: #fff;
     --font-scale: 1;
     --stage-name-size: 21px;
+    --fs-stage-name-boost: 1.8; 
     --stage-sub-size: 18px;
     --stage-sub-height: 40px;
     --edge-gap: 24px;
@@ -78,74 +81,77 @@
   }
 
 
-  body.high-contrast {
-    --future-act-bg: #6f6f6f;
-    --future-act-border: #ffffff;
-    --future-act-top: #8d8d8d;
-    --future-act-left-width: 4px;
-    --future-act-shadow: inset 0 0 0 1px rgba(255,255,255,0.13);
-    --past-act-bg: #171717;
-    --past-act-border: #505050;
-    --past-act-top: #2d2d2d;
-    --past-act-text: #9d9d9d;
-    --past-act-time: #8c8c8c;
-    --past-act-opacity: 0.8;
-    --past-act-filter: saturate(0.38) brightness(0.72);
-    --past-act-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
-    --selected-act-bg: #eeeeee;
-    --selected-act-text: var(--accent);
-    --selected-act-time: #161616;
-    --selected-act-left-width: 7px;
-    --selected-act-top: #fff;
-    --selected-act-shadow: inset 0 0 0 3px #fff, 0 0 0 2px rgba(255,255,255,0.72);
-    --selected-act-overlay-opacity: 0.18;
-    --current-act-bg: #ffffff;
-    --current-act-text: #050505;
-    --current-act-time: #121212;
-    --current-act-left-width: 8px;
-    --current-act-top: #fff;
-    --current-act-shadow: 0 0 34px rgba(255,255,255,0.72), 0 0 26px var(--accent), inset 0 0 0 3px #fff;
-    --current-act-filter: none;
-    --disco-act-bg: var(--future-act-bg);
-    --disco-selected-bg: var(--selected-act-bg);
-    --disco-now-bg: var(--current-act-bg);
-    --disco-now-shadow: 0 0 34px rgba(255,255,255,0.72), inset 0 0 0 3px #fff;
-  }
-
   body {
     background: transparent; color: #fff;
     font-family: 'Inter', sans-serif;
     width: 100vw; height: 100dvh;
     overflow: hidden; position: relative;
-    opacity: 0; transition: opacity 0.2s;
+    opacity: 0; transition: opacity 0s;
   }
 
-  html[data-lang="fr"]::before { content: 'Chargement des données…'; }
-  html[data-lang="en"]::before { content: 'Loading data…'; }
-  html[data-lang="zh"]::before { content: '正在加载数据…'; }
-  html::before {
+  html:not(.page-revealed)::before {
+    content: '';
     position: fixed;
-    bottom: 28px;
-    left: 28px;
-    font-family: 'Inter', sans-serif;
-    font-size: 18px;
-    color: #ffffffaa;
+    inset: 0;
     z-index: 9999;
     pointer-events: none;
+    background:
+      linear-gradient(rgba(255,255,255,.20) 0 0) 62px 70px / 380px 24px no-repeat,
+      linear-gradient(rgba(255,255,255,.13) 0 0) 62px 120px / 780px 64px no-repeat,
+      repeating-linear-gradient(
+        to bottom,
+        transparent 0 78px,
+        rgba(255,255,255,.09) 78px 80px
+      ) 62px 300px / 956px 1280px no-repeat,
+      repeating-linear-gradient(
+        to right,
+        transparent 0 185px,
+        rgba(255,255,255,.07) 185px 187px
+      ) 62px 300px / 956px 1280px no-repeat,
+      #000;
+  }
+  html[data-boot-theme="sun"]:not(.page-revealed)::before {
+    background:
+      linear-gradient(rgba(0,0,0,.18) 0 0) 62px 70px / 380px 24px no-repeat,
+      linear-gradient(rgba(0,0,0,.10) 0 0) 62px 120px / 780px 64px no-repeat,
+      repeating-linear-gradient(
+        to bottom,
+        transparent 0 78px,
+        rgba(0,0,0,.16) 78px 80px
+      ) 62px 300px / 956px 1280px no-repeat,
+      repeating-linear-gradient(
+        to right,
+        transparent 0 185px,
+        rgba(0,0,0,.10) 185px 187px
+      ) 62px 300px / 956px 1280px no-repeat,
+      #fff;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html:not(.page-revealed)::before {
+      animation: skeleton-pulse 1.6s ease-in-out infinite;
+    }
+    @keyframes skeleton-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.72; }
+    }
   }
   html.page-revealed::before {
     display: none;
   }
 
+  :root { --grid-line-color: rgba(255,255,255,0.18); }
+  body.light-mode:not(.disco-mode) { --grid-line-color: rgba(0,0,0,0.20); }
   .bg-full {
     position: fixed;
     inset: 0;
-    background: #0d0d0d;
+    background: #000000;
     z-index: 0;
   }
   .bg-full::after { content: ''; position: absolute; inset: 0; background: transparent; pointer-events: none; }
   .is-fullscreen .bg-full { filter: brightness(0.67); }
   .is-fullscreen .bg-full::after { background: rgba(0,0,0,0.33); }
+  body.light-mode.is-fullscreen .bg-full { filter: none; }
+  body.light-mode.is-fullscreen .bg-full::after { background: transparent; }
 
   #scaler {
     position: absolute;
@@ -179,6 +185,7 @@
   .top-btn { width: var(--popover-btn-size); height: var(--popover-btn-size); }
   .bottom-btn { width: var(--bottom-btn-size); height: var(--bottom-btn-size); }
   .top-btn, .bottom-btn {
+    position: relative;
     border: 3px solid var(--control-border);
     background: var(--control-bg);
     opacity: 1;
@@ -225,6 +232,26 @@
     height: 100%; display: flex; flex-direction: column;
   }
 
+  /* Fullscreen only: capture/wallpaper framing. Defaults keep desktop fullscreen unchanged. */
+  .is-fullscreen .content {
+    padding:
+      var(--fs-pad-top, 25px)
+      var(--fs-pad-right, 62px)
+      var(--fs-pad-bottom, 100px)
+      var(--fs-pad-left, 62px);
+  }
+  .is-fullscreen .easter-img { height: 100%; }
+  body.is-fullscreen.fs-safe-guides::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    pointer-events: none;
+    background:
+      linear-gradient(to bottom, rgba(255,0,0,.16) 0 12%, transparent 12% 88%, rgba(255,0,0,.12) 88% 100%),
+      linear-gradient(to right, rgba(255,0,0,.10) 0 7%, transparent 7% 93%, rgba(255,0,0,.10) 93% 100%);
+  }
+
   #bottom-bar {
     position: absolute;
     left: var(--edge-gap); right: var(--edge-gap); bottom: var(--edge-gap);
@@ -245,7 +272,44 @@
   .is-fullscreen #now-line { display: none !important; }
 
 
-  .top-bar { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  .top-bar { position: relative; display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  #status-box {
+    position: absolute;
+    top: 6px;
+    left: 680px;
+    width: 380px;
+    min-height: 96px;
+    pointer-events: none;
+    z-index: 28;
+  }
+  #now-summary {
+    display: none;
+    width: 100%;
+    max-width: 100%;
+    padding: 12px 14px 13px;
+    background: transparent;
+    color: #fff;
+    box-shadow: none;
+    overflow: hidden;
+  }
+  #now-summary.has-content { display: flex; flex-direction: column; gap: 8px; }
+  #now-summary .summary-section { display: contents; }
+  #now-summary .summary-list { display: contents; }
+  #now-summary .summary-kicker,
+  #now-summary .summary-row {
+    display: block;
+    font-size: 22px;
+    font-weight: 900;
+    line-height: 23px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .lang-zh #now-summary .summary-kicker,
+  .lang-zh #now-summary .summary-row { font-size: 18px; line-height: 23px; }
+  #now-summary .summary-kicker { color: var(--accent); }
+  #now-summary .summary-row { color: #fff; }
+  #now-summary .summary-stage { color: var(--accent); }
 
   #color-slot { position: relative; }
   .color-btn {
@@ -261,13 +325,14 @@
   .color-menu.open { display: flex; }
   .color-option { width: var(--color-option-size); height: var(--color-option-size); border-radius: 50%; cursor: pointer; border: 3px solid transparent; filter: saturate(0.72) brightness(0.70); touch-action: manipulation; opacity: 0.8; }
   .color-option:hover, .color-option.current { border-color: #fff; filter: saturate(1.0) brightness(0.92); opacity: 1; }
-  .color-option.contrast-current { box-shadow: 0 0 0 6px rgba(255,255,255,0.88), inset 0 0 0 4px rgba(0,0,0,0.38); }
+
 
   .label { font-size: 24px; letter-spacing: 5px; color: var(--accent); text-transform: uppercase; margin-bottom: var(--header-gap, 6px); cursor: pointer; display: flex; align-items: center; gap: 28px; }
   #days-left { font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 3px; color: var(--accent); opacity: 0.85; flex-shrink: 0; position: relative; top: 2px; }
   body.disco-mode #days-left,
   body.camping-mode #days-left,
-  body.favs-only #days-left { display: none; }
+  body.favs-only #days-left,
+  body.is-fullscreen #days-left { display: none; }
   .disco-mode .day-item[data-day="jeudi"] { display: none; }
   .day-row { display: flex; align-items: flex-end; gap: 20px; height: 94px; flex-shrink: 0; }
   .day-item {
@@ -284,9 +349,10 @@
   .is-fullscreen .day-item:not(.active) { display: none; }
   .is-fullscreen .label { font-size: 35px; margin-bottom: 16px; }
   .is-fullscreen .day-row { height: 145px; }
-  .is-fullscreen .day-item.active { font-size: 135px; }
+  .is-fullscreen .day-item.active { font-size: 135px; -webkit-text-stroke: 2px #fff; }
   .lang-zh.is-fullscreen .day-item.active { font-size: 123px; }
-  .is-fullscreen .day-date { font-size: 54px; margin-top: 16px; }
+  .is-fullscreen .day-date { font-size: 54px; margin-top: 16px; -webkit-text-stroke: 1px var(--accent); }
+  .is-fullscreen #status-box { display: none !important; }
 
 
   .stage-row { display: grid; gap: 0 9px; margin-bottom: 6px; flex-shrink: 0; min-height: 74px; overflow: visible; }
@@ -301,15 +367,16 @@
     clip-path: inset(-50px 0 0 0);
   }
   .sh-name { font-size: calc(var(--stage-name-size) * var(--font-scale, 1)); font-weight: 900; letter-spacing: 2px; color: var(--accent); text-transform: uppercase; text-shadow: 0 0 15px rgba(255, 255, 255, 0.082), 0 1px 0 #000; }
+  .is-fullscreen .sh-name { font-size: calc(var(--stage-name-size) * var(--font-scale, 1) * var(--fs-stage-name-boost, 1)); }
   .sh-sub { font-size: calc(var(--stage-sub-size) * var(--font-scale, 1)); line-height: 1.12; height: calc(var(--stage-sub-height) * var(--font-scale, 1)); color: #ffffff55; margin-top: 2px; overflow: hidden; }
 
-  .timeline { flex: 1; display: grid; gap: 0 9px; position: relative; min-height: 0; }
+  .timeline { flex: 1; display: grid; gap: 0 9px; position: relative; min-height: 0; isolation: isolate; }
 
   .time-axis { position: relative; }
   .tick-label {
     position: absolute; right: 8px;
     font-family: 'Share Tech Mono', 'Inter', monospace;
-    font-size: 27px; font-weight: 400;
+    font-size: 29px; font-weight: 400;
     color: var(--muted-time, #ffffff88); letter-spacing: 1px;
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
@@ -317,6 +384,7 @@
   }
 
   .stage-col { position: relative; }
+  .grid-line { position: absolute; left: 62px; right: 0; height: 2px; background: var(--grid-line-color); pointer-events: none; z-index: -1; }
 
   .act {
     position: absolute; left: 0; right: 0;
@@ -340,7 +408,7 @@
   }
   .act.selected::before { content: ''; position: absolute; inset: 0; background: var(--accent); opacity: var(--selected-act-overlay-opacity); border-radius: inherit; pointer-events: none; z-index: 0; }
   body:not(.is-fullscreen) .act.act-now.selected::before { opacity: 0.68; }
-  body:not(.disco-mode) .act.selected:not(.act-now) > .act-body > .act-name { color: var(--selected-act-text) !important; }
+  body:not(.disco-mode) .act.selected:not(.act-now) > .act-body > .act-name { color: var(--selected-act-text) !important; -webkit-text-stroke: 1px currentColor; }
   body:not(.disco-mode) .act.selected:not(.act-now) > .act-body > .act-time { color: var(--selected-act-time) !important; }
   body:not(.disco-mode) .act.selected.act-now {
     background: var(--current-act-bg);
@@ -350,8 +418,8 @@
   body:not(.disco-mode) .act.selected.act-now > .act-body > .act-name { color: #fff !important; }
   .act.act-now {
     box-shadow: var(--current-act-shadow);
-    filter: var(--current-act-filter);
   }
+  .act.act-now > .act-body { filter: var(--current-act-filter); }
   .act.act-now > .act-body > .act-name { color: var(--current-act-text) !important; }
   body:not(.is-fullscreen) .act.act-now > .act-body > .act-name { opacity: 1 !important; }
   .act.act-now > .act-body > .act-time { color: var(--current-act-time) !important; }
@@ -366,8 +434,8 @@
     border-left-width: var(--current-act-left-width);
     border-top-color: var(--current-act-top);
     box-shadow: var(--disco-now-shadow);
-    filter: var(--current-act-filter);
   }
+  .disco-mode .act.act-now > .act-body { filter: var(--current-act-filter); }
   .disco-mode .act.selected { background: var(--disco-selected-bg); box-shadow: var(--selected-act-shadow); }
   .disco-mode .act.selected > .act-body > .act-name { color: var(--selected-act-text) !important; }
   .disco-mode .act.selected > .act-body > .act-time { color: var(--selected-act-time) !important; }
@@ -389,19 +457,13 @@
   body.is-fullscreen .act.act-past { opacity: 1 !important; filter: none !important; }
   body.is-fullscreen .act.act-past:not(.selected):not(.act-now) { background: var(--future-act-bg) !important; border-left-color: var(--future-act-border) !important; border-top-color: var(--future-act-top) !important; }
   body.is-fullscreen .act.act-past.selected:not(.act-now) { background: var(--selected-act-bg) !important; border-left-color: var(--accent-border) !important; border-top-color: var(--selected-act-top) !important; }
-  body.high-contrast:not(.is-fullscreen) .act.act-past:not(.selected):not(.act-now)::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    border-radius: inherit;
-    pointer-events: none;
-    background: repeating-linear-gradient(135deg, rgba(255,255,255,0.16) 0 2px, transparent 2px 8px);
+  body:not(.is-fullscreen) .act.act-past.selected:not(.act-now) {
+    opacity: 1;
+    filter: saturate(0.92) brightness(0.94);
+    background: #262626;
+    border-top-color: #5f5f5f;
   }
-  body.high-contrast:not(.is-fullscreen) .act.act-past:not(.selected):not(.act-now) .act-name { color: var(--past-act-text) !important; }
-  body.high-contrast:not(.is-fullscreen) .act.act-past:not(.selected):not(.act-now) .act-time { color: var(--past-act-time) !important; }
-  body:not(.is-fullscreen) .act.act-past.selected:not(.act-now) { filter: none; }
-  body.is-fullscreen .act.act-past::after { display: none !important; }
+  body.is-fullscreen .act.act-past:not(.selected)::after { display: none !important; }
   body.is-fullscreen .act.act-past .act-name { color: #fff !important; }
   body.is-fullscreen .act.act-past .act-time { color: var(--muted-time) !important; }
   body.is-fullscreen .act.act-now:not(.selected) { background: var(--future-act-bg) !important; border-left-color: var(--future-act-border) !important; border-top-color: var(--future-act-top) !important; box-shadow: var(--future-act-shadow) !important; filter: none !important; }
@@ -455,7 +517,7 @@
     padding: 0 !important;
     transform: none !important;
     font-family: 'Share Tech Mono', 'Inter', monospace;
-    font-weight: 400;
+    font-weight: 700;
     color: var(--muted-time, #ffffff88);
     min-height: 0;
     white-space: nowrap;
@@ -464,9 +526,7 @@
   }
   .act > .act-body > .act-time.act-time-hidden { display: none !important; }
 
-  .act-runescape.selected::before { background: #ffffff; opacity: 0.1; }
-  .runescape-active .act-runescape.selected::before,
-  .runescape-unlocked .act-runescape.selected::before { background: var(--accent); opacity: 0.15; }
+  body:not(.runescape-active):not(.runescape-unlocked).is-fullscreen .act-runescape.selected { border-left-color: var(--accent-border) !important; }
 
   .comic-sans, .comic-sans * { font-family: 'Comic Neue', 'Comic Sans MS', 'Comic Sans', cursive !important; }
   .comic-sans .day-item { font-family: 'Bebas Neue', sans-serif !important; }
@@ -479,6 +539,209 @@
   #sheet-error { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; color: #ffffff33; font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 4px; padding: 80px 0; }
 
   body.favs-only .act { overflow: hidden !important; }
+
+  /* Light mode */
+  body.light-mode:not(.disco-mode) .bg-full { background: #efefef; }
+  body.light-mode:not(.disco-mode) {
+    --future-act-bg: #dedede;
+    --future-act-border: #aaaaaa;
+    --future-act-top: #c4c4c4;
+    --future-act-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+    --past-act-bg: #c8c8c8;
+    --past-act-border: #a8a8a8;
+    --past-act-top: #b8b8b8;
+    --past-act-text: #555555;
+    --past-act-time: #666666;
+    --past-act-opacity: 0.65;
+    --past-act-filter: saturate(0.4) brightness(0.88);
+    --past-act-shadow: inset 0 0 0 1px rgba(0,0,0,0.04);
+    --muted-time: #444444;
+    --control-bg: rgba(0,0,0,0.1);
+    --control-border: rgba(0,0,0,0.22);
+  }
+  body.light-mode:not(.disco-mode) .act:not(.selected):not(.act-now) > .act-body > .act-name { color: #111 !important; opacity: 1 !important; }
+  body.light-mode:not(.disco-mode) .act:not(.selected):not(.act-now) > .act-body > .act-time { color: #444 !important; }
+  body.light-mode:not(.disco-mode) .sh-name { color: #111 !important; text-shadow: none !important; }
+  body.light-mode:not(.disco-mode) .sh-sub { color: rgba(0,0,0,0.5) !important; }
+  body.light-mode:not(.disco-mode) .day-item { color: rgba(0,0,0,0.22) !important; }
+  body.light-mode:not(.disco-mode) .day-item.active { color: #000 !important; }
+  body.light-mode:not(.disco-mode) #current-date { color: rgba(0,0,0,0.5) !important; }
+  body.light-mode:not(.disco-mode) #now-summary .summary-row { color: #111 !important; }
+  body.light-mode:not(.disco-mode) .camping-card { background: #d8d8d8 !important; border-top-color: #bbb !important; border-left-color: #888 !important; }
+  body.light-mode:not(.disco-mode) .camping-label { color: #111 !important; }
+  body.light-mode:not(.disco-mode) .camping-time { color: #444 !important; }
+
+  /* === Sun mode (inactif quand disco-mode est actif) === */
+
+  body.sun-mode:not(.is-fullscreen):not(.disco-mode) {
+    --future-act-bg: #ffffff;       /* ← couleur fond des cases futures en sun-mode */
+    --future-act-border: #000000;
+    --future-act-top: #c0c0c0;
+    --future-act-left-width: 3px;
+    --future-act-shadow: inset 0 0 0 1px rgba(0,0,0,0.14);
+    --past-act-bg: #c0c0c0;
+    --past-act-border: #888888;
+    --past-act-top: #a0a0a0;
+    --past-act-text: #111111;
+    --past-act-time: #333333;
+    --past-act-opacity: 0.92;
+    --past-act-filter: none;
+    --past-act-shadow: inset 0 0 0 1px rgba(0,0,0,0.10);
+    --selected-act-bg: #ffffff;
+    --selected-act-text: #000000;
+    --selected-act-time: #222222;
+    --selected-act-left-width: 8px;
+    --selected-act-top: #000000;
+    --selected-act-shadow: inset 0 0 0 5px rgba(0,0,0,0.18);
+    --selected-act-overlay-opacity: 0.12;
+    --current-act-bg: #000000;
+    --current-act-text: #000000;
+    --current-act-time: #333333;
+    --current-act-left-width: 8px;
+    --current-act-top: var(--accent);
+    --current-act-shadow: 0 0 0 2px #000000, 0 2px 14px rgba(0,0,0,0.22);
+    --current-act-filter: none;
+    --muted-time: #111111;
+    --control-bg: rgba(235,235,235,0.96);
+    --control-border: rgba(0,0,0,0.52);
+    --control-active-border: #000000;
+    --grid-line-color: rgba(0,0,0,0.30);
+  }
+
+  /* ── Fullscreen sun: variables ── */
+  body.sun-mode.is-fullscreen:not(.disco-mode) {
+    --future-act-bg: #ffffff;
+    --future-act-border: #000000;
+    --future-act-top: #c0c0c0;
+    --future-act-left-width: 3px;
+    --future-act-shadow: inset 0 0 0 1px rgba(0,0,0,0.14);
+    --selected-act-bg: #000000;
+    --selected-act-text: #ffffff;
+    --selected-act-time: #dddddd;
+    --selected-act-left-width: 8px;
+    --selected-act-top: var(--sun-accent, var(--accent));
+    --selected-act-shadow: none;
+    --selected-act-overlay-opacity: 0;
+    --muted-time: #333333;
+    --control-bg: rgba(235,235,235,0.96);
+    --control-border: rgba(0,0,0,0.52);
+    --control-active-border: #000000;
+    --grid-line-color: rgba(0,0,0,0.30);
+  }
+
+  /* ── Background ── */
+  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .bg-full { background: #ffffff; }
+  body.sun-mode.is-fullscreen:not(.disco-mode) .bg-full { background: #ffffff !important; filter: none !important; }
+  body.sun-mode.is-fullscreen:not(.disco-mode) .bg-full::after { background: transparent !important; }
+  body.sun-mode .easter-img { display: none !important; }
+
+  /* ── Typography: non-fullscreen ── */
+  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .label { color: var(--sun-accent, var(--accent)) !important; }
+  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .sh-name { color: #000000; text-shadow: none !important; }
+  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .sh-sub { color: rgba(0,0,0,0.82) !important; }
+  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .day-item { color: rgba(0,0,0,0.50) !important; }
+  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .day-item.active { color: #000000 !important; }
+  body.sun-mode:not(.is-fullscreen):not(.disco-mode) #current-date { color: var(--sun-accent, var(--accent)) !important; }
+  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .tick-label { color: #000000 !important; font-weight: 700 !important; }
+
+  /* ── Typography: fullscreen sun ── */
+  body.sun-mode.is-fullscreen:not(.disco-mode) .sh-name { color: #000000 !important; text-shadow: none !important; }
+  body.sun-mode.is-fullscreen:not(.disco-mode) .sh-sub { color: rgba(0,0,0,0.82) !important; }
+  body.sun-mode.is-fullscreen:not(.disco-mode) .label { color: var(--sun-accent, var(--accent)) !important; }
+  body.sun-mode.is-fullscreen:not(.disco-mode) .day-item { color: rgba(0,0,0,0.50) !important; }
+  body.sun-mode.is-fullscreen:not(.disco-mode) .day-item.active { color: #000000 !important; }
+  body.sun-mode.is-fullscreen:not(.disco-mode) #current-date { color: var(--sun-accent, var(--accent)) !important; }
+  body.sun-mode.is-fullscreen:not(.disco-mode) .tick-label { color: #000000 !important; font-weight: 700 !important; }
+
+  /* ── Text-stroke: kill in sun-mode hors disco ── */
+  body.sun-mode:not(.disco-mode) .act-name { -webkit-text-stroke: 0 !important; text-shadow: none !important; }
+  body.sun-mode:not(.disco-mode) .act-time { -webkit-text-stroke: 0 !important; }
+
+  /* ── Acts: non-fullscreen ── */
+  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .act:not(.selected):not(.act-now) > .act-body > .act-name { color: #000000 !important; opacity: 1 !important; }
+  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .act:not(.selected):not(.act-now) > .act-body > .act-time { color: #333333 !important; }
+  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .act.selected:not(.act-now) > .act-body > .act-name { color: #000000 !important; }
+  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .act.selected:not(.act-now) > .act-body > .act-time { color: #222222 !important; }
+  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .act.act-now.selected > .act-body > .act-name { text-shadow: none !important; }
+  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .act.act-now.selected > .act-body > .act-time { color: #ffffff !important; }
+
+  /* ── Stage headers: non-fullscreen ── */
+  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .stage-header { border-top-width: 4px !important; }
+  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .stage-header.sh-bar-glow::before { box-shadow: none; }
+
+  /* ── Stage headers: fullscreen sun ── */
+  body.sun-mode.is-fullscreen:not(.disco-mode) .stage-header { border-top-width: 6px !important; border-top-color: var(--sun-accent, var(--accent)) !important; }
+
+  /* ── Acts: fullscreen sun – non-selected (all time states identical) ── */
+  body.sun-mode.is-fullscreen:not(.disco-mode) .act,
+  body.sun-mode.is-fullscreen:not(.disco-mode) .act.act-past,
+  body.sun-mode.is-fullscreen:not(.disco-mode) .act.act-now:not(.selected) {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
+    border-left-color: #000000 !important;
+    border-top-color: #c0c0c0 !important;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.14) !important;
+    opacity: 1 !important;
+    filter: none !important;
+  }
+  body.sun-mode.is-fullscreen:not(.disco-mode) .act > .act-body > .act-name { color: #000000 !important; opacity: 1 !important; }
+  body.sun-mode.is-fullscreen:not(.disco-mode) .act.act-past > .act-body > .act-name { color: #000000 !important; opacity: 1 !important; }
+  body.sun-mode.is-fullscreen:not(.disco-mode) .act.act-now > .act-body > .act-name { color: #000000 !important; opacity: 1 !important; }
+  body.sun-mode.is-fullscreen:not(.disco-mode) .act > .act-body > .act-time { color: #333333 !important; }
+  body.sun-mode.is-fullscreen:not(.disco-mode) .act.act-past > .act-body > .act-time { color: #333333 !important; }
+  body.sun-mode.is-fullscreen:not(.disco-mode) .act.act-now > .act-body > .act-time { color: #333333 !important; }
+
+  /* ── Acts: fullscreen sun – selected ── */
+  body.sun-mode.is-fullscreen:not(.disco-mode) .act.selected,
+  body.sun-mode.is-fullscreen:not(.disco-mode) .act.act-past.selected,
+  body.sun-mode.is-fullscreen:not(.disco-mode) .act.act-now.selected {
+    background: #000000 !important;
+    border-left-color: var(--sun-accent, var(--accent)) !important;
+    border-top-color: var(--sun-accent, var(--accent)) !important;
+    border-left-width: 8px !important;
+    box-shadow: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+  }
+  body.sun-mode.is-fullscreen:not(.disco-mode) .act.selected > .act-body > .act-name,
+  body.sun-mode.is-fullscreen:not(.disco-mode) .act.act-past.selected > .act-body > .act-name,
+  body.sun-mode.is-fullscreen:not(.disco-mode) .act.act-now.selected > .act-body > .act-name { color: #ffffff !important; opacity: 1 !important; }
+  body.sun-mode.is-fullscreen:not(.disco-mode) .act.selected > .act-body > .act-time,
+  body.sun-mode.is-fullscreen:not(.disco-mode) .act.act-past.selected > .act-body > .act-time,
+  body.sun-mode.is-fullscreen:not(.disco-mode) .act.act-now.selected > .act-body > .act-time { color: #dddddd !important; }
+
+  /* ── Now-line and summary: non-fullscreen ── */
+  body.sun-mode:not(.is-fullscreen):not(.disco-mode) #now-line { background: #000000 !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.4) !important; }
+  body.sun-mode:not(.is-fullscreen):not(.disco-mode) #now-summary .summary-row { color: #000000 !important; }
+
+  /* ── Camping/Info ── */
+  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .camping-card { background: #f2f2f2 !important; border-top-color: #cccccc !important; border-left-color: var(--sun-accent, var(--accent)) !important; }
+  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .camping-label { color: #000000 !important; }
+  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .camping-time { color: #333333 !important; }
+
+  /* ── Buttons: sun-mode (hors disco) ── */
+  body.sun-mode:not(.disco-mode) #bottom-bar .bottom-btn { backdrop-filter: none !important; box-shadow: 0 2px 10px rgba(0,0,0,0.22) !important; }
+  body.sun-mode:not(.disco-mode) #settings-popover .top-btn { backdrop-filter: none !important; box-shadow: 0 2px 8px rgba(0,0,0,0.18) !important; }
+  body.sun-mode:not(.disco-mode) #bottom-bar .bottom-btn svg { filter: brightness(0) !important; }
+  body.sun-mode:not(.disco-mode) #settings-popover .top-btn svg { filter: brightness(0) !important; }
+  body.sun-mode:not(.disco-mode) .bottom-btn.control-active { background: rgba(0,0,0,0.88) !important; }
+  body.sun-mode:not(.disco-mode) .bottom-btn.control-active svg { filter: brightness(0) invert(1) !important; }
+  body.sun-mode:not(.disco-mode) .top-btn.control-active { background: rgba(0,0,0,0.88) !important; }
+  body.sun-mode:not(.disco-mode) .top-btn.control-active svg { filter: brightness(0) invert(1) !important; }
+  body.sun-mode:not(.disco-mode) #camping-btn { color: #000000; }
+  body.sun-mode:not(.disco-mode) #lang-btn { color: #000000; }
+  body.sun-mode:not(.disco-mode) .bottom-btn.control-active,
+  body.sun-mode:not(.disco-mode) .top-btn.control-active { color: #ffffff !important; }
+
+  /* ── prefers-contrast: restricted to sun-mode only ── */
+  @media (prefers-contrast: more) {
+    body.sun-mode:not(.is-fullscreen):not(.disco-mode) {
+      --future-act-left-width: 5px;
+      --future-act-border: #000000;
+      --selected-act-left-width: 9px;
+    }
+  }
 
   img[id$="-img"] { opacity: 0; transition: opacity 0.6s; }
 </style>
@@ -508,6 +771,8 @@
     </div>
   </div>
 
+  <div id="status-box"><div id="now-summary" aria-live="polite"></div></div>
+
   <div class="stage-row" id="stage-row"></div>
   <div class="timeline" id="tl">
     <div class="time-axis" id="axis"></div>
@@ -519,9 +784,6 @@
       <div id="disco-btn" class="round-btn bottom-btn">
       <svg width="120" height="120" viewBox="-1 -1 26 26" fill="none" stroke="#fff" stroke-width="1.2" stroke-linecap="round"><defs><clipPath id="dbc"><circle cx="12" cy="12" r="9"/></clipPath></defs><circle cx="12" cy="12" r="9"/><line x1="12" y1="0" x2="12" y2="3"/><g clip-path="url(#dbc)"><line x1="3" y1="8" x2="21" y2="8"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="16" x2="21" y2="16"/><line x1="8" y1="3" x2="8" y2="21"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="16" y1="3" x2="16" y2="21"/></g><circle cx="1" cy="6" r="1" fill="#fff" stroke="none"/><circle cx="23" cy="6" r="1" fill="#fff" stroke="none"/><circle cx="0" cy="17" r="0.8" fill="#fff" stroke="none"/><circle cx="24" cy="17" r="0.8" fill="#fff" stroke="none"/></svg>
     </div>
-      <div id="favs-btn" class="round-btn bottom-btn">
-        <svg width="108" height="108" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-      </div>
     </div>
     <div id="right-btns">
       <div id="settings-popover" aria-hidden="true">
@@ -544,7 +806,11 @@
         </div>
         <div class="color-btn round-btn top-btn" id="color-btn"></div>
       </div>
+      <div id="light-mode-btn" class="round-btn top-btn"><svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></div>
     </div>
+      <div id="favs-btn" class="round-btn bottom-btn">
+        <svg width="108" height="108" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
       <div id="fs-btn" class="round-btn bottom-btn">
       <svg width="82" height="82" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
     </div>
@@ -558,7 +824,13 @@
 </div>
 <script>
 let accentColor = '#eb0028', accentBg = '#4b000e', accentBorder = '#eb0028';
-let highContrastMode = false;
+const SUN_ACCENT_MAP = {
+  '#f5d800': '#7a6500',
+  '#ff6a00': '#b84a00',
+  '#00a848': '#006b2e',
+  '#aaa':    '#555555',
+};
+function getSunAccent(a) { return SUN_ACCENT_MAP[a] || a; }
 
 const SHEET_ID_PROD = '1Vovax0HOLgo6ktqchvsajUFLejK-K_oq1tNC1s8E1VE';
 const SHEET_ID_TEST = '1z1sxHzhJWjWlyTdjYGRn1UBuFW8GnauAjQbJeL-3V38';
@@ -587,8 +859,14 @@ const DISCO_STAGE_META = {
   DiscoB: { cssClass: 'act-disco-b', color: '#3399ff', labels: { fr: 'BLEU',  en: 'BLUE', zh: '蓝' } },
   DiscoG: { cssClass: 'act-disco-g', color: '#00c853', labels: { fr: 'VERT',  en: 'GREEN', zh: '绿' } },
 };
+const STAGE_ORDER = { mainstage: 0, storm: 1, dome: 2, church: 3, tunnel: 4 };
+const stagePriority = name => STAGE_ORDER[name?.toLowerCase()] ?? 99;
+const FS_STAGE_ABBREV = { 'Mainstage': 'Main' };
 const FAVS_KEY = 'favs';
-const TIMELINE_GAP = 5;
+const TIMELINE_GAP = 8;
+const NOW_LINE_LEFT_PX = 55;   // décalage px depuis la gauche de la zone timeline
+const NOW_LINE_RIGHT_PX = -15;  // retrait px depuis le bord droit
+const CANVAS_MARGIN = -100;      // marge minimale en px sur chaque côté (tous modes)
 const REFRESH_MS = 15 * 60 * 1000;
 const $ = id => document.getElementById(id);
 
@@ -610,11 +888,12 @@ function saveFavs(favs) {
 }
 
 function setThemeVars() {
-  document.body.classList.toggle('high-contrast', highContrastMode);
+  const sunAccent = getSunAccent(accentColor);
   [document.documentElement, document.body, $('scaler')].filter(Boolean).forEach(el => {
     el.style.setProperty('--accent', accentColor);
     el.style.setProperty('--accent-bg', accentBg);
     el.style.setProperty('--accent-border', accentBorder);
+    el.style.setProperty('--sun-accent', sunAccent);
   });
 }
 
@@ -641,7 +920,6 @@ function syncColorOptions() {
   document.querySelectorAll('.color-option').forEach(opt => {
     const isCurrent = opt.dataset.accent === accentColor;
     opt.classList.toggle('current', isCurrent);
-    opt.classList.toggle('contrast-current', isCurrent && highContrastMode);
   });
 }
 
@@ -651,7 +929,6 @@ function saveColorPreference(glow = '') {
     bg: accentBg,
     border: accentBorder,
     glow,
-    highContrast: highContrastMode,
   }));
 }
 
@@ -756,7 +1033,19 @@ function getTimelineWindow(tl, fallbackStart, fallbackEnd) {
 }
 
 function removeTimelineContent(tl) {
-  tl.querySelectorAll('.stage-col, #now-line').forEach(el => el.remove());
+  tl.querySelectorAll('.stage-col, #now-line, .grid-line').forEach(el => el.remove());
+}
+
+function buildGridLinesFragment(startHour, endHour) {
+  const frag = document.createDocumentFragment();
+  const total = endHour - startHour;
+  for (let h = startHour + 1; h < endHour; h++) {
+    const line = document.createElement('div');
+    line.className = 'grid-line';
+    line.style.top = (((h - startHour) / total) * 100) + '%';
+    frag.appendChild(line);
+  }
+  return frag;
 }
 
 function clearSchedule(stageRow, axis, tl) {
@@ -960,12 +1249,13 @@ function queueActTextLayout() {
   cancelAnimationFrame(actTextLayoutRAF);
   actTextLayoutRAF = requestAnimationFrame(() => requestAnimationFrame(updateActTextLayout));
 }
-function swapSchedule(stageRow, axis, tl, stageFrag, axisFrag, timelineFrag) {
+function swapSchedule(stageRow, axis, tl, stageFrag, axisFrag, timelineFrag, startHour, endHour) {
   stageRow.innerHTML = '';
   stageRow.appendChild(stageFrag);
   axis.innerHTML = '';
   axis.appendChild(axisFrag);
   removeTimelineContent(tl);
+  if (startHour != null && endHour != null) tl.appendChild(buildGridLinesFragment(startHour, endHour));
   tl.appendChild(timelineFrag);
   updateStageHeaderSelectionState();
 }
@@ -976,7 +1266,7 @@ function buildStageHeader(name, sub = '', color = accentColor, subColor = '') {
   d.style.borderTopColor = color;
   d.dataset.nameColor = color;
   const subStyle = subColor ? ` style="color:${subColor}"` : '';
-  d.innerHTML = `<div class="sh-name">${escapeHTML(name)}</div>${sub ? `<div class="sh-sub"${subStyle}>${escapeHTML(sub)}</div>` : ''}`;
+  d.innerHTML = `<div class="sh-name" data-full-name="${escapeHTML(name)}">${escapeHTML(name)}</div>${sub ? `<div class="sh-sub"${subStyle}>${escapeHTML(sub)}</div>` : ''}`;
   return d;
 }
 
@@ -986,22 +1276,27 @@ function updateStageHeaderSelectionState() {
   const headers = stageRow.querySelectorAll('.stage-header');
   const cols = tl.querySelectorAll('.stage-col');
   const isFS = document.body.classList.contains('is-fullscreen');
+  const isSun = document.body.classList.contains('sun-mode');
   headers.forEach((header, i) => {
     const nameEl = header.querySelector('.sh-name');
     if (!nameEl) return;
+    const fullName = nameEl.dataset.fullName || nameEl.textContent.trim();
     if (isFS) {
+      nameEl.textContent = FS_STAGE_ABBREV[fullName] || fullName;
       nameEl.style.color = '#fff';
       nameEl.style.textShadow = '';
       header.classList.remove('sh-bar-glow');
       return;
     }
+    nameEl.textContent = fullName;
     const col = cols[i];
-    const hasTarget = col && col.querySelector('.act-now.selected');
+    const hasTarget = col && col.querySelector('.act.selected');
+    const selectedColor = isSun ? accentColor : '#fff';
     if (discoMode) {
       nameEl.style.color = header.dataset.nameColor || '';
       nameEl.style.textShadow = hasTarget ? '0 0 14px #fff, 0 0 6px #fff' : '';
     } else {
-      nameEl.style.color = hasTarget ? '#fff' : (header.dataset.nameColor !== accentColor ? header.dataset.nameColor : '');
+      nameEl.style.color = hasTarget ? selectedColor : (header.dataset.nameColor !== accentColor ? header.dataset.nameColor : '');
       nameEl.style.textShadow = '';
     }
     header.classList.toggle('sh-bar-glow', !!hasTarget);
@@ -1065,12 +1360,12 @@ function isLockedRuneRaveAct(div) {
 function setNormalSelectedActStyle(div) {
   clearNormalSelectedActStyle(div);
   if (isLockedRuneRaveAct(div)) {
-    div.style.setProperty('--accent', '#fff');
-    div.style.setProperty('--accent-bg', '#555');
-    div.style.setProperty('--accent-border', '#fff');
-    div.style.setProperty('background', highContrastMode ? '#eeeeee' : '#555', 'important');
-    div.style.setProperty('border-left-color', '#fff', 'important');
-    div.style.setProperty('border-top-color', highContrastMode ? '#fff' : '#2a2a2a', 'important');
+    div.style.setProperty('--accent', accentColor);
+    div.style.setProperty('--accent-bg', accentBg);
+    div.style.setProperty('--accent-border', accentBorder);
+    div.style.setProperty('background', 'var(--selected-act-bg)', 'important');
+    div.style.setProperty('border-left-color', '#fff');
+    div.style.setProperty('border-top-color', 'var(--selected-act-top)', 'important');
     div.style.setProperty('box-shadow', 'var(--selected-act-shadow)', 'important');
     return;
   }
@@ -1114,6 +1409,7 @@ function createActElement({ id, name, start, end, className = 'act', borderLeftC
   div.className = className;
   div.dataset.start = start;
   div.dataset.end = end;
+  div.dataset.rawName = String(name || '');
   if (layoutKey) div.dataset.layoutKey = layoutKey;
   if (borderLeftColor) div.style.borderLeftColor = borderLeftColor;
   const timeHtml = (end - start) >= 0.5 ? `<div class="act-time">${fmtActTimeRange(start, end)}</div>` : '';
@@ -1288,22 +1584,22 @@ const DAYS = {
   ]),
   vendredi: makeDay(14, 25, [
     ['Mainstage', 'By MHITR'],
-    ['Dome', 'By RUN'],
     ['Storm', 'By DMZ'],
+    ['Dome', 'By RUN'],
     ['Church', 'By Vision'],
     ['Tunnel', 'By Vissa'],
   ]),
   samedi: makeDay(14, 25, [
     ['Mainstage', 'By Rampage Recordings'],
-    ['Dome', 'By Crucast'],
     ['Storm', 'By Blacklist'],
+    ['Dome', 'By Crucast'],
     ['Church', 'World Of Drum&Bass 35Y'],
     ['Tunnel', 'By Hardstyle Daily'],
   ]),
   dimanche: makeDay(14, 25, [
     ['Mainstage', 'By Monstercat'],
-    ['Dome', 'By Club Mozey'],
     ['Storm', 'By Dubstep FBI'],
+    ['Dome', 'By Club Mozey'],
     ['Church', 'By Ampere Invites'],
     ['Tunnel', 'By Unfaced'],
   ]),
@@ -1381,6 +1677,137 @@ function fmtActH(h) {
 function fmtActTimeRange(start, end) {
   return `${fmtActH(start)} - ${fmtActH(end)}`;
 }
+
+function setNowSummary(html = '') {
+  const el = $('now-summary');
+  if (!el) return;
+  const hasContent = Boolean(html);
+  el.innerHTML = hasContent ? html : '';
+  el.classList.toggle('has-content', hasContent);
+}
+
+function getRenderedActs() {
+  return [...document.querySelectorAll('#tl .act')].filter(act => act.offsetParent !== null);
+}
+
+function getActSummaryMeta(act) {
+  if (!act) return null;
+  const name = (act.dataset.rawName || act.querySelector('.act-name')?.textContent || '').trim();
+  const start = parseFloat(act.dataset.start);
+  const end = parseFloat(act.dataset.end);
+  if (!name || !Number.isFinite(start) || !Number.isFinite(end)) return null;
+  const col = act.closest('.stage-col');
+  const cols = [...document.querySelectorAll('#tl .stage-col')];
+  const idx = Math.max(0, cols.indexOf(col));
+  const header = document.querySelectorAll('#stage-row .stage-header')[idx];
+  const stage = header?.querySelector('.sh-name')?.textContent.trim() || '';
+  return { name, stage, start, end };
+}
+
+function fmtSummaryDuration(minutes) {
+  if (minutes < 60) return `${minutes}MIN`;
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  return m === 0 ? `${h}H` : `${h}H${String(m).padStart(2, '0')}`;
+}
+
+function fmtSummaryDurationZh(minutes) {
+  if (minutes < 60) return `${minutes}分钟`;
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  return m === 0 ? `${h}小时` : `${h}小时${m}分`;
+}
+
+function getNowSummaryCopy(mode, minutes = null) {
+  const dur = minutes === null ? null : fmtSummaryDuration(minutes);
+  const durZh = minutes === null ? null : fmtSummaryDurationZh(minutes);
+  const copy = {
+    fr: {
+      now: 'EN CE MOMENT',
+      next: dur === null ? 'À VENIR' : `DANS ${dur}`,
+    },
+    en: {
+      now: 'PLAYING NOW',
+      next: dur === null ? 'UP NEXT' : `IN ${dur}`,
+    },
+    zh: {
+      now: '正在演出',
+      next: durZh === null ? '即将开始' : `${durZh}后`,
+    },
+  };
+  const langCopy = copy[currentLang] || copy.en;
+  return mode === 'now' ? langCopy.now : langCopy.next;
+}
+
+function formatNowSummaryRow(meta) {
+  return `<span class="summary-stage">${escapeHTML(meta.stage)}</span> - ${escapeHTML(meta.name)}`;
+}
+
+function renderNowSummarySection(kicker, acts) {
+  const rows = acts.map(meta => `<span class="summary-row">${formatNowSummaryRow(meta)}</span>`).join('');
+  return `<div class="summary-section"><span class="summary-kicker">${kicker}</span><div class="summary-list">${rows}</div></div>`;
+}
+
+function getUpcomingSummaryGroups(acts, hour, budget) {
+  if (budget < 2) return [];
+  const selected = acts
+    .map(act => ({ ...getActSummaryMeta(act), selected: act.classList.contains('selected') }))
+    .filter(meta => meta && meta.name && meta.start > hour && meta.selected)
+    .sort((a, b) => a.start - b.start || stagePriority(a.stage) - stagePriority(b.stage));
+  if (!selected.length) return [];
+
+  // Group consecutive acts by start time
+  const groups = [];
+  let i = 0;
+  while (i < selected.length) {
+    const t = selected[i].start;
+    const minutes = Math.max(0, Math.ceil((t - hour) * 60 - 1e-6));
+    if (minutes > 720) break;
+    const groupActs = [];
+    while (i < selected.length && Math.abs(selected[i].start - t) < 0.0001) groupActs.push(selected[i++]);
+    groups.push({ minutes, acts: groupActs.sort((a, b) => stagePriority(a.stage) - stagePriority(b.stage) || a.name.localeCompare(b.name)) });
+  }
+  if (!groups.length) return [];
+
+  const result = [];
+  let remaining = budget;
+  for (const group of groups) {
+    if (remaining < 2) break;
+    const actsToShow = group.acts.slice(0, remaining - 1);
+    result.push({ kicker: getNowSummaryCopy('next', group.minutes), acts: actsToShow });
+    remaining -= 1 + actsToShow.length;
+  }
+  return result;
+}
+
+function updateNowSummary(hour = null) {
+  if (document.body.classList.contains('is-fullscreen')) { setNowSummary(''); return; }
+  const acts = getRenderedActs();
+  if (!acts.length || !Number.isFinite(hour)) { setNowSummary(''); return; }
+  if (hour % 24 < 12) { setNowSummary(''); return; }
+
+  const MAX_LINES = 6;
+  const visibleNowActs = acts
+    .filter(act => act.classList.contains('act-now'))
+    .map(act => ({ ...getActSummaryMeta(act), selected: act.classList.contains('selected') }))
+    .filter(meta => meta && meta.name && meta.selected)
+    .sort((a, b) => stagePriority(a.stage) - stagePriority(b.stage) || a.name.localeCompare(b.name));
+
+  let html = '';
+  let remaining = MAX_LINES;
+
+  if (visibleNowActs.length) {
+    const nowSlice = visibleNowActs.slice(0, remaining - 1);
+    html += renderNowSummarySection(getNowSummaryCopy('now'), nowSlice);
+    remaining -= 1 + nowSlice.length;
+  }
+
+  for (const group of getUpcomingSummaryGroups(acts, hour, remaining)) {
+    html += renderNowSummarySection(group.kicker, group.acts);
+  }
+
+  setNowSummary(html);
+}
 function addActBehavior(div) {
   div.addEventListener('click', () => {
     div.classList.toggle('selected');
@@ -1407,6 +1834,17 @@ function addActBehavior(div) {
     const favs = getFavs();
     saveFavs(selected ? [...favs, div.id] : favs.filter(f => f !== div.id));
     updateStageHeaderSelectionState();
+    if (!document.body.classList.contains('is-fullscreen')) {
+      const summaryHour = discoMode
+        ? (() => {
+            const p = getFestivalParts();
+            let h = p.hour + p.minute / 60 + p.second / 3600;
+            if (h < 6) h += 24;
+            return h;
+          })()
+        : getFestivalHour(2);
+      updateNowSummary(summaryHour);
+    }
     updateResetBtn();
     if (favsOnly && !discoMode && !campingMode) renderFavsMode(normalDayKey);
   });
@@ -1418,7 +1856,7 @@ function escapeHTML(v) {
 
 function createActNameHTML(name) {
   const clean   = name === '?' ? '' : String(name || '');
-  const display = clean.replace(/_/g, '\u00a0').replace(/-/g, '‑');
+  const display = clean.replace(/_/g, ' ').replace(/-/g, '‑');
   const safe    = escapeHTML(display);
   return `<div class="act-name" title="${safe}">${safe}</div>`;
 }
@@ -1530,7 +1968,7 @@ function renderFavs(dayKey) {
     timelineFrag.appendChild(col);
   });
 
-  swapSchedule(stageRow, axis, tl, stageFrag, axisFrag, timelineFrag);
+  swapSchedule(stageRow, axis, tl, stageFrag, axisFrag, timelineFrag, startHour, endHour);
   updateNowLine();
   updateResetBtn();
 }
@@ -1573,7 +2011,7 @@ function renderDay(dayKey) {
     timelineFrag.appendChild(col);
   });
 
-  swapSchedule(stageRow, axis, tl, stageFrag, axisFrag, timelineFrag);
+  swapSchedule(stageRow, axis, tl, stageFrag, axisFrag, timelineFrag, day.startHour, day.endHour);
   updateNowLine();
   updateResetBtn();
 }
@@ -1657,7 +2095,7 @@ function renderDisco(dayKey) {
     timelineFrag.appendChild(col);
   });
 
-  swapSchedule(stageRow, axis, tl, stageFrag, axisFrag, timelineFrag);
+  swapSchedule(stageRow, axis, tl, stageFrag, axisFrag, timelineFrag, startHour, endHour);
   updateNowLine();
   updateResetBtn();
 }
@@ -1809,11 +2247,23 @@ function renderCamping(dayKey) {
 function updateNowLine() {
   const tl = $('tl');
   const existing = $('now-line');
+  const isFullscreen = document.body.classList.contains('is-fullscreen');
+
+  if (isFullscreen) {
+    if (existing) existing.remove();
+    setNowSummary('');
+    document.querySelectorAll('.act').forEach(act => {
+      act.classList.remove('act-now');
+    });
+    updateStageHeaderSelectionState();
+    return;
+  }
 
   if (discoMode) {
     const renderedDay = document.querySelector('.day-item.active')?.dataset.day;
     if (renderedDay && renderedDay !== getDiscoDay()) {
       if (existing) existing.remove();
+      setNowSummary('');
       document.querySelectorAll('.act').forEach(act => {
         act.classList.remove('act-now', 'act-past');
       });
@@ -1826,6 +2276,7 @@ function updateNowLine() {
     if (h < 6) h += 24;
     if (!inFestival || h < discoHours.start || h >= discoHours.end) {
       if (existing) existing.remove();
+      setNowSummary('');
       document.querySelectorAll('.act').forEach(act => {
         act.classList.remove('act-now');
         act.classList.remove('act-past');
@@ -1838,7 +2289,7 @@ function updateNowLine() {
     const line = existing || document.createElement('div');
     line.id = 'now-line';
     if (!existing) {
-      Object.assign(line.style, { position: 'absolute', left: '0', right: '-3%', height: '6px', background: 'var(--accent)', boxShadow: '0 0 16px var(--accent), 0 0 0 1px rgba(255,255,255,0.65)', zIndex: '10', pointerEvents: 'none', transform: 'translateY(-50%)' });
+      Object.assign(line.style, { position: 'absolute', left: NOW_LINE_LEFT_PX + 'px', right: NOW_LINE_RIGHT_PX + 'px', height: '6px', background: 'var(--accent)', boxShadow: '0 0 16px var(--accent), 0 0 0 1px rgba(255,255,255,0.65)', zIndex: '0', pointerEvents: 'none', transform: 'translateY(-50%)' });
       tl.appendChild(line);
     }
     line.style.height = '6px';
@@ -1850,12 +2301,12 @@ function updateNowLine() {
       act.classList.toggle('act-now',  h >= s && h < e);
       act.classList.toggle('act-past', h >= e);
     });
+    updateNowSummary(h);
     return;
   }
 
   const festivalDay = getCurrentFestivalDay();
   const activeDay = document.querySelector('.day-item.active');
-
   const festivalIdx = festivalDay ? DAY_KEYS.indexOf(festivalDay) : -1;
   const viewedIdx = activeDay ? DAY_KEYS.indexOf(activeDay.dataset.day) : -1;
 
@@ -1878,6 +2329,7 @@ function updateNowLine() {
 
   if (h < day.startHour || h >= day.endHour) {
     if (existing) existing.remove();
+    setNowSummary('');
     return;
   }
 
@@ -1891,10 +2343,10 @@ function updateNowLine() {
     line.id = 'now-line';
     if (!existing) {
       Object.assign(line.style, {
-        position: 'absolute', left: '0', right: '-3%',
+        position: 'absolute', left: NOW_LINE_LEFT_PX + 'px', right: NOW_LINE_RIGHT_PX + 'px',
         height: '6px', background: 'var(--accent)',
         boxShadow: '0 0 16px var(--accent), 0 0 0 1px rgba(255,255,255,0.65)',
-        zIndex: '10', pointerEvents: 'none', transform: 'translateY(-50%)'
+        zIndex: '0', pointerEvents: 'none', transform: 'translateY(-50%)'
       });
       tl.appendChild(line);
     }
@@ -1920,6 +2372,7 @@ function updateNowLine() {
     }
   });
   updateStageHeaderSelectionState();
+  updateNowSummary(h);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -1944,7 +2397,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const saved = JSON.parse(localStorage.getItem('color'));
     if (saved) {
       accentColor = saved.accent; accentBg = saved.bg; accentBorder = saved.border;
-      highContrastMode = Boolean(saved.highContrast);
       setThemeVars();
       syncColorOptions();
       document.querySelectorAll('.label').forEach(el => el.style.color = accentColor);
@@ -2110,6 +2562,23 @@ document.addEventListener('DOMContentLoaded', () => {
     if (discoMode) { renderDisco(discoDayKey); queueActTextLayout(); }
     else if (campingMode) renderCamping(campingDayKey);
     else if (favsOnly) { setTitle({ fr: 'FAVORIS', en: 'FAVORITES', zh: '收藏' }[currentLang] || 'FAVORIS'); renderFavsMode(normalDayKey); }
+    updateNowLine();
+  });
+
+  const lightModeBtn = $('light-mode-btn');
+  let sunMode = localStorage.getItem('sunMode') === '1';
+  const applySunMode = () => {
+    document.body.classList.toggle('light-mode', sunMode);
+    document.body.classList.toggle('sun-mode', sunMode);
+    setUtilityButtonState(lightModeBtn, true, sunMode);
+    syncFullscreenSunActStyles();
+  }; 
+  applySunMode();
+  lightModeBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    sunMode = !sunMode;
+    localStorage.setItem('sunMode', sunMode ? '1' : '0');
+    applySunMode();
   });
 
   let langPressTimer = null, langDidLong = false, manualLangEaster = null;
@@ -2216,11 +2685,10 @@ document.addEventListener('DOMContentLoaded', () => {
     colorMenu.classList.remove('open');
     updateColorMenuBtn();
   });
-  function applyColorOption(opt, contrastEnabled) {
+  function applyColorOption(opt) {
     accentColor = opt.dataset.accent;
     accentBg = opt.dataset.bg;
     accentBorder = opt.dataset.border;
-    highContrastMode = Boolean(contrastEnabled);
     colorMenu.classList.remove('open');
     updateColorMenuBtn();
     applyAccentToElements();
@@ -2229,28 +2697,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   document.querySelectorAll('.color-option').forEach(opt => {
-    let colorPressTimer = null;
-    let colorDidLongPress = false;
-
-    opt.addEventListener('contextmenu', e => e.preventDefault());
-    opt.addEventListener('pointerdown', e => {
-      colorDidLongPress = false;
-      opt.setPointerCapture?.(e.pointerId);
-      colorPressTimer = setTimeout(() => {
-        colorDidLongPress = true;
-        applyColorOption(opt, true);
-      }, 650);
-    });
-    opt.addEventListener('pointerup', () => clearTimeout(colorPressTimer));
-    opt.addEventListener('pointercancel', () => clearTimeout(colorPressTimer));
-    opt.addEventListener('pointerleave', () => clearTimeout(colorPressTimer));
     opt.addEventListener('click', e => {
       e.stopPropagation();
-      if (colorDidLongPress) {
-        colorDidLongPress = false;
-        return;
-      }
-      applyColorOption(opt, false);
+      applyColorOption(opt);
     });
   });
 
@@ -2276,9 +2725,42 @@ document.addEventListener('DOMContentLoaded', () => {
     return Math.hypot(dx, dy);
   }
 
-  function clampFullscreenPan(displayScale, vw, vh) {
+  function clampValue(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+  }
+
+  function isPhoneLikeFullscreenViewport(vw, vh) {
+    const portrait = vh > vw * 1.35;
+    const narrow = vw <= 560;
+    const mobileUA = /Android|iPhone|iPod|Mobile/i.test(navigator.userAgent || '');
+    const coarsePointer = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    return portrait && (narrow || mobileUA || coarsePointer);
+  }
+
+  function applyFullscreenCapturePads(isFS, isPhoneCapture, virtualH) {
+    const root = document.documentElement;
+    if (!isFS || !isPhoneCapture) {
+      root.style.setProperty('--fs-pad-top', '25px');
+      root.style.setProperty('--fs-pad-right', '62px');
+      root.style.setProperty('--fs-pad-bottom', '100px');
+      root.style.setProperty('--fs-pad-left', '62px');
+      return;
+    }
+
+    // In virtual 1080px coordinates: enough room for phone UI, but most extra height goes to the timetable.
+    const topPad = Math.round(clampValue(virtualH * 0.055, 90, 135));
+    const bottomPad = Math.round(clampValue(virtualH * 0.048, 95, 135));
+    const sidePad = Math.round(clampValue(1080 * 0.060, 62, 76));
+
+    root.style.setProperty('--fs-pad-top', topPad + 'px');
+    root.style.setProperty('--fs-pad-right', sidePad + 'px');
+    root.style.setProperty('--fs-pad-bottom', bottomPad + 'px');
+    root.style.setProperty('--fs-pad-left', sidePad + 'px');
+  }
+
+  function clampFullscreenPan(displayScale, vw, vh, virtualH = 1920) {
     const scaledW = 1080 * displayScale;
-    const scaledH = 1920 * displayScale;
+    const scaledH = virtualH * displayScale;
     const maxX = Math.max(0, (scaledW - vw) / 2);
     const maxY = Math.max(0, (scaledH - vh) / 2);
     fullscreenPanX = Math.max(-maxX, Math.min(maxX, fullscreenPanX));
@@ -2292,27 +2774,70 @@ document.addEventListener('DOMContentLoaded', () => {
     const baseH = 1920;
     const viewportScale = Math.min(vw / baseW, vh / baseH);
     const isFS = document.body.classList.contains('is-fullscreen');
-    if (!isFS) fullscreenBaseScale = viewportScale;
+    const phoneCaptureFS = isFS && isPhoneLikeFullscreenViewport(vw, vh);
+    let virtualH = baseH;
+    let displayScale = viewportScale;
+    let left = Math.max(CANVAS_MARGIN, (vw - baseW * displayScale) / 2);
+    let top = Math.max(CANVAS_MARGIN, (vh - baseH * displayScale) / 2);
 
-    const displayScale = (isFS ? fullscreenBaseScale : viewportScale) * (isFS ? fullscreenZoom : 1);
+    if (!isFS) {
+      fullscreenBaseScale = viewportScale;
+      fullscreenPanX = 0;
+      fullscreenPanY = 0;
+    } else if (phoneCaptureFS) {
+      // Phone fullscreen is the screenshot/wallpaper view: exact device width, real device height.
+      displayScale = vw / baseW;
+      virtualH = Math.max(baseH, Math.ceil(vh / displayScale));
+      fullscreenZoom = 1;
+      fullscreenPanX = 0;
+      fullscreenPanY = 0;
+      left = 0;
+      top = 0;
+    } else {
+      // Desktop/tablet fullscreen keeps the previous behaviour so PC fullscreen is not disturbed.
+      const fsMaxScale = Math.min(fullscreenBaseScale, (vh - CANVAS_MARGIN * 2) / baseH, (vw - CANVAS_MARGIN * 2) / baseW);
+      displayScale = fsMaxScale * fullscreenZoom;
+      clampFullscreenPan(displayScale, vw, vh, baseH);
+      left = Math.max(CANVAS_MARGIN, (vw - baseW * displayScale) / 2) + fullscreenPanX;
+      top = Math.max(CANVAS_MARGIN, (vh - baseH * displayScale) / 2) + fullscreenPanY;
+    }
 
-    if (isFS) clampFullscreenPan(displayScale, vw, vh);
-    else { fullscreenPanX = 0; fullscreenPanY = 0; }
-
-    const centerX = (vw - baseW * displayScale) / 2;
-    const centerY = (vh - baseH * displayScale) / 2;
+    applyFullscreenCapturePads(isFS, phoneCaptureFS, virtualH);
 
     scaler.style.width = baseW + 'px';
-    scaler.style.height = baseH + 'px';
+    scaler.style.height = virtualH + 'px';
     scaler.style.transform = `scale(${displayScale})`;
-    scaler.style.left = (centerX + (isFS ? fullscreenPanX : 0)) + 'px';
-    scaler.style.top  = (centerY + (isFS ? fullscreenPanY : 0)) + 'px';
+    scaler.style.left = left + 'px';
+    scaler.style.top  = top + 'px';
   }
 
-  function refreshFullscreenState() {
-    updateEasterVisualBoost();
-    updateNowLine();
-  }
+  function syncFullscreenSunActStyles() {
+  const forceNeutral = document.body.classList.contains('sun-mode')
+    && document.body.classList.contains('is-fullscreen')
+    && !document.body.classList.contains('disco-mode');
+
+  document.querySelectorAll('.act:not(.selected)').forEach(act => {
+    if (forceNeutral) {
+      act.style.setProperty('background', '#ffffff', 'important');
+      act.style.setProperty('background-color', '#ffffff', 'important');
+      act.style.setProperty('background-image', 'none', 'important');
+      act.style.setProperty('opacity', '1', 'important');
+      act.style.setProperty('filter', 'none', 'important');
+      return;
+    }
+    act.style.removeProperty('background');
+    act.style.removeProperty('background-color');
+    act.style.removeProperty('background-image');
+    act.style.removeProperty('opacity');
+    act.style.removeProperty('filter');
+  });
+}
+
+function refreshFullscreenState() {
+  updateEasterVisualBoost();
+  updateNowLine();
+  syncFullscreenSunActStyles();
+}
 
   let responsiveLayoutRAF = 0;
   function queueResponsiveLayout() {
@@ -2325,6 +2850,13 @@ document.addEventListener('DOMContentLoaded', () => {
   if (window.visualViewport) window.visualViewport.addEventListener('resize', queueResponsiveLayout);
   document.addEventListener('touchstart', e => {
     if (!document.body.classList.contains('is-fullscreen')) return;
+
+    const vw = window.visualViewport ? window.visualViewport.width : window.innerWidth;
+    const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    if (isPhoneLikeFullscreenViewport(vw, vh)) {
+      resetFullscreenCaptureTransform();
+      return;
+    }
 
     if (e.touches.length === 2) {
       pinchStartDistance = touchDistance(e.touches);
@@ -2343,6 +2875,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.addEventListener('touchmove', e => {
     if (!document.body.classList.contains('is-fullscreen')) return;
+
+    const vw = window.visualViewport ? window.visualViewport.width : window.innerWidth;
+    const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    if (isPhoneLikeFullscreenViewport(vw, vh)) {
+      resetFullscreenCaptureTransform();
+      applyScale();
+      e.preventDefault();
+      return;
+    }
 
     if (e.touches.length === 2 && pinchStartDistance) {
       fullscreenZoom = clampFullscreenZoom(pinchStartZoom * (touchDistance(e.touches) / pinchStartDistance));
@@ -2370,37 +2911,53 @@ document.addEventListener('DOMContentLoaded', () => {
   const fsBtn = $('fs-btn');
   let appFS = false;
 
-  function enterFS() {
-    const tl = $('tl');
-    const tlH = tl.clientHeight;
-    appFS = true;
-    document.body.classList.add('is-fullscreen');
-    tl.style.setProperty('flex', 'none', 'important');
-    tl.style.setProperty('height', tlH + 'px', 'important');
-    applyScale();
-    refreshFullscreenState();
-    updateFullscreenBtn();
-    applyAccentToElements();
-    document.addEventListener('click', exitOnClick);
-    const el = document.documentElement;
-    const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen;
-    if (req) req.call(el).catch(() => {});
+  function syncFullscreenLayout() {
+    requestAnimationFrame(() => {
+      applyScale();
+      if (document.body.classList.contains('is-fullscreen')) queueActTextLayout();
+      requestAnimationFrame(() => {
+        applyScale();
+        if (document.body.classList.contains('is-fullscreen')) queueActTextLayout();
+      });
+    });
   }
 
-  function leaveFS() {
-    const tl = $('tl');
-    appFS = false;
-    document.body.classList.remove('is-fullscreen');
-    tl.style.removeProperty('flex');
-    tl.style.removeProperty('height');
+  function resetFullscreenCaptureTransform() {
     fullscreenZoom = 1;
     fullscreenPanX = 0;
     fullscreenPanY = 0;
     pinchStartDistance = 0;
+  }
+
+  function enterFS() {
+    appFS = true;
+    resetFullscreenCaptureTransform();
+    document.body.classList.add('is-fullscreen');
     applyScale();
     refreshFullscreenState();
     updateFullscreenBtn();
     applyAccentToElements();
+    syncFullscreenLayout();
+    setTimeout(refreshFullscreenState, 0);
+    document.addEventListener('click', exitOnClick);
+    const el = document.documentElement;
+    const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen;
+    if (req) {
+      const fsRequest = req.call(el);
+      if (fsRequest && typeof fsRequest.then === 'function') fsRequest.then(() => { syncFullscreenLayout(); refreshFullscreenState(); }).catch(() => {});
+      else { syncFullscreenLayout(); refreshFullscreenState(); }
+    }
+  }
+
+  function leaveFS() {
+    appFS = false;
+    document.body.classList.remove('is-fullscreen', 'fs-safe-guides');
+    resetFullscreenCaptureTransform();
+    applyScale();
+    refreshFullscreenState();
+    updateFullscreenBtn();
+    applyAccentToElements();
+    queueActTextLayout();
     document.removeEventListener('click', exitOnClick);
     const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen;
     if (exit && (document.fullscreenElement || document.webkitFullscreenElement)) exit.call(document).catch(() => {});
@@ -2413,10 +2970,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function onFSChange() {
     const nativeFS = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    if (nativeFS && appFS) { syncFullscreenLayout(); return; }
     if (!nativeFS && appFS) leaveFS();
   }
   document.addEventListener('fullscreenchange', onFSChange);
   document.addEventListener('webkitfullscreenchange', onFSChange);
+
+  let fsSafeGuideTimer = null;
+  function clearFsSafeGuideTimer() {
+    clearTimeout(fsSafeGuideTimer);
+    fsSafeGuideTimer = null;
+  }
+  $('current-date')?.addEventListener('pointerdown', () => {
+    if (!document.body.classList.contains('is-fullscreen')) return;
+    clearFsSafeGuideTimer();
+    fsSafeGuideTimer = setTimeout(() => {
+      document.body.classList.toggle('fs-safe-guides');
+      suppressNextExitClick = true;
+    }, 900);
+  });
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(type => {
+    $('current-date')?.addEventListener(type, clearFsSafeGuideTimer);
+  });
 
   const resetBtn = $('reset-btn');
   const resetLabel = $('reset-label');
@@ -2610,3 +3185,4 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
