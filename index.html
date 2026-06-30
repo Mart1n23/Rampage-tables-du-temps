@@ -26,8 +26,6 @@
     --header-gap: 6px;
     --day-date-gap: 13px;
     --day-date-pull: -10px;
-    --summary-bg: rgba(255,255,255,0.94);
-    --summary-text: #050505;
     --muted-time: #f0f0f0;
     --future-act-bg: #5e5e5ebd;
     --future-act-border: #8c8c8c;
@@ -232,7 +230,7 @@
     height: 100%; display: flex; flex-direction: column;
   }
 
-  /* Fullscreen only: capture/wallpaper framing. Defaults keep desktop fullscreen unchanged. */
+  /* Capture/wallpaper framing — desktop fullscreen unchanged by default. */
   .is-fullscreen .content {
     padding:
       var(--fs-pad-top, 25px)
@@ -540,7 +538,6 @@
 
   body.favs-only .act { overflow: hidden !important; }
 
-  /* Light mode */
   body.light-mode:not(.disco-mode) .bg-full { background: #efefef; }
   body.light-mode:not(.disco-mode) {
     --future-act-bg: #dedede;
@@ -574,7 +571,7 @@
   /* === Sun mode (inactif quand disco-mode est actif) === */
 
   body.sun-mode:not(.is-fullscreen):not(.disco-mode) {
-    --future-act-bg: #ffffff;       /* ← couleur fond des cases futures en sun-mode */
+    --future-act-bg: #ffffff;
     --future-act-border: #000000;
     --future-act-top: #c0c0c0;
     --future-act-left-width: 3px;
@@ -608,7 +605,6 @@
     --grid-line-color: rgba(0,0,0,0.30);
   }
 
-  /* ── Fullscreen sun: variables ── */
   body.sun-mode.is-fullscreen:not(.disco-mode) {
     --future-act-bg: #ffffff;
     --future-act-border: #000000;
@@ -629,35 +625,22 @@
     --grid-line-color: rgba(0,0,0,0.30);
   }
 
-  /* ── Background ── */
   body.sun-mode:not(.is-fullscreen):not(.disco-mode) .bg-full { background: #ffffff; }
   body.sun-mode.is-fullscreen:not(.disco-mode) .bg-full { background: #ffffff !important; filter: none !important; }
   body.sun-mode.is-fullscreen:not(.disco-mode) .bg-full::after { background: transparent !important; }
   body.sun-mode .easter-img { display: none !important; }
 
-  /* ── Typography: non-fullscreen ── */
-  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .label { color: var(--sun-accent, var(--accent)) !important; }
-  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .sh-name { color: #000000; text-shadow: none !important; }
-  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .sh-sub { color: rgba(0,0,0,0.82) !important; }
-  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .day-item { color: rgba(0,0,0,0.50) !important; }
-  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .day-item.active { color: #000000 !important; }
-  body.sun-mode:not(.is-fullscreen):not(.disco-mode) #current-date { color: var(--sun-accent, var(--accent)) !important; }
-  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .tick-label { color: #000000 !important; font-weight: 700 !important; }
+  body.sun-mode:not(.disco-mode) .label { color: var(--sun-accent, var(--accent)) !important; }
+  body.sun-mode:not(.disco-mode) .sh-name { color: #000000 !important; text-shadow: none !important; }
+  body.sun-mode:not(.disco-mode) .sh-sub { color: rgba(0,0,0,0.82) !important; }
+  body.sun-mode:not(.disco-mode) .day-item { color: rgba(0,0,0,0.50) !important; }
+  body.sun-mode:not(.disco-mode) .day-item.active { color: #000000 !important; }
+  body.sun-mode:not(.disco-mode) #current-date { color: var(--sun-accent, var(--accent)) !important; }
+  body.sun-mode:not(.disco-mode) .tick-label { color: #000000 !important; font-weight: 700 !important; }
 
-  /* ── Typography: fullscreen sun ── */
-  body.sun-mode.is-fullscreen:not(.disco-mode) .sh-name { color: #000000 !important; text-shadow: none !important; }
-  body.sun-mode.is-fullscreen:not(.disco-mode) .sh-sub { color: rgba(0,0,0,0.82) !important; }
-  body.sun-mode.is-fullscreen:not(.disco-mode) .label { color: var(--sun-accent, var(--accent)) !important; }
-  body.sun-mode.is-fullscreen:not(.disco-mode) .day-item { color: rgba(0,0,0,0.50) !important; }
-  body.sun-mode.is-fullscreen:not(.disco-mode) .day-item.active { color: #000000 !important; }
-  body.sun-mode.is-fullscreen:not(.disco-mode) #current-date { color: var(--sun-accent, var(--accent)) !important; }
-  body.sun-mode.is-fullscreen:not(.disco-mode) .tick-label { color: #000000 !important; font-weight: 700 !important; }
-
-  /* ── Text-stroke: kill in sun-mode hors disco ── */
   body.sun-mode:not(.disco-mode) .act-name { -webkit-text-stroke: 0 !important; text-shadow: none !important; }
   body.sun-mode:not(.disco-mode) .act-time { -webkit-text-stroke: 0 !important; }
 
-  /* ── Acts: non-fullscreen ── */
   body.sun-mode:not(.is-fullscreen):not(.disco-mode) .act:not(.selected):not(.act-now) > .act-body > .act-name { color: #000000 !important; opacity: 1 !important; }
   body.sun-mode:not(.is-fullscreen):not(.disco-mode) .act:not(.selected):not(.act-now) > .act-body > .act-time { color: #333333 !important; }
   body.sun-mode:not(.is-fullscreen):not(.disco-mode) .act.selected:not(.act-now) > .act-body > .act-name { color: #000000 !important; }
@@ -665,20 +648,12 @@
   body.sun-mode:not(.is-fullscreen):not(.disco-mode) .act.act-now.selected > .act-body > .act-name { text-shadow: none !important; }
   body.sun-mode:not(.is-fullscreen):not(.disco-mode) .act.act-now.selected > .act-body > .act-time { color: #ffffff !important; }
 
-  /* ── Stage headers: non-fullscreen ── */
   body.sun-mode:not(.is-fullscreen):not(.disco-mode) .stage-header { border-top-width: 4px !important; }
   body.sun-mode:not(.is-fullscreen):not(.disco-mode) .stage-header.sh-bar-glow::before { box-shadow: none; }
-
-  /* ── Stage headers: fullscreen sun ── */
   body.sun-mode.is-fullscreen:not(.disco-mode) .stage-header { border-top-width: 6px !important; border-top-color: var(--sun-accent, var(--accent)) !important; }
 
-  /* ── Acts: fullscreen sun – non-selected (all time states identical) ── */
-  body.sun-mode.is-fullscreen:not(.disco-mode) .act,
-  body.sun-mode.is-fullscreen:not(.disco-mode) .act.act-past,
-  body.sun-mode.is-fullscreen:not(.disco-mode) .act.act-now:not(.selected) {
+  body.sun-mode.is-fullscreen:not(.disco-mode) .act {
     background: #ffffff !important;
-    background-color: #ffffff !important;
-    background-image: none !important;
     border-left-color: #000000 !important;
     border-top-color: #c0c0c0 !important;
     box-shadow: inset 0 0 0 1px rgba(0,0,0,0.14) !important;
@@ -686,13 +661,8 @@
     filter: none !important;
   }
   body.sun-mode.is-fullscreen:not(.disco-mode) .act > .act-body > .act-name { color: #000000 !important; opacity: 1 !important; }
-  body.sun-mode.is-fullscreen:not(.disco-mode) .act.act-past > .act-body > .act-name { color: #000000 !important; opacity: 1 !important; }
-  body.sun-mode.is-fullscreen:not(.disco-mode) .act.act-now > .act-body > .act-name { color: #000000 !important; opacity: 1 !important; }
   body.sun-mode.is-fullscreen:not(.disco-mode) .act > .act-body > .act-time { color: #333333 !important; }
-  body.sun-mode.is-fullscreen:not(.disco-mode) .act.act-past > .act-body > .act-time { color: #333333 !important; }
-  body.sun-mode.is-fullscreen:not(.disco-mode) .act.act-now > .act-body > .act-time { color: #333333 !important; }
 
-  /* ── Acts: fullscreen sun – selected ── */
   body.sun-mode.is-fullscreen:not(.disco-mode) .act.selected,
   body.sun-mode.is-fullscreen:not(.disco-mode) .act.act-past.selected,
   body.sun-mode.is-fullscreen:not(.disco-mode) .act.act-now.selected {
@@ -704,23 +674,16 @@
     opacity: 1 !important;
     filter: none !important;
   }
-  body.sun-mode.is-fullscreen:not(.disco-mode) .act.selected > .act-body > .act-name,
-  body.sun-mode.is-fullscreen:not(.disco-mode) .act.act-past.selected > .act-body > .act-name,
-  body.sun-mode.is-fullscreen:not(.disco-mode) .act.act-now.selected > .act-body > .act-name { color: #ffffff !important; opacity: 1 !important; }
-  body.sun-mode.is-fullscreen:not(.disco-mode) .act.selected > .act-body > .act-time,
-  body.sun-mode.is-fullscreen:not(.disco-mode) .act.act-past.selected > .act-body > .act-time,
-  body.sun-mode.is-fullscreen:not(.disco-mode) .act.act-now.selected > .act-body > .act-time { color: #dddddd !important; }
+  body.sun-mode.is-fullscreen:not(.disco-mode) .act.selected > .act-body > .act-name { color: #ffffff !important; opacity: 1 !important; }
+  body.sun-mode.is-fullscreen:not(.disco-mode) .act.selected > .act-body > .act-time { color: #dddddd !important; }
 
-  /* ── Now-line and summary: non-fullscreen ── */
   body.sun-mode:not(.is-fullscreen):not(.disco-mode) #now-line { background: #000000 !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.4) !important; }
   body.sun-mode:not(.is-fullscreen):not(.disco-mode) #now-summary .summary-row { color: #000000 !important; }
 
-  /* ── Camping/Info ── */
   body.sun-mode:not(.is-fullscreen):not(.disco-mode) .camping-card { background: #f2f2f2 !important; border-top-color: #cccccc !important; border-left-color: var(--sun-accent, var(--accent)) !important; }
   body.sun-mode:not(.is-fullscreen):not(.disco-mode) .camping-label { color: #000000 !important; }
   body.sun-mode:not(.is-fullscreen):not(.disco-mode) .camping-time { color: #333333 !important; }
 
-  /* ── Buttons: sun-mode (hors disco) ── */
   body.sun-mode:not(.disco-mode) #bottom-bar .bottom-btn { backdrop-filter: none !important; box-shadow: 0 2px 10px rgba(0,0,0,0.22) !important; }
   body.sun-mode:not(.disco-mode) #settings-popover .top-btn { backdrop-filter: none !important; box-shadow: 0 2px 8px rgba(0,0,0,0.18) !important; }
   body.sun-mode:not(.disco-mode) #bottom-bar .bottom-btn svg { filter: brightness(0) !important; }
@@ -734,7 +697,6 @@
   body.sun-mode:not(.disco-mode) .bottom-btn.control-active,
   body.sun-mode:not(.disco-mode) .top-btn.control-active { color: #ffffff !important; }
 
-  /* ── prefers-contrast: restricted to sun-mode only ── */
   @media (prefers-contrast: more) {
     body.sun-mode:not(.is-fullscreen):not(.disco-mode) {
       --future-act-left-width: 5px;
@@ -1756,7 +1718,6 @@ function getUpcomingSummaryGroups(acts, hour, budget) {
     .sort((a, b) => a.start - b.start || stagePriority(a.stage) - stagePriority(b.stage));
   if (!selected.length) return [];
 
-  // Group consecutive acts by start time
   const groups = [];
   let i = 0;
   while (i < selected.length) {
@@ -1835,14 +1796,7 @@ function addActBehavior(div) {
     saveFavs(selected ? [...favs, div.id] : favs.filter(f => f !== div.id));
     updateStageHeaderSelectionState();
     if (!document.body.classList.contains('is-fullscreen')) {
-      const summaryHour = discoMode
-        ? (() => {
-            const p = getFestivalParts();
-            let h = p.hour + p.minute / 60 + p.second / 3600;
-            if (h < 6) h += 24;
-            return h;
-          })()
-        : getFestivalHour(2);
+      const summaryHour = getFestivalHour(discoMode ? 6 : 2);
       updateNowSummary(summaryHour);
     }
     updateResetBtn();
@@ -2452,13 +2406,13 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCampingBtn();
 
     if (normalMode && fontsLoaded) {
-      // Fonts déjà prêtes : une seule passe avec métriques correctes, un seul rAF
+      // fonts prêtes : une seule passe avec métriques correctes
       requestAnimationFrame(() => {
         precomputeNormalDayTextLayouts(normalDayKey);
         revealPage();
       });
     } else {
-      // Fonts pas encore prêtes : attente jusqu'à 300ms, puis passe 2
+      // fonts absentes : attend 300ms puis passe 2
       requestAnimationFrame(() => requestAnimationFrame(() => {
         const fonts = (document.fonts && document.fonts.ready) || Promise.resolve();
         Promise.race([fonts, new Promise(r => setTimeout(r, 300))]).then(() => {
@@ -2716,7 +2670,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let fullscreenBaseScale = 1;
 
   function clampFullscreenZoom(value) {
-    return Math.max(0.55, Math.min(1, value));
+    return clampValue(value, 0.55, 1);
   }
 
   function touchDistance(touches) {
@@ -2747,10 +2701,10 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // In virtual 1080px coordinates: enough room for phone UI, but most extra height goes to the timetable.
+    // padding proportionnel à virtualH (coords 1080px)
     const topPad = Math.round(clampValue(virtualH * 0.055, 90, 135));
     const bottomPad = Math.round(clampValue(virtualH * 0.048, 95, 135));
-    const sidePad = Math.round(clampValue(1080 * 0.060, 62, 76));
+    const sidePad = 65;
 
     root.style.setProperty('--fs-pad-top', topPad + 'px');
     root.style.setProperty('--fs-pad-right', sidePad + 'px');
@@ -2785,7 +2739,7 @@ document.addEventListener('DOMContentLoaded', () => {
       fullscreenPanX = 0;
       fullscreenPanY = 0;
     } else if (phoneCaptureFS) {
-      // Phone fullscreen is the screenshot/wallpaper view: exact device width, real device height.
+      // capture téléphone : largeur device exacte, hauteur réelle
       displayScale = vw / baseW;
       virtualH = Math.max(baseH, Math.ceil(vh / displayScale));
       fullscreenZoom = 1;
@@ -2794,7 +2748,7 @@ document.addEventListener('DOMContentLoaded', () => {
       left = 0;
       top = 0;
     } else {
-      // Desktop/tablet fullscreen keeps the previous behaviour so PC fullscreen is not disturbed.
+      // desktop/tablette : comportement inchangé
       const fsMaxScale = Math.min(fullscreenBaseScale, (vh - CANVAS_MARGIN * 2) / baseH, (vw - CANVAS_MARGIN * 2) / baseW);
       displayScale = fsMaxScale * fullscreenZoom;
       clampFullscreenPan(displayScale, vw, vh, baseH);
