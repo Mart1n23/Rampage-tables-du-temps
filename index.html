@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#000000">
@@ -26,12 +26,12 @@
     --header-gap: 6px;
     --day-date-gap: 13px;
     --day-date-pull: -10px;
-    --muted-time: #f0f0f0;
-    --future-act-bg: #5e5e5ebd;
-    --future-act-border: #8c8c8c;
-    --future-act-top: #585858;
-    --future-act-left-width: 3px;
-    --future-act-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+    --muted-time: #ffffff;
+    --act-bg: #5e5e5ebd;
+    --act-border: #8c8c8c;
+    --act-top: #585858;
+    --act-left-width: 3px;
+    --act-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
     --past-act-bg: #1a1a1a;
     --past-act-border: #353535;
     --past-act-top: #272727;
@@ -65,7 +65,7 @@
     --control-active-border: #fff;
     --font-scale: 1;
     --stage-name-size: 21px;
-    --fs-stage-name-boost: 1.8; 
+    --fs-stage-name-boost: 1.8;
     --stage-sub-size: 18px;
     --stage-sub-height: 40px;
     --edge-gap: 24px;
@@ -77,7 +77,6 @@
   body.disco-mode {
     --font-scale: 1.666667;
   }
-
 
   body {
     background: transparent; color: #fff;
@@ -157,6 +156,7 @@
     height: 1920px;
     transform-origin: top left;
     z-index: 1;
+    touch-action: none;
   }
 
   .easter-img {
@@ -165,7 +165,9 @@
     object-fit: cover; pointer-events: none; z-index: 0;
   }
   .easter-img.contain { object-fit: contain; object-position: top center; }
-  #fr-img {
+  #fr-img,
+  #en-img,
+  #zh-img {
     top: auto;
     bottom: 0;
     width: 100%;
@@ -179,6 +181,28 @@
     border-radius: 50%; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     user-select: none; -webkit-user-select: none;
+    touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  }
+  button.round-btn,
+  button.color-option {
+    appearance: none; -webkit-appearance: none;
+    font: inherit; color: inherit; padding: 0;
+  }
+  button.profile-mode-feat-btn,
+  button.profile-mode-day-btn,
+  button.profile-mode-sun-btn,
+  button.profile-mode-update-btn {
+    appearance: none; -webkit-appearance: none;
+  }
+  .round-btn:focus-visible,
+  .color-option:focus-visible,
+  .act:focus-visible,
+  .profile-mode-feat-btn:focus-visible,
+  .profile-mode-day-btn:focus-visible,
+  .profile-mode-sun-btn:focus-visible,
+  .profile-mode-update-btn:focus-visible {
+    outline: 5px solid var(--accent);
+    outline-offset: 5px;
   }
   .top-btn { width: var(--popover-btn-size); height: var(--popover-btn-size); }
   .bottom-btn { width: var(--bottom-btn-size); height: var(--bottom-btn-size); }
@@ -202,7 +226,8 @@
     filter: none;
   }
   #settings-popover {
-    position: absolute; right: calc((var(--bottom-btn-size) - var(--popover-btn-size)) / 2); bottom: 182px;
+    position: absolute; right: calc(var(--slot-0) + ((var(--bottom-btn-size) - var(--popover-btn-size)) / 2)); bottom: 182px;
+    width: var(--popover-btn-size);
     display: none; flex-direction: column; align-items: center; gap: 17px;
     z-index: 40; pointer-events: none;
   }
@@ -211,17 +236,28 @@
   #settings-popover .top-btn { box-shadow: 0 10px 28px rgba(0,0,0,0.75), inset 0 0 0 1px rgba(255,255,255,0.22); backdrop-filter: blur(8px); }
   #reset-wrap { display: none; position: relative; }
   #reset-label {
-    display: none; position: absolute; top: 50%; right: calc(100% + 14px); transform: translateY(-50%);
-    font: 64px 'Bebas Neue', sans-serif; color: #ff4444; letter-spacing: 3px; white-space: nowrap;
+    display: none; position: absolute; left: 50%; bottom: calc(100% + 10px); transform: translateX(-50%);
+    font: 64px 'Bebas Neue', sans-serif; color: #ff2a2a; letter-spacing: 3px; white-space: nowrap;
+    -webkit-text-stroke: 2px #000;
+    text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, 0 0 10px rgba(0,0,0,0.9);
+    z-index: 3;
   }
   #reset-btn { border-color: var(--control-border); }
-  #lang-btn {
-    font: 89px/1 'Bebas Neue', sans-serif; letter-spacing: 1px; color: #fff;
-    -webkit-touch-callout: none;
-    padding-top: 5px; text-align: center;
+  #sheet-status { min-height: 34px; }
+  .profile-mode-update-row { justify-content: center; }
+  .profile-mode-update-btn {
+    flex: 0 0 230px;
+    height: 92px;
+    font: 42px/1 'Bebas Neue', sans-serif;
+    letter-spacing: 3px;
+  }
+  .profile-mode-update-btn[aria-busy="true"],
+  .profile-mode-update-btn:disabled {
+    opacity: 0.42;
+    pointer-events: none;
   }
   #camping-btn { font: 109px 'Bebas Neue', sans-serif; color: #fff; }
-  #settings-btn svg { width: 98px; height: 98px; }
+  #profile-btn svg { width: 98px; height: 98px; }
   .info-col { display: flex; flex-direction: column; gap: 14px; padding: 16px 0; }
 
   .content {
@@ -229,8 +265,6 @@
     padding: 25px 62px 100px;
     height: 100%; display: flex; flex-direction: column;
   }
-
-  /* Capture/wallpaper framing — desktop fullscreen unchanged by default. */
   .is-fullscreen .content {
     padding:
       var(--fs-pad-top, 25px)
@@ -251,30 +285,95 @@
   }
 
   #bottom-bar {
+    --bottom-gap: calc((1080px - (var(--edge-gap) * 2) - (var(--bottom-btn-size) * 6)) / 5);
+    --bottom-step: calc(var(--bottom-btn-size) + var(--bottom-gap));
+    --slot-0: var(--edge-gap);
+    --slot-1: calc(var(--edge-gap) + var(--bottom-step));
+    --slot-2: calc(var(--edge-gap) + var(--bottom-step) + var(--bottom-step));
+    --slot-3: calc(var(--edge-gap) + var(--bottom-step) + var(--bottom-step) + var(--bottom-step));
+    --slot-4: calc(var(--edge-gap) + var(--bottom-step) + var(--bottom-step) + var(--bottom-step) + var(--bottom-step));
+    --slot-5: calc(var(--edge-gap) + var(--bottom-step) + var(--bottom-step) + var(--bottom-step) + var(--bottom-step) + var(--bottom-step));
     position: absolute;
-    left: var(--edge-gap); right: var(--edge-gap); bottom: var(--edge-gap);
-    display: flex; align-items: center; justify-content: space-between;
+    left: 0; right: 0; bottom: 0;
+    height: calc(var(--edge-gap) + var(--bottom-btn-size));
     padding: 0;
     flex-shrink: 0; z-index: 30;
     pointer-events: none;
     opacity: 1;
   }
-  #left-btns, #right-btns { display: flex; align-items: center; gap: 33px; }
-  #right-btns { position: relative; }
+  #left-btns, #right-btns { display: block; }
+  #camping-btn, #disco-btn, #favs-btn, #fs-btn, #settings-btn, #stage-view-slot {
+    position: absolute;
+    bottom: var(--edge-gap);
+  }
+  #settings-btn { right: var(--slot-0); }
+  #settings-btn::before {
+    content: '';
+    display: block;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 5px solid #fff;
+    box-sizing: border-box;
+  }
+  #fs-btn { right: var(--slot-1); }
+  #stage-view-slot {
+    right: var(--slot-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--bottom-btn-size);
+    height: var(--bottom-btn-size);
+    pointer-events: auto;
+  }
+  #stage-view-slot > #stage-view-btn { position: static; flex: 0 0 auto; }
+  #stage-view-btn svg { width: 92px; height: 92px; }
+  #favs-btn { right: var(--slot-3); }
+  #disco-btn { right: var(--slot-4); }
+  #camping-btn { right: var(--slot-5); }
+  #right-btns .top-btn, #right-btns .color-btn, #right-btns .color-option { pointer-events: auto; }
   #bottom-bar .bottom-btn {
     pointer-events: auto;
     box-shadow: 0 10px 28px rgba(0,0,0,0.75), inset 0 0 0 1px rgba(255,255,255,0.22);
     backdrop-filter: blur(8px);
+    transition: background 0.15s, border-color 0.15s, border-width 0.15s, opacity 0.45s ease, filter 0.15s, box-shadow 0.15s;
+  }
+  body.bottom-buttons-idle #bottom-bar .bottom-btn {
+    opacity: 0.34;
+  }
+  body.bottom-buttons-idle #bottom-bar .bottom-btn.control-active {
+    opacity: 0.58;
+  }
+  body.profile-mode.bottom-buttons-idle #bottom-bar .bottom-btn:not(.control-unavailable),
+  body.disco-mode.bottom-buttons-idle #bottom-bar .bottom-btn:not(.control-unavailable),
+  body.camping-mode.bottom-buttons-idle #bottom-bar .bottom-btn:not(.control-unavailable) {
+    opacity: 1;
+  }
+  body.profile-mode.bottom-buttons-idle #bottom-bar .bottom-btn.control-unavailable,
+  body.disco-mode.bottom-buttons-idle #bottom-bar .bottom-btn.control-unavailable,
+  body.camping-mode.bottom-buttons-idle #bottom-bar .bottom-btn.control-unavailable {
+    opacity: 0.58;
+  }
+  #stage-view-btn.cross-scene-indicator svg,
+  #disco-btn.cross-scene-indicator svg {
+    filter: drop-shadow(0 0 13px var(--accent));
+  }
+  #stage-view-btn.cross-scene-indicator svg *,
+  #disco-btn.cross-scene-indicator svg * {
+    stroke: var(--accent) !important;
+  }
+  #stage-view-btn.cross-scene-indicator svg [fill]:not([fill="none"]),
+  #disco-btn.cross-scene-indicator svg [fill]:not([fill="none"]) {
+    fill: var(--accent) !important;
   }
   .is-fullscreen #bottom-bar { display: none !important; }
   .is-fullscreen #now-line { display: none !important; }
-
 
   .top-bar { position: relative; display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
   #status-box {
     position: absolute;
     top: 6px;
-    left: 680px;
+    left: 685px;
     width: 380px;
     min-height: 96px;
     pointer-events: none;
@@ -324,14 +423,15 @@
   .color-option { width: var(--color-option-size); height: var(--color-option-size); border-radius: 50%; cursor: pointer; border: 3px solid transparent; filter: saturate(0.72) brightness(0.70); touch-action: manipulation; opacity: 0.8; }
   .color-option:hover, .color-option.current { border-color: #fff; filter: saturate(1.0) brightness(0.92); opacity: 1; }
 
-
   .label { font-size: 24px; letter-spacing: 5px; color: var(--accent); text-transform: uppercase; margin-bottom: var(--header-gap, 6px); cursor: pointer; display: flex; align-items: center; gap: 28px; }
   #days-left { font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 3px; color: var(--accent); opacity: 0.85; flex-shrink: 0; position: relative; top: 2px; }
   body.disco-mode #days-left,
   body.camping-mode #days-left,
   body.favs-only #days-left,
   body.is-fullscreen #days-left { display: none; }
-  .disco-mode .day-item[data-day="jeudi"] { display: none; }
+  .disco-mode .day-item[data-day="jeudi"],
+  body.secondary-stages-mode .day-item[data-day="jeudi"],
+  body.camping-stage-mode .day-item[data-day="jeudi"] { display: none; }
   .day-row { display: flex; align-items: flex-end; gap: 20px; height: 94px; flex-shrink: 0; }
   .day-item {
     font-family: 'Bebas Neue', sans-serif; line-height: 1;
@@ -352,7 +452,6 @@
   .is-fullscreen .day-date { font-size: 54px; margin-top: 16px; -webkit-text-stroke: 1px var(--accent); }
   .is-fullscreen #status-box { display: none !important; }
 
-
   .stage-row { display: grid; gap: 0 9px; margin-bottom: 6px; flex-shrink: 0; min-height: 74px; overflow: visible; }
   .disco-mode .stage-row { position: relative; z-index: 20; }
   .disco-mode .timeline { position: relative; z-index: 1; }
@@ -369,6 +468,47 @@
   .sh-sub { font-size: calc(var(--stage-sub-size) * var(--font-scale, 1)); line-height: 1.12; height: calc(var(--stage-sub-height) * var(--font-scale, 1)); color: #ffffff55; margin-top: 2px; overflow: hidden; }
 
   .timeline { flex: 1; display: grid; gap: 0 9px; position: relative; min-height: 0; isolation: isolate; }
+
+  .content > .top-bar,
+  .content > #status-box,
+  .content > #stage-row,
+  .content > #tl {
+    transform: translateY(var(--peek-y, 0px));
+    transition: transform 0.18s ease-out;
+  }
+  body.peek-dragging .content > .top-bar,
+  body.peek-dragging .content > #status-box,
+  body.peek-dragging .content > #stage-row,
+  body.peek-dragging .content > #tl {
+    transition: none;
+    will-change: transform;
+  }
+
+  .day-swipe-animating .day-date,
+  .day-swipe-animating .stage-row,
+  .day-swipe-animating .timeline {
+    will-change: transform, opacity;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    body.day-swipe-enter-next .day-date,
+    body.day-swipe-enter-next .stage-row,
+    body.day-swipe-enter-next .timeline {
+      animation: day-swipe-enter-next 0.22s ease-out both;
+    }
+    body.day-swipe-enter-prev .day-date,
+    body.day-swipe-enter-prev .stage-row,
+    body.day-swipe-enter-prev .timeline {
+      animation: day-swipe-enter-prev 0.22s ease-out both;
+    }
+    @keyframes day-swipe-enter-next {
+      from { transform: translateX(74px); opacity: 0.42; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes day-swipe-enter-prev {
+      from { transform: translateX(-74px); opacity: 0.42; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+  }
 
   .time-axis { position: relative; }
   .tick-label {
@@ -389,10 +529,10 @@
     display: block !important;
     overflow: hidden !important;
     padding: 7px 7px 6px 8px;
-    background: var(--future-act-bg);
-    border-left: var(--future-act-left-width) solid var(--future-act-border);
-    border-top: 1px solid var(--future-act-top);
-    box-shadow: var(--future-act-shadow);
+    background: var(--act-bg);
+    border-left: var(--act-left-width) solid var(--act-border);
+    border-top: 1px solid var(--act-top);
+    box-shadow: var(--act-shadow);
     cursor: pointer;
     transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, filter 0.15s, opacity 0.15s;
     -webkit-tap-highlight-color: transparent; user-select: none;
@@ -406,6 +546,7 @@
   }
   .act.selected::before { content: ''; position: absolute; inset: 0; background: var(--accent); opacity: var(--selected-act-overlay-opacity); border-radius: inherit; pointer-events: none; z-index: 0; }
   body:not(.is-fullscreen) .act.act-now.selected::before { opacity: 0.68; }
+  body.sun-mode:not(.disco-mode) .act.act-now.selected::before { opacity: 0 !important; }
   body:not(.disco-mode) .act.selected:not(.act-now) > .act-body > .act-name { color: var(--selected-act-text) !important; -webkit-text-stroke: 1px currentColor; }
   body:not(.disco-mode) .act.selected:not(.act-now) > .act-body > .act-time { color: var(--selected-act-time) !important; }
   body:not(.disco-mode) .act.selected.act-now {
@@ -414,6 +555,7 @@
     border-top-color: var(--current-act-top);
   }
   body:not(.disco-mode) .act.selected.act-now > .act-body > .act-name { color: #fff !important; }
+  body:not(.is-fullscreen) .act.act-now.selected > .act-body > .act-name { text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 0 6px rgba(0,0,0,0.9) !important; }
   .act.act-now {
     box-shadow: var(--current-act-shadow);
   }
@@ -453,7 +595,7 @@
   .easter-active .act.act-past { opacity: 0.70; }
   body.is-fullscreen .act,
   body.is-fullscreen .act.act-past { opacity: 1 !important; filter: none !important; }
-  body.is-fullscreen .act.act-past:not(.selected):not(.act-now) { background: var(--future-act-bg) !important; border-left-color: var(--future-act-border) !important; border-top-color: var(--future-act-top) !important; }
+  body.is-fullscreen .act.act-past:not(.selected):not(.act-now) { background: var(--act-bg) !important; border-left-color: var(--act-border) !important; border-top-color: var(--act-top) !important; }
   body.is-fullscreen .act.act-past.selected:not(.act-now) { background: var(--selected-act-bg) !important; border-left-color: var(--accent-border) !important; border-top-color: var(--selected-act-top) !important; }
   body:not(.is-fullscreen) .act.act-past.selected:not(.act-now) {
     opacity: 1;
@@ -464,10 +606,9 @@
   body.is-fullscreen .act.act-past:not(.selected)::after { display: none !important; }
   body.is-fullscreen .act.act-past .act-name { color: #fff !important; }
   body.is-fullscreen .act.act-past .act-time { color: var(--muted-time) !important; }
-  body.is-fullscreen .act.act-now:not(.selected) { background: var(--future-act-bg) !important; border-left-color: var(--future-act-border) !important; border-top-color: var(--future-act-top) !important; box-shadow: var(--future-act-shadow) !important; filter: none !important; }
+  body.is-fullscreen .act.act-now:not(.selected) { background: var(--act-bg) !important; border-left-color: var(--act-border) !important; border-top-color: var(--act-top) !important; box-shadow: var(--act-shadow) !important; filter: none !important; }
   body.is-fullscreen .act.act-now.selected { background: var(--selected-act-bg) !important; border-left-color: var(--accent-border) !important; border-top-color: var(--selected-act-top) !important; box-shadow: var(--selected-act-shadow) !important; }
   body.is-fullscreen .act.act-now > .act-body > .act-name { color: #fff !important; opacity: 0.9 !important; }
-  body:not(.is-fullscreen) .act.act-now.selected > .act-body > .act-name { text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 0 6px rgba(0,0,0,0.9) !important; }
   .act > .act-body {
     position: absolute !important;
     top: 7px !important;
@@ -530,20 +671,21 @@
   .comic-sans .day-item { font-family: 'Bebas Neue', sans-serif !important; }
 
   .camping-card { border-radius: 3px; padding: 22px 20px; background: #1c1c1c; border-left: 3px solid #444; border-top: 1px solid #2a2a2a; }
-  .camping-card-active { background: #2a2a2a; border-left: 4px solid var(--accent); }
-  .camping-label { font-size: 26px; font-weight: 700; color: #fff; }
-  .camping-time { font-size: 22px; color: #ffffff88; margin-top: 6px; }
+  .camping-card-active { background: #2a2a2a; border-left: 12px solid var(--accent); }
+  .camping-label { font-size: 34px; font-weight: 700; color: #fff; }
+  .camping-time { font-size: 29px; color: #ffffff88; margin-top: 10px; }
 
-  #sheet-error { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; color: #ffffff33; font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 4px; padding: 80px 0; }
+  #sheet-error { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.36); font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 4px; padding: 80px 0; }
+  body.light-mode:not(.disco-mode) #sheet-error, body.sun-mode:not(.disco-mode) #sheet-error { color: rgba(0,0,0,0.50); }
 
   body.favs-only .act { overflow: hidden !important; }
 
   body.light-mode:not(.disco-mode) .bg-full { background: #efefef; }
   body.light-mode:not(.disco-mode) {
-    --future-act-bg: #dedede;
-    --future-act-border: #aaaaaa;
-    --future-act-top: #c4c4c4;
-    --future-act-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+    --act-bg: #dedede;
+    --act-border: #aaaaaa;
+    --act-top: #c4c4c4;
+    --act-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
     --past-act-bg: #c8c8c8;
     --past-act-border: #a8a8a8;
     --past-act-top: #b8b8b8;
@@ -567,15 +709,12 @@
   body.light-mode:not(.disco-mode) .camping-card { background: #d8d8d8 !important; border-top-color: #bbb !important; border-left-color: #888 !important; }
   body.light-mode:not(.disco-mode) .camping-label { color: #111 !important; }
   body.light-mode:not(.disco-mode) .camping-time { color: #444 !important; }
-
-  /* === Sun mode (inactif quand disco-mode est actif) === */
-
-  body.sun-mode:not(.is-fullscreen):not(.disco-mode) {
-    --future-act-bg: #ffffff;
-    --future-act-border: #000000;
-    --future-act-top: #c0c0c0;
-    --future-act-left-width: 3px;
-    --future-act-shadow: inset 0 0 0 1px rgba(0,0,0,0.14);
+  body.sun-mode:not(.disco-mode) {
+    --act-bg: #ffffff;
+    --act-border: #000000;
+    --act-top: #c0c0c0;
+    --act-left-width: 3px;
+    --act-shadow: inset 0 0 0 1px rgba(0,0,0,0.14);
     --past-act-bg: #c0c0c0;
     --past-act-border: #888888;
     --past-act-top: #a0a0a0;
@@ -586,43 +725,28 @@
     --past-act-shadow: inset 0 0 0 1px rgba(0,0,0,0.10);
     --selected-act-bg: #ffffff;
     --selected-act-text: #000000;
-    --selected-act-time: #222222;
+    --selected-act-time: #000000;
     --selected-act-left-width: 8px;
     --selected-act-top: #000000;
     --selected-act-shadow: inset 0 0 0 5px rgba(0,0,0,0.18);
-    --selected-act-overlay-opacity: 0.12;
+    --selected-act-overlay-opacity: 0.25;
     --current-act-bg: #000000;
     --current-act-text: #000000;
-    --current-act-time: #333333;
+    --current-act-time: #000000;
     --current-act-left-width: 8px;
     --current-act-top: var(--accent);
     --current-act-shadow: 0 0 0 2px #000000, 0 2px 14px rgba(0,0,0,0.22);
     --current-act-filter: none;
-    --muted-time: #111111;
+    --muted-time: #000000;
     --control-bg: rgba(235,235,235,0.96);
     --control-border: rgba(0,0,0,0.52);
     --control-active-border: #000000;
     --grid-line-color: rgba(0,0,0,0.30);
   }
-
   body.sun-mode.is-fullscreen:not(.disco-mode) {
-    --future-act-bg: #ffffff;
-    --future-act-border: #000000;
-    --future-act-top: #c0c0c0;
-    --future-act-left-width: 3px;
-    --future-act-shadow: inset 0 0 0 1px rgba(0,0,0,0.14);
-    --selected-act-bg: #000000;
-    --selected-act-text: #ffffff;
-    --selected-act-time: #dddddd;
-    --selected-act-left-width: 8px;
-    --selected-act-top: var(--sun-accent, var(--accent));
-    --selected-act-shadow: none;
+    --selected-act-left-width: 10px;
+    --selected-act-shadow: inset 0 0 0 4px #000000;
     --selected-act-overlay-opacity: 0;
-    --muted-time: #333333;
-    --control-bg: rgba(235,235,235,0.96);
-    --control-border: rgba(0,0,0,0.52);
-    --control-active-border: #000000;
-    --grid-line-color: rgba(0,0,0,0.30);
   }
 
   body.sun-mode:not(.is-fullscreen):not(.disco-mode) .bg-full { background: #ffffff; }
@@ -642,11 +766,11 @@
   body.sun-mode:not(.disco-mode) .act-time { -webkit-text-stroke: 0 !important; }
 
   body.sun-mode:not(.is-fullscreen):not(.disco-mode) .act:not(.selected):not(.act-now) > .act-body > .act-name { color: #000000 !important; opacity: 1 !important; }
-  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .act:not(.selected):not(.act-now) > .act-body > .act-time { color: #333333 !important; }
+  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .act:not(.selected):not(.act-now) > .act-body > .act-time { color: #000000 !important; }
   body.sun-mode:not(.is-fullscreen):not(.disco-mode) .act.selected:not(.act-now) > .act-body > .act-name { color: #000000 !important; }
-  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .act.selected:not(.act-now) > .act-body > .act-time { color: #222222 !important; }
-  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .act.act-now.selected > .act-body > .act-name { text-shadow: none !important; }
+  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .act.selected:not(.act-now) > .act-body > .act-time { color: #000000 !important; }
   body.sun-mode:not(.is-fullscreen):not(.disco-mode) .act.act-now.selected > .act-body > .act-time { color: #ffffff !important; }
+  body.sun-mode:not(.is-fullscreen):not(.disco-mode) .act.act-now.selected > .act-body > .act-name { text-shadow: none !important; }
 
   body.sun-mode:not(.is-fullscreen):not(.disco-mode) .stage-header { border-top-width: 4px !important; }
   body.sun-mode:not(.is-fullscreen):not(.disco-mode) .stage-header.sh-bar-glow::before { box-shadow: none; }
@@ -660,22 +784,16 @@
     opacity: 1 !important;
     filter: none !important;
   }
+  body.sun-mode.is-fullscreen:not(.disco-mode) { --fs-sun-tint: var(--sun-accent, var(--accent)); }
   body.sun-mode.is-fullscreen:not(.disco-mode) .act > .act-body > .act-name { color: #000000 !important; opacity: 1 !important; }
-  body.sun-mode.is-fullscreen:not(.disco-mode) .act > .act-body > .act-time { color: #333333 !important; }
-
-  body.sun-mode.is-fullscreen:not(.disco-mode) .act.selected,
-  body.sun-mode.is-fullscreen:not(.disco-mode) .act.act-past.selected,
-  body.sun-mode.is-fullscreen:not(.disco-mode) .act.act-now.selected {
-    background: #000000 !important;
-    border-left-color: var(--sun-accent, var(--accent)) !important;
-    border-top-color: var(--sun-accent, var(--accent)) !important;
-    border-left-width: 8px !important;
-    box-shadow: none !important;
-    opacity: 1 !important;
-    filter: none !important;
-  }
-  body.sun-mode.is-fullscreen:not(.disco-mode) .act.selected > .act-body > .act-name { color: #ffffff !important; opacity: 1 !important; }
-  body.sun-mode.is-fullscreen:not(.disco-mode) .act.selected > .act-body > .act-time { color: #dddddd !important; }
+  body.sun-mode.is-fullscreen:not(.disco-mode) .act > .act-body > .act-time { color: #000000 !important; }
+  body.sun-mode.is-fullscreen:not(.disco-mode) .act:not(.selected) { border-left-color: var(--fs-sun-tint) !important; }
+  body.sun-mode.is-fullscreen:not(.disco-mode) .act:not(.selected) > .act-body > .act-name,
+  body.sun-mode.is-fullscreen:not(.disco-mode) .act:not(.selected) > .act-body > .act-time { color: var(--fs-sun-tint) !important; }
+  body.sun-mode.is-fullscreen:not(.disco-mode) .act.selected { background: #ffffff !important; background-color: #ffffff !important; }
+  body.sun-mode.is-fullscreen:not(.disco-mode) .act.selected::before { display: none !important; opacity: 0 !important; }
+  body.sun-mode.is-fullscreen:not(.disco-mode) .day-item.active { -webkit-text-stroke: 0 !important; }
+  body.sun-mode.is-fullscreen:not(.disco-mode) .day-date { -webkit-text-stroke: 0 !important; }
 
   body.sun-mode:not(.is-fullscreen):not(.disco-mode) #now-line { background: #000000 !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.4) !important; }
   body.sun-mode:not(.is-fullscreen):not(.disco-mode) #now-summary .summary-row { color: #000000 !important; }
@@ -684,40 +802,152 @@
   body.sun-mode:not(.is-fullscreen):not(.disco-mode) .camping-label { color: #000000 !important; }
   body.sun-mode:not(.is-fullscreen):not(.disco-mode) .camping-time { color: #333333 !important; }
 
-  body.sun-mode:not(.disco-mode) #bottom-bar .bottom-btn { backdrop-filter: none !important; box-shadow: 0 2px 10px rgba(0,0,0,0.22) !important; }
-  body.sun-mode:not(.disco-mode) #settings-popover .top-btn { backdrop-filter: none !important; box-shadow: 0 2px 8px rgba(0,0,0,0.18) !important; }
-  body.sun-mode:not(.disco-mode) #bottom-bar .bottom-btn svg { filter: brightness(0) !important; }
-  body.sun-mode:not(.disco-mode) #settings-popover .top-btn svg { filter: brightness(0) !important; }
-  body.sun-mode:not(.disco-mode) .bottom-btn.control-active { background: rgba(0,0,0,0.88) !important; }
-  body.sun-mode:not(.disco-mode) .bottom-btn.control-active svg { filter: brightness(0) invert(1) !important; }
-  body.sun-mode:not(.disco-mode) .top-btn.control-active { background: rgba(0,0,0,0.88) !important; }
-  body.sun-mode:not(.disco-mode) .top-btn.control-active svg { filter: brightness(0) invert(1) !important; }
-  body.sun-mode:not(.disco-mode) #camping-btn { color: #000000; }
-  body.sun-mode:not(.disco-mode) #lang-btn { color: #000000; }
-  body.sun-mode:not(.disco-mode) .bottom-btn.control-active,
-  body.sun-mode:not(.disco-mode) .top-btn.control-active { color: #ffffff !important; }
+  body.sun-mode:not(.disco-mode) #bottom-bar .bottom-btn,
+  body.sun-mode:not(.disco-mode) #settings-popover .top-btn,
+  body.sun-mode:not(.disco-mode) #right-btns > .top-btn,
+  body.sun-mode:not(.disco-mode) #color-btn {
+    background: #000000 !important;
+    border-color: #000000 !important;
+    color: #ffffff !important;
+    backdrop-filter: none !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.22) !important;
+    filter: none !important;
+  }
+  body.sun-mode:not(.disco-mode) #settings-popover .top-btn { box-shadow: 0 2px 8px rgba(0,0,0,0.18) !important; }
+  body.sun-mode:not(.disco-mode) #bottom-bar svg,
+  body.sun-mode:not(.disco-mode) #settings-popover svg,
+  body.sun-mode:not(.disco-mode) #right-btns > .top-btn svg { filter: none !important; }
+  body.sun-mode:not(.disco-mode) #bottom-bar svg *,
+  body.sun-mode:not(.disco-mode) #settings-popover svg *,
+  body.sun-mode:not(.disco-mode) #right-btns > .top-btn svg * { stroke: #ffffff !important; }
+  body.sun-mode:not(.disco-mode) #bottom-bar svg [fill]:not([fill="none"]),
+  body.sun-mode:not(.disco-mode) #settings-popover svg [fill]:not([fill="none"]),
+  body.sun-mode:not(.disco-mode) #right-btns > .top-btn svg [fill]:not([fill="none"]) { fill: #ffffff !important; }
+  body #bottom-bar #stage-view-btn.cross-scene-indicator svg,
+  body #bottom-bar #disco-btn.cross-scene-indicator svg,
+  body.sun-mode:not(.disco-mode) #bottom-bar #stage-view-btn.cross-scene-indicator svg,
+  body.sun-mode:not(.disco-mode) #bottom-bar #disco-btn.cross-scene-indicator svg {
+    filter: drop-shadow(0 0 13px var(--accent)) !important;
+  }
+  body #bottom-bar #stage-view-btn.cross-scene-indicator svg *,
+  body #bottom-bar #disco-btn.cross-scene-indicator svg *,
+  body.sun-mode:not(.disco-mode) #bottom-bar #stage-view-btn.cross-scene-indicator svg *,
+  body.sun-mode:not(.disco-mode) #bottom-bar #disco-btn.cross-scene-indicator svg * {
+    stroke: var(--accent) !important;
+  }
+  body #bottom-bar #stage-view-btn.cross-scene-indicator svg [fill]:not([fill="none"]),
+  body #bottom-bar #disco-btn.cross-scene-indicator svg [fill]:not([fill="none"]),
+  body.sun-mode:not(.disco-mode) #bottom-bar #stage-view-btn.cross-scene-indicator svg [fill]:not([fill="none"]),
+  body.sun-mode:not(.disco-mode) #bottom-bar #disco-btn.cross-scene-indicator svg [fill]:not([fill="none"]) {
+    fill: var(--accent) !important;
+  }
 
   @media (prefers-contrast: more) {
     body.sun-mode:not(.is-fullscreen):not(.disco-mode) {
-      --future-act-left-width: 5px;
-      --future-act-border: #000000;
+      --act-left-width: 5px;
+      --act-border: #000000;
       --selected-act-left-width: 9px;
     }
   }
 
   img[id$="-img"] { opacity: 0; transition: opacity 0.6s; }
+
+  #profile-btn { color: #fff; }
+  #light-mode-btn svg { width: 88px; height: 88px; }
+  body.profile-mode #profile-btn { color: var(--accent); }
+  body.profile-mode #now-line { display: none !important; }
+  body.is-fullscreen.fs-hide-titles .label span,
+  body.is-fullscreen.fs-hide-titles .sh-name,
+  body.is-fullscreen.fs-hide-titles .sh-sub { opacity: 0 !important; }
+  body.is-fullscreen.fs-hide-day .day-item.active { opacity: 0 !important; }
+  body.is-fullscreen.fs-hide-date .day-date { opacity: 0 !important; }
+  body.disco-mode .day-date { opacity: 0 !important; }
+
+  .profile-mode-col {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 34px 40px;
+    min-height: 100%;
+    box-sizing: border-box;
+  }
+  .profile-mode-section { display: flex; flex-direction: column; gap: 14px; }
+  .profile-mode-section-title {
+    font: 34px/1 'Bebas Neue', sans-serif;
+    letter-spacing: 4px;
+    color: rgba(255,255,255,0.84);
+    text-transform: uppercase;
+  }
+  .profile-mode-row { display: flex; gap: 16px; }
+  .profile-mode-feat-btn, .profile-mode-day-btn, .profile-mode-sun-btn {
+    flex: 1; height: 112px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; user-select: none; -webkit-user-select: none;
+    background: rgba(255,255,255,0.06);
+    border: 3px solid rgba(255,255,255,0.16);
+    transition: background 0.15s, border-color 0.15s, color 0.15s, opacity 0.15s;
+  }
+  .profile-mode-feat-btn { font: 55px/1 'Bebas Neue', sans-serif; letter-spacing: 3px; color: rgba(255,255,255,0.45); }
+  .profile-mode-update-btn { color: rgba(255,255,255,0.45); }
+  .profile-mode-day-btn { font: 44px/1 'Bebas Neue', sans-serif; letter-spacing: 2px; color: rgba(255,255,255,0.40); }
+  .profile-mode-sun-btn { font: 40px/1 'Bebas Neue', sans-serif; letter-spacing: 2px; color: rgba(255,255,255,0.40); text-align: center; padding: 0 14px; }
+  .profile-mode-dual-settings-row { display: flex; gap: 16px; align-items: flex-start; }
+  .profile-mode-setting-col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+  .profile-mode-setting-col .profile-mode-section-title { font-size: 30px; letter-spacing: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .profile-mode-setting-col .profile-mode-sun-btn { width: 100%; flex: 0 0 auto; }
+  .profile-mode-choice-btn { opacity: 1 !important; }
+  .profile-mode-feat-btn.active, .profile-mode-day-btn.active, .profile-mode-sun-btn.active, .profile-mode-update-btn.active {
+    color: #fff;
+    background: rgba(255,255,255,0.11);
+    border-color: var(--accent, #eb0028);
+    opacity: 1;
+  }
+  .profile-mode-feat-btn:not(.active):not(.feat-disabled),
+  .profile-mode-day-btn:not(.active),
+  .profile-mode-sun-btn:not(.active),
+  .profile-mode-update-btn:not(.active) { opacity: 0.5; }
+  .profile-mode-feat-btn.feat-disabled { opacity: 0.3; pointer-events: none; }
+  .profile-mode-filter-row .profile-mode-day-btn { flex: 0 0 calc((100% - 48px) / 4); }
+  body.light-mode:not(.disco-mode) .profile-mode-section-title,
+  body.sun-mode:not(.disco-mode) .profile-mode-section-title { color: rgba(0,0,0,0.82); }
+  body.light-mode:not(.disco-mode) .profile-mode-feat-btn,
+  body.light-mode:not(.disco-mode) .profile-mode-day-btn,
+  body.light-mode:not(.disco-mode) .profile-mode-sun-btn,
+  body.light-mode:not(.disco-mode) .profile-mode-update-btn {
+    background: rgba(0,0,0,0.33); border-color: rgba(0,0,0,0.50); color: rgba(255,255,255,0.72);
+  }
+  body.light-mode:not(.disco-mode) .profile-mode-feat-btn.active,
+  body.light-mode:not(.disco-mode) .profile-mode-day-btn.active,
+  body.light-mode:not(.disco-mode) .profile-mode-sun-btn.active,
+  body.light-mode:not(.disco-mode) .profile-mode-update-btn.active {
+    background: rgba(0,0,0,0.82); border-color: var(--accent); color: #fff;
+  }
+  body.sun-mode:not(.disco-mode) .profile-mode-feat-btn,
+  body.sun-mode:not(.disco-mode) .profile-mode-day-btn,
+  body.sun-mode:not(.disco-mode) .profile-mode-sun-btn,
+  body.sun-mode:not(.disco-mode) .profile-mode-update-btn {
+    background: #000000;
+    border-color: #000000;
+    color: #ffffff;
+  }
+  body.sun-mode:not(.disco-mode) .profile-mode-feat-btn.active,
+  body.sun-mode:not(.disco-mode) .profile-mode-day-btn.active,
+  body.sun-mode:not(.disco-mode) .profile-mode-sun-btn.active,
+  body.sun-mode:not(.disco-mode) .profile-mode-update-btn.active {
+    background: #000000; border-color: var(--sun-accent, var(--accent)); color: #ffffff;
+  }
 </style>
 </head>
 <body>
 <div class="bg-full"></div>
 <div id="scaler">
-<img id="shrek-img" class="easter-img" src="png/shrek.png">
-<img id="alien-img" class="easter-img" src="png/alien.png">
-<img id="fr-img" class="easter-img" src="png/fr.png">
-<img id="en-img" class="easter-img" src="png/en.png">
-<img id="zh-img" class="easter-img" src="png/zh.png">
-<img id="disco-img" class="easter-img" src="png/disco.png">
-<img id="runescape-img" class="easter-img contain" src="png/runescape.png">
+<img id="shrek-img" class="easter-img" src="png/shrek.png" alt="" aria-hidden="true">
+<img id="alien-img" class="easter-img" src="png/alien.png" alt="" aria-hidden="true">
+<img id="fr-img" class="easter-img" src="png/fr.png" alt="" aria-hidden="true">
+<img id="en-img" class="easter-img" src="png/en.png" alt="" aria-hidden="true">
+<img id="zh-img" class="easter-img" src="png/zh.png" alt="" aria-hidden="true">
+<img id="disco-img" class="easter-img" src="png/disco.png" alt="" aria-hidden="true">
+<img id="runescape-img" class="easter-img contain" src="png/runescape.png" alt="" aria-hidden="true">
 <div class="content">
 
   <div class="top-bar">
@@ -742,43 +972,51 @@
 
   <div id="bottom-bar">
     <div id="left-btns">
-      <div id="camping-btn" class="round-btn bottom-btn">!</div>
-      <div id="disco-btn" class="round-btn bottom-btn">
+      <button type="button" id="camping-btn" class="round-btn bottom-btn" aria-label="Camping">!</button>
+      <button type="button" id="disco-btn" class="round-btn bottom-btn" aria-label="Silent Disco">
       <svg width="120" height="120" viewBox="-1 -1 26 26" fill="none" stroke="#fff" stroke-width="1.2" stroke-linecap="round"><defs><clipPath id="dbc"><circle cx="12" cy="12" r="9"/></clipPath></defs><circle cx="12" cy="12" r="9"/><line x1="12" y1="0" x2="12" y2="3"/><g clip-path="url(#dbc)"><line x1="3" y1="8" x2="21" y2="8"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="16" x2="21" y2="16"/><line x1="8" y1="3" x2="8" y2="21"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="16" y1="3" x2="16" y2="21"/></g><circle cx="1" cy="6" r="1" fill="#fff" stroke="none"/><circle cx="23" cy="6" r="1" fill="#fff" stroke="none"/><circle cx="0" cy="17" r="0.8" fill="#fff" stroke="none"/><circle cx="24" cy="17" r="0.8" fill="#fff" stroke="none"/></svg>
-    </div>
+    </button>
     </div>
     <div id="right-btns">
       <div id="settings-popover" aria-hidden="true">
       <div id="reset-wrap">
         <div id="reset-label">RESET?</div>
-        <div id="reset-btn" class="round-btn top-btn">
+        <button type="button" id="reset-btn" class="round-btn top-btn" aria-label="Réinitialiser">
           <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-        </div>
+        </button>
       </div>
-      <div id="lang-btn" class="round-btn top-btn">FR</div>
       <div id="color-slot">
         <div class="color-menu" id="color-menu">
-          <div class="color-option current" style="background:#eb0028" data-accent="#eb0028" data-bg="#4b000e" data-border="#eb0028" data-glow="rgba(235,0,40,0.4)"></div>
-          <div class="color-option" style="background:#ff6a00" data-accent="#ff6a00" data-bg="#4b1c00" data-border="#ff6a00" data-glow="rgba(255,106,0,0.4)"></div>
-          <div class="color-option" style="background:#f5d800" data-accent="#f5d800" data-bg="#413800" data-border="#f5d800" data-glow="rgba(245,216,0,0.4)"></div>
-          <div class="color-option" style="background:#00a848" data-accent="#00a848" data-bg="#002d1b" data-border="#00a848" data-glow="rgba(0,168,72,0.4)"></div>
-          <div class="color-option" style="background:#0066e0" data-accent="#0066e0" data-bg="#001d50" data-border="#0066e0" data-glow="rgba(0,102,224,0.4)"></div>
-          <div class="color-option" style="background:#9200e0" data-accent="#9200e0" data-bg="#260045" data-border="#9200e0" data-glow="rgba(146,0,224,0.4)"></div>
-          <div class="color-option" style="background:#c4c4c4f5;border:2px solid #666" data-accent="#aaa" data-bg="#333333" data-border="#aaa" data-glow="rgba(170,170,170,0.4)"></div>
+          <button type="button" class="color-option current" style="background:#eb0028" data-accent="#eb0028" data-bg="#4b000e" data-border="#eb0028" data-glow="rgba(235,0,40,0.4)" aria-label="Couleur #eb0028"></button>
+          <button type="button" class="color-option" style="background:#ff6a00" data-accent="#ff6a00" data-bg="#4b1c00" data-border="#ff6a00" data-glow="rgba(255,106,0,0.4)" aria-label="Couleur #ff6a00"></button>
+          <button type="button" class="color-option" style="background:#f5d800" data-accent="#f5d800" data-bg="#413800" data-border="#f5d800" data-glow="rgba(245,216,0,0.4)" aria-label="Couleur #f5d800"></button>
+          <button type="button" class="color-option" style="background:#00a848" data-accent="#00a848" data-bg="#002d1b" data-border="#00a848" data-glow="rgba(0,168,72,0.4)" aria-label="Couleur #00a848"></button>
+          <button type="button" class="color-option" style="background:#0066e0" data-accent="#0066e0" data-bg="#001d50" data-border="#0066e0" data-glow="rgba(0,102,224,0.4)" aria-label="Couleur #0066e0"></button>
+          <button type="button" class="color-option" style="background:#9200e0" data-accent="#9200e0" data-bg="#260045" data-border="#9200e0" data-glow="rgba(146,0,224,0.4)" aria-label="Couleur #9200e0"></button>
         </div>
-        <div class="color-btn round-btn top-btn" id="color-btn"></div>
+        <button type="button" class="color-btn round-btn top-btn" id="color-btn" aria-label="Choisir la couleur"></button>
       </div>
-      <div id="light-mode-btn" class="round-btn top-btn"><svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></div>
+      <button type="button" id="light-mode-btn" class="round-btn top-btn" aria-label="Mode clair"><svg width="88" height="88" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
+      <button type="button" id="profile-btn" class="round-btn top-btn" aria-label="Paramètres">
+        <svg width="98" height="98" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.92 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.31.49 1 1.51 1H21a2 2 0 1 1 0 4h-.09c-1.02 0-1.37.69-1.51 1z"/></svg>
+      </button>
     </div>
-      <div id="favs-btn" class="round-btn bottom-btn">
+      <button type="button" id="favs-btn" class="round-btn bottom-btn" aria-label="Favoris">
         <svg width="108" height="108" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </button>
+      <div id="stage-view-slot">
+        <button type="button" id="stage-view-btn" class="round-btn bottom-btn" aria-label="Scènes secondaires" aria-pressed="false">
+          <svg width="92" height="92" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="4" width="5" height="16" rx="1"/>
+            <rect x="9.5" y="4" width="5" height="16" rx="1"/>
+            <rect x="16" y="4" width="5" height="16" rx="1"/>
+          </svg>
+        </button>
       </div>
-      <div id="fs-btn" class="round-btn bottom-btn">
+      <button type="button" id="fs-btn" class="round-btn bottom-btn" aria-label="Plein écran">
       <svg width="82" height="82" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
-    </div>
-      <div id="settings-btn" class="round-btn bottom-btn" aria-label="Réglages">
-      <svg width="98" height="98" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.92 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.31.49 1 1.51 1H21a2 2 0 1 1 0 4h-.09c-1.02 0-1.37.69-1.51 1z"/></svg>
-    </div>
+    </button>
+      <button type="button" id="settings-btn" class="round-btn bottom-btn" aria-label="Menu" aria-expanded="false"></button>
     </div>
   </div>
 
@@ -802,6 +1040,7 @@ const SHEET_ID = IS_LOCAL ? SHEET_ID_TEST : SHEET_ID_PROD;
 let overrides = {};
 let discoMode = false;
 let campingMode = false;
+let profileMode = false;
 let favsOnly = false;
 let discoHours = { start: 25, end: 29 };
 let infoData = {};
@@ -811,6 +1050,19 @@ let currentLang = 'fr';
 let normalDayKey = 'jeudi';
 let discoDayKey = 'vendredi';
 let campingDayKey = 'jeudi';
+let profileEnabledDays = ['jeudi', 'vendredi', 'samedi', 'dimanche'];
+let profileCampingEnabled = true;
+let profileDiscoEnabled = true;
+let profileDancefloorEnabled = true;
+let fsShowTitles = true;
+let fsShowDay = true;
+let fsShowDate = true;
+let sunAutoMode = false;
+let showRemainingOnly = false;
+let fsRemainingOnly = false;
+let showFavFillActs = true;
+let secondaryStagesMode = false;
+let campingStageMode = false;
 
 const DAY_KEYS = ['jeudi', 'vendredi', 'samedi', 'dimanche'];
 const FESTIVAL_DAYS = { 2: 'jeudi', 3: 'vendredi', 4: 'samedi', 5: 'dimanche' };
@@ -821,15 +1073,29 @@ const DISCO_STAGE_META = {
   DiscoB: { cssClass: 'act-disco-b', color: '#3399ff', labels: { fr: 'BLEU',  en: 'BLUE', zh: '蓝' } },
   DiscoG: { cssClass: 'act-disco-g', color: '#00c853', labels: { fr: 'VERT',  en: 'GREEN', zh: '绿' } },
 };
-const STAGE_ORDER = { mainstage: 0, storm: 1, dome: 2, church: 3, tunnel: 4 };
-const stagePriority = name => STAGE_ORDER[name?.toLowerCase()] ?? 99;
+const STAGE_ORDER = { mainstage: 0, storm: 1, dome: 2, church: 3, tunnel: 4, jungle: 5, mirror: 6, 'rave cave': 7, camping: 8 };
+const SECONDARY_STAGES = [
+  { name: 'Jungle', sub: '' },
+  { name: 'Mirror', sub: '' },
+  { name: 'Rave Cave', sub: '' },
+];
+const CAMPING_STAGES = [
+  { name: 'Camping', sub: '' },
+];
+const CAMPING_STAGE_HOURS = { start: 11, end: 14 };
+const stagePriority = name => STAGE_ORDER[String(name || '').toLowerCase()] ?? 99;
 const FS_STAGE_ABBREV = { 'Mainstage': 'Main' };
 const FAVS_KEY = 'favs';
 const TIMELINE_GAP = 8;
-const NOW_LINE_LEFT_PX = 55;   // décalage px depuis la gauche de la zone timeline
-const NOW_LINE_RIGHT_PX = -15;  // retrait px depuis le bord droit
-const CANVAS_MARGIN = -100;      // marge minimale en px sur chaque côté (tous modes)
-const REFRESH_MS = 15 * 60 * 1000;
+const NOW_LINE_LEFT_PX = 55;
+const NOW_LINE_RIGHT_PX = -15;
+const REMAINING_DAY_CUTOFF_HOUR = 1;
+const REMAINING_WINDOW_HOURS = 6;
+const REMAINING_PAST_HOURS = 2;
+const REMAINING_MIN_FUTURE_HOURS = 4;
+const CROSS_SCENE_NOTICE_LEAD_HOURS = 0.5;
+const MAX_UPCOMING_SUMMARY_MINUTES = 480;
+const CANVAS_MARGIN = -100;
 const $ = id => document.getElementById(id);
 
 function getStoredArray(key) {
@@ -860,7 +1126,7 @@ function setThemeVars() {
 }
 
 function paintThemedButtons() {
-  ['fs-btn', 'settings-btn', 'camping-btn', 'disco-btn', 'favs-btn'].forEach(id => {
+  ['fs-btn', 'settings-btn', 'camping-btn', 'disco-btn', 'favs-btn', 'stage-view-btn'].forEach(id => {
     const btn = $(id);
     if (!btn) return;
     btn.style.removeProperty('background');
@@ -876,7 +1142,6 @@ function paintThemedButtons() {
   updateSettingsBtn();
   updateFullscreenBtn();
 }
-
 
 function syncColorOptions() {
   document.querySelectorAll('.color-option').forEach(opt => {
@@ -970,9 +1235,14 @@ function setScheduleGrid(stageRow, tl, gridCols) {
   tl.dataset.columnCount = String(columnCount);
 }
 
-function getActTimeFontSize(act) {
-  const columnCount = Number(act.closest('#tl')?.dataset.columnCount || 5);
-  return ACT_TEXT_LAYOUT.timeSizeByColumnCount[columnCount] || ACT_TEXT_LAYOUT.timeSizeByColumnCount[5];
+function getActTimeColumnCount(act) {
+  return Math.max(1, Math.min(5, Number(act.closest('#tl')?.dataset.columnCount || 5)));
+}
+
+function getActTimeWidthRatio(columnCount) {
+  const clamped = Math.max(1, Math.min(5, Number(columnCount) || 5));
+  const progress = (clamped - 1) / 4;
+  return ACT_TEXT_LAYOUT.timeWidthRatioMin + ((ACT_TEXT_LAYOUT.timeWidthRatioMax - ACT_TEXT_LAYOUT.timeWidthRatioMin) * progress);
 }
 
 function setTimelineWindow(tl, startHour, endHour) {
@@ -984,6 +1254,41 @@ function clearTimelineWindow(tl) {
   delete tl.dataset.startHour;
   delete tl.dataset.endHour;
 }
+function clearRemainingTimelineState(tl) {
+  delete tl.dataset.remainingTimeline;
+  delete tl.dataset.remainingBaseStart;
+  delete tl.dataset.remainingWindowHours;
+}
+
+function setRemainingTimelineState(tl, baseStart, windowHours) {
+  tl.dataset.remainingTimeline = '1';
+  tl.dataset.remainingBaseStart = String(baseStart);
+  tl.dataset.remainingWindowHours = String(windowHours);
+}
+
+function resetTimelineScrollTransform() {
+  document.querySelectorAll('#tl .stage-col, #tl .grid-line').forEach(el => {
+    el.style.transform = '';
+    el.style.willChange = '';
+  });
+  document.querySelectorAll('#axis .tick-label').forEach(el => {
+    el.style.transform = '';
+    el.style.willChange = '';
+  });
+}
+
+function applyRemainingTimelineScroll(offsetPx) {
+  const offset = Math.max(0, Math.round(offsetPx || 0));
+  document.querySelectorAll('#tl .stage-col, #tl .grid-line').forEach(el => {
+    el.style.transform = offset ? `translateY(-${offset}px)` : '';
+    el.style.willChange = offset ? 'transform' : '';
+  });
+  document.querySelectorAll('#axis .tick-label').forEach(el => {
+    el.style.transform = offset ? `translateY(calc(-50% - ${offset}px))` : '';
+    el.style.willChange = offset ? 'transform' : '';
+  });
+}
+
 
 function getTimelineWindow(tl, fallbackStart, fallbackEnd) {
   const startHour = parseFloat(tl.dataset.startHour);
@@ -998,10 +1303,10 @@ function removeTimelineContent(tl) {
   tl.querySelectorAll('.stage-col, #now-line, .grid-line').forEach(el => el.remove());
 }
 
-function buildGridLinesFragment(startHour, endHour) {
+function buildGridLinesFragment(startHour, endHour, scaleHours = endHour - startHour) {
   const frag = document.createDocumentFragment();
-  const total = endHour - startHour;
-  for (let h = startHour + 1; h < endHour; h++) {
+  const total = Math.max(0.01, scaleHours);
+  for (let h = Math.floor(startHour) + 1; h < endHour; h++) {
     const line = document.createElement('div');
     line.className = 'grid-line';
     line.style.top = (((h - startHour) / total) * 100) + '%';
@@ -1015,6 +1320,8 @@ function clearSchedule(stageRow, axis, tl) {
   axis.innerHTML = '';
   removeTimelineContent(tl);
   clearTimelineWindow(tl);
+  clearRemainingTimelineState(tl);
+  resetTimelineScrollTransform();
 }
 
 const ACT_TEXT_LAYOUT = Object.freeze({
@@ -1028,17 +1335,17 @@ const ACT_TEXT_LAYOUT = Object.freeze({
   nameWidthRatio: 0.95,
   nameHeightRatio: 0.90,
   nameLineHeight: 0.98,
-  timeSizeByColumnCount: Object.freeze({
-    1: 36,
-    2: 30,
-    3: 24,
-    4: 20,
-    5: 16,
-  }),
+  timeMin: 10,
+  timeMax: 76,
+  timeWidthRatioMin: 0.50,
+  timeWidthRatioMax: 1.00,
   timeLineHeight: 1.02,
   timeMarginTop: 5,
 });
 let actTextLayoutRAF = 0;
+let actTextLayoutsPrecomputing = false;
+let actTextLayoutsPrecomputeRemaining = false;
+let normalActTextLayoutsReady = false;
 const ACT_TEXT_STYLE_CACHE = new Map();
 
 function setImportantStyle(el, prop, value) {
@@ -1093,6 +1400,7 @@ function prepareActTime(time) {
   setImportantStyle(time, 'transform', 'none');
   setImportantStyle(time, 'white-space', 'nowrap');
   setImportantStyle(time, 'text-align', 'left');
+  setImportantStyle(time, 'z-index', '2');
   time.style.lineHeight = ACT_TEXT_LAYOUT.timeLineHeight;
 }
 
@@ -1126,6 +1434,32 @@ function computeNameFontSize(name, boxW, boxH) {
   return finalSize;
 }
 
+function timeFitsTargetWidth(time, fontPx, targetWidthPx) {
+  time.style.fontSize = fontPx + 'px';
+  return Math.ceil(time.scrollWidth) <= Math.ceil(targetWidthPx) + 1;
+}
+
+function computeTimeFontSize(time, boxW, boxH, columnCount) {
+  const targetWidth = Math.max(1, Math.floor(boxW * getActTimeWidthRatio(columnCount)));
+  let low = ACT_TEXT_LAYOUT.timeMin;
+  let high = Math.max(low, Math.min(ACT_TEXT_LAYOUT.timeMax, boxH));
+  let best = low;
+
+  for (let i = 0; i < 9; i += 1) {
+    const mid = (low + high) / 2;
+    if (timeFitsTargetWidth(time, mid, targetWidth)) {
+      best = mid;
+      low = mid;
+    } else {
+      high = mid;
+    }
+  }
+
+  const finalSize = Math.max(ACT_TEXT_LAYOUT.timeMin, Math.floor(best * 10) / 10);
+  time.style.fontSize = finalSize + 'px';
+  return finalSize;
+}
+
 function layoutOneActText(act) {
   const body = directChildWithClass(act, 'act-body');
   const name = directChildWithClass(body, 'act-name');
@@ -1142,25 +1476,33 @@ function layoutOneActText(act) {
   const time = directChildWithClass(body, 'act-time');
   if (time) {
     prepareActTime(time);
-    time.style.fontSize = getActTimeFontSize(act) + 'px';
+    computeTimeFontSize(time, boxW, boxH, getActTimeColumnCount(act));
+
+    // L'heure est un repère visuel indépendant du nom.
+    // En colonnes étroites, elle peut légèrement chevaucher le nom,
+    // mais elle ne doit plus disparaître parce que le nom prend trop de hauteur.
+    if (Math.ceil(time.scrollWidth) > boxW) {
+      const currentSize = parseFloat(time.style.fontSize || '0');
+      const ratio = boxW / Math.max(1, time.scrollWidth);
+      const fittedSize = Math.max(6, Math.floor(currentSize * ratio * 10) / 10);
+      time.style.fontSize = fittedSize + 'px';
+    }
   }
 
-  const timeH = time ? Math.ceil(time.scrollHeight) : 0;
-  const nameBoxH = Math.max(1, boxH - (timeH ? timeH + ACT_TEXT_LAYOUT.timeMarginTop : 0));
-  computeNameFontSize(name, boxW, nameBoxH);
-
-  if (!time) return;
-
-  const timeTooWide = Math.ceil(time.scrollWidth) > boxW;
-  const contentTooTall = Math.ceil(name.scrollHeight) > nameBoxH;
-  if (timeTooWide || contentTooTall) {
-    time.classList.add('act-time-hidden');
-    computeNameFontSize(name, boxW, boxH);
-  }
+  computeNameFontSize(name, boxW, boxH);
 }
 
 function updateActTextLayout() {
   document.querySelectorAll('.act').forEach(layoutOneActText);
+}
+
+function queueActTextLayoutIfMissing() {
+  const hasMissingLayout = Array.from(document.querySelectorAll('.act')).some(act => {
+    const body = directChildWithClass(act, 'act-body');
+    const name = directChildWithClass(body, 'act-name');
+    return name && !name.style.fontSize;
+  });
+  if (hasMissingLayout) queueActTextLayout();
 }
 
 function getActTextCacheKey(act, layoutKey = '') {
@@ -1174,6 +1516,7 @@ function cacheActTextStyles(layoutKey = '') {
     const time = directChildWithClass(body, 'act-time');
     if (!name) return;
     ACT_TEXT_STYLE_CACHE.set(getActTextCacheKey(act, layoutKey), {
+      bodyMaxHeight: body ? body.style.maxHeight : '',
       nameFontSize: name.style.fontSize,
       nameMaxWidth: name.style.maxWidth,
       timeFontSize: time ? time.style.fontSize : '',
@@ -1188,36 +1531,101 @@ function applyCachedActTextStyle(act, layoutKey = '') {
   const body = directChildWithClass(act, 'act-body');
   const name = directChildWithClass(body, 'act-name');
   const time = directChildWithClass(body, 'act-time');
-  if (name) {
+
+  // Même base CSS que la passe complète utilisée après un fullscreen on/off,
+  // mais sans refaire de mesure texte au changement de jour/scène.
+  if (body && name) {
+    prepareActTextBox(act, body, name);
+    if (cached.bodyMaxHeight) setImportantStyle(body, 'max-height', cached.bodyMaxHeight);
     name.style.fontSize = cached.nameFontSize;
     name.style.maxWidth = cached.nameMaxWidth;
   }
   if (time) {
+    prepareActTime(time);
     time.style.fontSize = cached.timeFontSize;
     time.classList.toggle('act-time-hidden', cached.timeHidden);
   }
 }
 
 function precomputeNormalDayTextLayouts(finalDayKey) {
+  const savedSecondaryMode = secondaryStagesMode;
+  const savedCampingStageMode = campingStageMode;
+  const safeFinalDay = finalDayKey || normalDayKey || 'jeudi';
+  cancelAnimationFrame(actTextLayoutRAF);
+  actTextLayoutRAF = 0;
+  actTextLayoutsPrecomputing = true;
+  actTextLayoutsPrecomputeRemaining = false;
   ACT_TEXT_STYLE_CACHE.clear();
+
   DAY_KEYS.forEach(dayKey => {
+    secondaryStagesMode = false;
+    campingStageMode = false;
     renderDay(dayKey);
     updateActTextLayout();
-    cacheActTextStyles(dayKey);
+    cacheActTextStyles(dayKey + '|primary');
+
+    if (hasSecondaryStages(dayKey)) {
+      secondaryStagesMode = true;
+      campingStageMode = false;
+      renderDay(dayKey);
+      updateActTextLayout();
+      cacheActTextStyles(dayKey + '|secondary');
+    }
+
+    if (hasCampingStage(dayKey)) {
+      secondaryStagesMode = false;
+      campingStageMode = true;
+      renderDay(dayKey);
+      updateActTextLayout();
+      cacheActTextStyles(dayKey + '|camping');
+    }
   });
-  renderDay(finalDayKey);
+
+  const currentDay = getCurrentFestivalDay();
+  if (currentDay) {
+    actTextLayoutsPrecomputeRemaining = true;
+
+    secondaryStagesMode = false;
+    campingStageMode = false;
+    renderDay(currentDay);
+    updateActTextLayout();
+    cacheActTextStyles(currentDay + '|primary|remaining');
+
+    secondaryStagesMode = true;
+    campingStageMode = false;
+    renderDay(currentDay);
+    updateActTextLayout();
+    cacheActTextStyles(currentDay + '|secondary|remaining');
+
+    actTextLayoutsPrecomputeRemaining = false;
+  }
+
+  secondaryStagesMode = savedSecondaryMode;
+  campingStageMode = savedCampingStageMode;
+  actTextLayoutsPrecomputing = false;
+  actTextLayoutsPrecomputeRemaining = false;
+  normalActTextLayoutsReady = true;
+  setActiveDay(safeFinalDay);
+  renderDay(safeFinalDay);
 }
 function queueActTextLayout() {
   cancelAnimationFrame(actTextLayoutRAF);
   actTextLayoutRAF = requestAnimationFrame(() => requestAnimationFrame(updateActTextLayout));
 }
-function swapSchedule(stageRow, axis, tl, stageFrag, axisFrag, timelineFrag, startHour, endHour) {
+function swapSchedule(stageRow, axis, tl, stageFrag, axisFrag, timelineFrag, startHour, endHour, options = {}) {
   stageRow.innerHTML = '';
   stageRow.appendChild(stageFrag);
   axis.innerHTML = '';
   axis.appendChild(axisFrag);
   removeTimelineContent(tl);
-  if (startHour != null && endHour != null) tl.appendChild(buildGridLinesFragment(startHour, endHour));
+  resetTimelineScrollTransform();
+  clearRemainingTimelineState(tl);
+  if (options.remainingTimeline) {
+    setRemainingTimelineState(tl, options.remainingBaseStart, options.remainingWindowHours);
+  }
+  if (startHour != null && endHour != null) {
+    tl.appendChild(buildGridLinesFragment(startHour, endHour, options.scaleHours));
+  }
   tl.appendChild(timelineFrag);
   updateStageHeaderSelectionState();
 }
@@ -1272,10 +1680,10 @@ function buildStageHeaderFragment(stages, headerBuilder) {
   return frag;
 }
 
-function buildAxisFragment(startHour, endHour) {
-  const totalMin = (endHour - startHour) * 60;
+function buildAxisFragment(startHour, endHour, scaleHours = endHour - startHour) {
+  const totalMin = Math.max(0.01, scaleHours) * 60;
   const frag = document.createDocumentFragment();
-  for (let h = startHour; h < endHour; h++) {
+  for (let h = Math.ceil(startHour); h < endHour; h++) {
     const span = document.createElement('span');
     span.className = 'tick-label';
     span.textContent = fmtAxisH(h);
@@ -1293,6 +1701,38 @@ function positionAct(div, start, end, startHour, endHour) {
   div.style.height = `calc(${heightPct}% - ${TIMELINE_GAP}px)`;
 }
 
+function normalizeActIdPart(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '') || 'act';
+}
+
+function makeLegacyActId(dayKey, stageName, start) {
+  return `${dayKey}-${stageName}-${start}`;
+}
+
+function makeActFavoriteId(dayKey, stageName, act) {
+  const explicit = String(act && act.stableId || '').trim();
+  if (!explicit) return makeLegacyActId(dayKey, stageName, act.start);
+  return `fav-${dayKey}-${normalizeActIdPart(stageName)}-${normalizeActIdPart(explicit)}`;
+}
+
+function getActFavoriteAliases(dayKey, stageName, act) {
+  return [...new Set([makeActFavoriteId(dayKey, stageName, act), makeLegacyActId(dayKey, stageName, act.start)].filter(Boolean))];
+}
+
+function isActFavorite(favs, dayKey, stageName, act) {
+  return getActFavoriteAliases(dayKey, stageName, act).some(id => favs.includes(id));
+}
+
+function getActFavoriteAliasesFromElement(el) {
+  return [...new Set([el.dataset.favId, el.dataset.legacyFavId, el.id].filter(Boolean))];
+}
+
 function getActsFromOverrides(dayKey, stageName, entries = Object.entries(overrides)) {
   return entries
     .reduce((list, [key, ov]) => {
@@ -1300,7 +1740,8 @@ function getActsFromOverrides(dayKey, stageName, entries = Object.entries(overri
       if (d !== dayKey || stage !== stageName) return list;
       const start = parseFloat(startStr);
       if (!Number.isFinite(start)) return list;
-      list.push({ name: ov.name || '', start, end: typeof ov.end === 'number' ? ov.end : start + 1 });
+      if (!profileDancefloorEnabled && ov.genre === 'dancefloor') return list;
+      list.push({ name: ov.name || '', start, end: typeof ov.end === 'number' ? ov.end : start + 1, genre: ov.genre || '', stableId: ov.stableId || '' });
       return list;
     }, [])
     .sort((a, b) => a.start - b.start);
@@ -1341,8 +1782,10 @@ function setNormalSelectedActStyle(div) {
     div.style.setProperty('box-shadow', 'var(--current-act-shadow)', 'important');
     return;
   }
-  div.style.setProperty('background', 'var(--selected-act-bg)', 'important');
-  div.style.setProperty('border-left-color', accentBorder, 'important');
+  const isFSSun = document.body.classList.contains('is-fullscreen') && document.body.classList.contains('sun-mode') && !document.body.classList.contains('disco-mode');
+  div.style.setProperty('background', isFSSun ? '#ffffff' : 'var(--selected-act-bg)', 'important');
+  div.style.setProperty('background-color', isFSSun ? '#ffffff' : 'var(--selected-act-bg)', 'important');
+  div.style.setProperty('border-left-color', isFSSun ? '#000000' : accentBorder, 'important');
   div.style.setProperty('border-top-color', 'var(--selected-act-top)', 'important');
   div.style.setProperty('box-shadow', 'var(--selected-act-shadow)', 'important');
 }
@@ -1352,29 +1795,38 @@ function clearNormalSelectedActStyle(div) {
   div.style.removeProperty('--accent-border');
   div.style.removeProperty('--accent');
   div.style.removeProperty('background');
+  div.style.removeProperty('background-color');
   div.style.removeProperty('border-left-color');
   div.style.removeProperty('border-top-color');
   div.style.removeProperty('box-shadow');
 }
 
 function applySavedFavorite(div, favs, mode = 'normal') {
-  if (!favs.includes(div.id)) return;
+  if (!getActFavoriteAliasesFromElement(div).some(id => favs.includes(id))) return;
   div.classList.add('selected');
+  div.setAttribute('aria-pressed', 'true');
   if (mode === 'disco') return;
 
   setNormalSelectedActStyle(div);
 }
 
-function createActElement({ id, name, start, end, className = 'act', borderLeftColor = '', favs = [], favMode = 'normal', layoutKey = '' }) {
+function createActElement({ id, favId = id, legacyFavId = id, name, start, end, className = 'act', borderLeftColor = '', favs = [], favMode = 'normal', layoutKey = '', alwaysShowTime = false }) {
   const div = document.createElement('div');
   div.id = id;
   div.className = className;
+  div.setAttribute('role', 'button');
+  div.setAttribute('tabindex', '0');
+  div.setAttribute('aria-pressed', 'false');
   div.dataset.start = start;
   div.dataset.end = end;
   div.dataset.rawName = String(name || '');
+  div.dataset.favId = favId;
+  if (legacyFavId && legacyFavId !== favId) div.dataset.legacyFavId = legacyFavId;
   if (layoutKey) div.dataset.layoutKey = layoutKey;
   if (borderLeftColor) div.style.borderLeftColor = borderLeftColor;
-  const timeHtml = (end - start) >= 0.5 ? `<div class="act-time">${fmtActTimeRange(start, end)}</div>` : '';
+  const durationMinutes = (end - start) * 60;
+  const showTimeInAct = alwaysShowTime || durationMinutes >= 59;
+  const timeHtml = showTimeInAct ? `<div class="act-time">${fmtActTimeRange(start, end)}</div>` : '';
   div.innerHTML = `<div class="act-body">${createActNameHTML(name)}${timeHtml}</div>`;
   applySavedFavorite(div, favs, favMode);
   applyCachedActTextStyle(div, layoutKey);
@@ -1423,7 +1875,7 @@ function parseOverridesFromCsv(text) {
 
         if (day && stage && start) {
           const stageNorm = stage.toLowerCase();
-          if (stageNorm === 'camping') {
+          if (stageNorm === 'info') {
             let s = parseTimeStr(start), e = parseTimeStr(end);
             if (!isNaN(s)) {
               if (s < 6) s += 24;
@@ -1440,7 +1892,11 @@ function parseOverridesFromCsv(text) {
             const endNum = parseTimeStr(end) || null;
             if (!isNaN(startNum)) {
               const key = `${day}|${stage}|${startNum}`;
-              parsed[key] = { name: name || '', end: isNaN(endNum) ? null : endNum };
+              const rawStableId = (values[index + 5] || '').trim();
+              const hasExplicitStableId = /^id[:=]/i.test(rawStableId);
+              const stableId = hasExplicitStableId ? rawStableId.replace(/^id[:=]\s*/i, '').trim() : '';
+              const genre = ((values[index + 6] || '') || (hasExplicitStableId ? '' : rawStableId)).toLowerCase().trim();
+              parsed[key] = { name: name || '', end: isNaN(endNum) ? null : endNum, genre, stableId };
             }
           }
         }
@@ -1460,6 +1916,63 @@ function parseOverridesFromCsv(text) {
 }
 
 const CSV_CACHE_KEY = 'sheet_csv';
+const CSV_CACHE_UPDATED_AT_KEY = 'sheet_csv_updated_at';
+let sheetStatusKind = '';
+let sheetStatusExtra = '';
+let sheetRefreshBusy = false;
+
+function getSheetStatusCopy(kind) {
+  const copy = {
+    online:  { fr: 'Données à jour', en: 'Data updated', zh: '数据已更新' },
+    updated: { fr: 'Données mises à jour', en: 'Data refreshed', zh: '数据已刷新' },
+    cached:  { fr: 'Version locale chargée', en: 'Local version loaded', zh: '已加载本地版本' },
+    offline: { fr: 'Hors ligne : version locale', en: 'Offline: local version', zh: '离线：本地版本' },
+    updating:{ fr: 'Mise à jour…', en: 'Refreshing…', zh: '正在刷新…' },
+    error:   { fr: 'Aucune version locale', en: 'No local version', zh: '无本地版本' },
+  };
+  return (copy[kind] && (copy[kind][currentLang] || copy[kind].fr)) || '';
+}
+
+function formatSheetCacheTime(ts = localStorage.getItem(CSV_CACHE_UPDATED_AT_KEY)) {
+  const time = Number(ts || 0);
+  if (!time) return '';
+  const locale = currentLang === 'en' ? 'en-GB' : currentLang === 'zh' ? 'zh-CN' : 'fr-FR';
+  try {
+    return new Date(time).toLocaleString(locale, { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+  } catch(e) {
+    return '';
+  }
+}
+
+function setSheetRefreshBusy(busy) {
+  sheetRefreshBusy = Boolean(busy);
+  document.querySelectorAll('#sheet-refresh-btn, [data-profile-action="sheet-refresh"]').forEach(btn => {
+    btn.setAttribute('aria-busy', sheetRefreshBusy ? 'true' : 'false');
+    btn.toggleAttribute('disabled', sheetRefreshBusy);
+    btn.classList.toggle('active', !sheetRefreshBusy);
+    btn.classList.toggle('feat-disabled', sheetRefreshBusy);
+  });
+}
+
+function setSheetStatus(kind = sheetStatusKind, extra = sheetStatusExtra) {
+  sheetStatusKind = kind || sheetStatusKind;
+  sheetStatusExtra = extra || '';
+  const el = $('sheet-status');
+  if (!el) return;
+  const label = getSheetStatusCopy(sheetStatusKind);
+  const stamp = formatSheetCacheTime();
+  const details = sheetStatusExtra || stamp;
+  el.textContent = [label, details].filter(Boolean).join(' · ');
+}
+
+function getCachedSheetCsv() {
+  try { return localStorage.getItem(CSV_CACHE_KEY) || ''; } catch(e) { return ''; }
+}
+
+function saveSheetCsv(text) {
+  localStorage.setItem(CSV_CACHE_KEY, text);
+  localStorage.setItem(CSV_CACHE_UPDATED_AT_KEY, String(Date.now()));
+}
 
 async function fetchSheetCsv() {
   const ctrl = new AbortController();
@@ -1477,16 +1990,23 @@ async function fetchSheetCsv() {
 
 function applySheetCsv(text) {
   ({ overrides, infoData, discoStyles } = parseOverridesFromCsv(text));
+  ACT_TEXT_STYLE_CACHE.clear();
+  normalActTextLayoutsReady = false;
+  sheetLoadFailed = false;
 }
 
 function rerenderSchedule() {
-  if (discoMode) {
+  if (profileMode) {
+    renderProfile();
+  } else if (discoMode) {
     renderDisco(discoDayKey);
     queueActTextLayout();
   } else if (campingMode) {
     renderCamping(campingDayKey);
   } else if (favsOnly) {
     renderFavsMode(normalDayKey);
+  } else if (!normalActTextLayoutsReady) {
+    precomputeNormalDayTextLayouts(normalDayKey);
   } else {
     renderDay(normalDayKey);
   }
@@ -1496,35 +2016,81 @@ function rerenderSchedule() {
 
 async function refreshSheetInBackground(cachedText) {
   const text = await fetchSheetCsv();
-  if (!text || text === cachedText) return;
-  localStorage.setItem(CSV_CACHE_KEY, text);
+  if (!text) {
+    setSheetStatus('offline');
+    return;
+  }
+  if (text === cachedText) {
+    setSheetStatus('online');
+    return;
+  }
+  saveSheetCsv(text);
   applySheetCsv(text);
+  setSheetStatus('updated');
   rerenderSchedule();
+}
+
+async function refreshSheetManually() {
+  setSheetRefreshBusy(true);
+  setSheetStatus('updating');
+  const cached = getCachedSheetCsv();
+  const text = await fetchSheetCsv();
+  setSheetRefreshBusy(false);
+
+  if (text) {
+    saveSheetCsv(text);
+    applySheetCsv(text);
+    setSheetStatus(text === cached ? 'online' : 'updated');
+    rerenderSchedule();
+    return true;
+  }
+
+  if (cached) {
+    try {
+      applySheetCsv(cached);
+      setSheetStatus('offline');
+      rerenderSchedule();
+      return true;
+    } catch(e) {}
+  }
+
+  sheetLoadFailed = true;
+  setSheetStatus('error');
+  if (profileMode) renderProfile();
+  else renderSheetError();
+  return false;
 }
 
 async function loadOverrides() {
   if (!SHEET_ID) return;
 
-  const cached = localStorage.getItem(CSV_CACHE_KEY);
+  const cached = getCachedSheetCsv();
   if (cached) {
-    try { applySheetCsv(cached); } catch(e) {}
-    refreshSheetInBackground(cached);
-    return;
+    try {
+      applySheetCsv(cached);
+      setSheetStatus('cached');
+      refreshSheetInBackground(cached);
+      return;
+    } catch(e) {
+      localStorage.removeItem(CSV_CACHE_KEY);
+      localStorage.removeItem(CSV_CACHE_UPDATED_AT_KEY);
+    }
   }
 
   const text = await fetchSheetCsv();
-  if (!text) { sheetLoadFailed = true; return; }
-  localStorage.setItem(CSV_CACHE_KEY, text);
+  if (!text) { sheetLoadFailed = true; setSheetStatus('error'); return; }
+  saveSheetCsv(text);
   applySheetCsv(text);
+  setSheetStatus('online');
 }
 
 const easter = (opacity, accent, bg, border, glow, opts = {}) => ({ opacity, accent, bg, border, glow, ...opts });
 const EASTER_EVENTS = {
   shrek: easter('0.50', '#3d9e3d', '#0d1f0d', '#3d9e3d', 'rgba(61,158,61,0.4)', { comic: true, triggers: [{h:0, m:0, endH:0, endM:1}] }),
   alien: easter('0.70', '#9200e0', '#260045', '#9200e0', 'rgba(146,0,224,0.4)', { comic: true, triggers: [{h:4, m:20, endH:4, endM:21},{h:16,m:20,endH:16,endM:21}] }),
-  fr: easter('0.80', '#0055a4', '#001833', '#0055a4', 'rgba(0,85,164,0.4)', { triggers: [] }),
-  en: easter('0.70', '#cf142b', '#3d0008', '#cf142b', 'rgba(207,20,43,0.4)', { triggers: [{h:2, m:0, endH:2, endM:1},{h:3, m:0, endH:3, endM:1},{h:4, m:0, endH:4, endM:1}] }),
-  zh: easter('0.70', '#eb0028', '#4b000e', '#eb0028', 'rgba(235,0,40,0.4)', { triggers: [] }),
+  fr: easter('0.80', '#0055a4', '#001833', '#0055a4', 'rgba(0,85,164,0.4)', { comic: true, triggers: [] }),
+  en: easter('0.70', '#cf142b', '#3d0008', '#cf142b', 'rgba(207,20,43,0.4)', { comic: true, triggers: [{h:2, m:0, endH:2, endM:1},{h:3, m:0, endH:3, endM:1},{h:4, m:0, endH:4, endM:1}] }),
+  zh: easter('0.70', '#eb0028', '#4b000e', '#eb0028', 'rgba(235,0,40,0.4)', { comic: true, triggers: [] }),
   disco: easter('0.24', '#ffffff', '#1a1a1a', '#ffffff', 'rgba(255,255,255,0.15)', { blackBg: true, activeDates: ['2026-07-04','2026-07-05','2026-07-06'], triggers: [] }),
   runescape: easter('0.80', '#c8a94e', '#3a2800', '#c8a94e', 'rgba(200,169,78,0.4)', { comic: true, activeDates: ['2026-07-03'], triggers: [{h:16, m:0, endH:17, endM:0}] }),
 };
@@ -1567,6 +2133,159 @@ const DAYS = {
   ]),
 };
 
+function getPrimaryStages(dayKey) {
+  return (DAYS[dayKey] && DAYS[dayKey].stages) || [];
+}
+
+function hasSecondaryStages(dayKey) {
+  return dayKey !== 'jeudi';
+}
+
+function hasCampingStage(dayKey) {
+  return dayKey !== 'jeudi';
+}
+
+function getSecondaryStages(dayKey) {
+  return hasSecondaryStages(dayKey) ? SECONDARY_STAGES : [];
+}
+
+function getCampingStages(dayKey) {
+  return hasCampingStage(dayKey) ? CAMPING_STAGES : [];
+}
+
+function getNormalViewStages(dayKey) {
+  if (campingStageMode) return getCampingStages(dayKey);
+  return secondaryStagesMode ? getSecondaryStages(dayKey) : getPrimaryStages(dayKey);
+}
+
+function getFavoriteCandidateStages(dayKey) {
+  const seen = new Set();
+  return [...getPrimaryStages(dayKey), ...getSecondaryStages(dayKey)]
+    .filter(stage => {
+      const key = String(stage.name || '').toLowerCase();
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .sort((a, b) => stagePriority(a.name) - stagePriority(b.name));
+}
+
+function getStageViewCycleStages(dayKey) {
+  const stages = ['primary'];
+  if (hasSecondaryStages(dayKey)) stages.push('secondary');
+  if (profileCampingEnabled && hasCampingStage(dayKey)) stages.push('camping');
+  return stages;
+}
+
+function getCurrentStageViewState() {
+  return campingStageMode ? 'camping' : secondaryStagesMode ? 'secondary' : 'primary';
+}
+
+function setStageViewState(state) {
+  secondaryStagesMode = state === 'secondary';
+  campingStageMode = state === 'camping';
+}
+
+function getStageGroup(stageName) {
+  const norm = String(stageName || '').trim().toLowerCase();
+  if (!norm) return null;
+  if (norm === 'discor' || norm === 'discob' || norm === 'discog') return 'disco';
+  if (norm === 'camping') return profileCampingEnabled ? 'camping' : null;
+  if (SECONDARY_STAGES.some(stage => stage.name.toLowerCase() === norm)) return 'secondary';
+  if (norm === 'info') return 'info';
+  return 'primary';
+}
+
+function getVisibleStageGroup() {
+  if (discoMode) return 'disco';
+  const plainScheduleView = !profileMode && !discoMode && !campingMode && !favsOnly;
+  if (campingStageMode && plainScheduleView) return 'camping';
+  if (secondaryStagesMode && plainScheduleView) return 'secondary';
+  if (plainScheduleView) return 'primary';
+  return 'other';
+}
+
+function isActInCrossSceneNoticeWindow(act, hour) {
+  const start = Number(act && act.start);
+  const end = Number(act && act.end);
+  return Number.isFinite(start) && Number.isFinite(end)
+    && hour >= start - CROSS_SCENE_NOTICE_LEAD_HOURS
+    && hour < end;
+}
+
+function getSelectedNormalNoticeGroups(favs = getFavs(), overrideEntries = Object.entries(overrides)) {
+  const groups = new Set();
+  const dayKey = getCurrentFestivalDay();
+  if (!dayKey) return groups;
+
+  const hour = getFestivalHour(2);
+  const stages = [
+    ...getPrimaryStages(dayKey),
+    ...getSecondaryStages(dayKey),
+    ...(profileCampingEnabled ? getCampingStages(dayKey) : []),
+  ];
+
+  stages.forEach(stage => {
+    const group = getStageGroup(stage.name);
+    if (!group || group === 'info') return;
+    const hasSelectedInWindow = getActsFromOverrides(dayKey, stage.name, overrideEntries)
+      .some(act => isActFavorite(favs, dayKey, stage.name, act) && isActInCrossSceneNoticeWindow(act, hour));
+    if (hasSelectedInWindow) groups.add(group);
+  });
+
+  return groups;
+}
+
+function getSelectedDiscoNoticeGroups(favs = getFavs()) {
+  const groups = new Set();
+  if (!profileCampingEnabled || !profileDiscoEnabled) return groups;
+
+  const state = getCurrentDiscoState();
+  if (!state.active || !state.dayKey) return groups;
+
+  const p = getFestivalParts();
+  let hour = p.hour + p.minute / 60 + p.second / 3600;
+  if (hour < 6) hour += 24;
+
+  const acts = getDiscoActs(state.dayKey);
+  const hasSelectedInWindow = Object.entries(DISCO_STAGE_META).some(([stageName]) =>
+    (acts[stageName] || []).some(act =>
+      isActFavorite(favs, state.dayKey, stageName, act) && isActInCrossSceneNoticeWindow(act, hour)
+    )
+  );
+
+  if (hasSelectedInWindow) groups.add('disco');
+  return groups;
+}
+
+function getSelectedCrossSceneNoticeGroups(favs = getFavs()) {
+  return new Set([
+    ...getSelectedNormalNoticeGroups(favs),
+    ...getSelectedDiscoNoticeGroups(favs),
+  ]);
+}
+
+function setCrossSceneIndicator(btn, active) {
+  if (!btn) return;
+  const isVisible = btn.style.visibility !== 'hidden';
+  btn.classList.toggle('cross-scene-indicator', Boolean(active && isVisible));
+}
+
+function updateCrossSceneIndicators() {
+  const groups = getSelectedCrossSceneNoticeGroups();
+  const currentGroup = getVisibleStageGroup();
+  const hasOtherScheduleGroup = ['primary', 'secondary', 'camping']
+    .some(group => groups.has(group) && group !== currentGroup);
+  const hasOtherDiscoGroup = groups.has('disco') && currentGroup !== 'disco';
+
+  setCrossSceneIndicator($('stage-view-btn'), hasOtherScheduleGroup);
+  setCrossSceneIndicator($('disco-btn'), hasOtherDiscoGroup);
+}
+
+function makeStageGridCols(stages) {
+  return `60px ${'1fr '.repeat(Math.max(stages.length, 1)).trim()}`;
+}
+
 function getTimeZoneOffsetMinutes(date, timeZone) {
   const parts = getFestivalParts(date);
   const asUTC = Date.UTC(parts.year, parts.monthIndex, parts.day, parts.hour, parts.minute, parts.second);
@@ -1596,10 +2315,43 @@ function parseFestivalDateParam(raw) {
   return zonedTimeToDate(Number(y), Number(mo), Number(d), Number(h), Number(mi), Number(se), FESTIVAL_TIME_ZONE);
 }
 
+function getUrlTimeParam() {
+  const readSearchParams = value => {
+    try {
+      const p = new URLSearchParams(value || '');
+      return p.get('t') || p.get('time') || '';
+    } catch(e) {
+      return '';
+    }
+  };
+
+  let value = readSearchParams(location.search);
+  if (value) return value;
+
+  const hash = String(location.hash || '');
+  if (hash) {
+    const hashQuery = hash.includes('?') ? hash.slice(hash.indexOf('?')) : hash.replace(/^#/, '?');
+    value = readSearchParams(hashQuery);
+    if (value) return value;
+  }
+
+  const hrefMatch = String(location.href || '').match(/[?#&]t=([^&#]+)/);
+  if (hrefMatch) {
+    try { return decodeURIComponent(hrefMatch[1].replace(/\+/g, ' ')); } catch(e) { return hrefMatch[1]; }
+  }
+
+  return '';
+}
+
+function getNowOverrideFromUrl() {
+  const raw = getUrlTimeParam();
+  if (!raw) return null;
+  return parseFestivalDateParam(raw);
+}
+
 function getNow() {
-  const p = new URLSearchParams(location.search).get('t');
-  if (!p) return new Date();
-  return parseFestivalDateParam(p) || new Date();
+  const override = getNowOverrideFromUrl();
+  return override || new Date();
 }
 
 function ymd(date = getNow()) {
@@ -1654,7 +2406,7 @@ function getRenderedActs() {
 
 function getActSummaryMeta(act) {
   if (!act) return null;
-  const name = (act.dataset.rawName || act.querySelector('.act-name')?.textContent || '').trim();
+  const name = formatActDisplayName(act.dataset.rawName || act.querySelector('.act-name')?.textContent || '').trim();
   const start = parseFloat(act.dataset.start);
   const end = parseFloat(act.dataset.end);
   if (!name || !Number.isFinite(start) || !Number.isFinite(end)) return null;
@@ -1710,10 +2462,9 @@ function renderNowSummarySection(kicker, acts) {
   return `<div class="summary-section"><span class="summary-kicker">${kicker}</span><div class="summary-list">${rows}</div></div>`;
 }
 
-function getUpcomingSummaryGroups(acts, hour, budget) {
+function getUpcomingSummaryGroups(metas, hour, budget) {
   if (budget < 2) return [];
-  const selected = acts
-    .map(act => ({ ...getActSummaryMeta(act), selected: act.classList.contains('selected') }))
+  const selected = metas
     .filter(meta => meta && meta.name && meta.start > hour && meta.selected)
     .sort((a, b) => a.start - b.start || stagePriority(a.stage) - stagePriority(b.stage));
   if (!selected.length) return [];
@@ -1723,7 +2474,7 @@ function getUpcomingSummaryGroups(acts, hour, budget) {
   while (i < selected.length) {
     const t = selected[i].start;
     const minutes = Math.max(0, Math.ceil((t - hour) * 60 - 1e-6));
-    if (minutes > 720) break;
+    if (minutes > MAX_UPCOMING_SUMMARY_MINUTES) break;
     const groupActs = [];
     while (i < selected.length && Math.abs(selected[i].start - t) < 0.0001) groupActs.push(selected[i++]);
     groups.push({ minutes, acts: groupActs.sort((a, b) => stagePriority(a.stage) - stagePriority(b.stage) || a.name.localeCompare(b.name)) });
@@ -1741,17 +2492,90 @@ function getUpcomingSummaryGroups(acts, hour, budget) {
   return result;
 }
 
-function updateNowSummary(hour = null) {
-  if (document.body.classList.contains('is-fullscreen')) { setNowSummary(''); return; }
-  const acts = getRenderedActs();
-  if (!acts.length || !Number.isFinite(hour)) { setNowSummary(''); return; }
-  if (hour % 24 < 12) { setNowSummary(''); return; }
+function isNowSummaryStage(stageName) {
+  const norm = String(stageName || '').trim().toLowerCase();
+  if (!norm || norm === 'info') return false;
+  if (norm === 'discor' || norm === 'discob' || norm === 'discog') return false;
+  if (norm === 'camping' && !profileCampingEnabled) return false;
+  return true;
+}
 
+function getNowSummaryStageNames(dayKey, entries = Object.entries(overrides)) {
+  return [...new Set(entries
+    .map(([key]) => {
+      const [day, stage] = key.split('|');
+      return day === dayKey && isNowSummaryStage(stage) ? stage : '';
+    })
+    .filter(Boolean))]
+    .sort((a, b) => stagePriority(a) - stagePriority(b) || a.localeCompare(b));
+}
+
+function getNowSummaryState() {
+  const dayKey = getCurrentFestivalDay();
+  const day = DAYS[dayKey];
+  if (!dayKey || !day) return null;
+
+  const hour = getFestivalHour(2);
+  if (!Number.isFinite(hour) || hour >= day.endHour) return null;
+
+  return { dayKey, hour };
+}
+
+function getNowSummaryMetas(dayKey) {
+  if (!dayKey) return [];
+
+  const favs = getFavs();
+  if (!favs.length) return [];
+
+  const entries = Object.entries(overrides);
+  const metas = [];
+  const seen = new Set();
+
+  getNowSummaryStageNames(dayKey, entries).forEach(stageName => {
+    getActsFromOverrides(dayKey, stageName, entries).forEach(act => {
+      if (!isActFavorite(favs, dayKey, stageName, act)) return;
+
+      const meta = {
+        name: formatActDisplayName(act.name).trim(),
+        stage: stageName,
+        start: act.start,
+        end: act.end,
+        selected: true,
+      };
+      if (!meta.name || !Number.isFinite(meta.start) || !Number.isFinite(meta.end)) return;
+
+      const key = `${meta.stage}|${meta.start}|${meta.end}|${meta.name}`;
+      if (seen.has(key)) return;
+      seen.add(key);
+      metas.push(meta);
+    });
+  });
+
+  return metas;
+}
+
+function updateNowSummary(hour = null) {
+  if (document.body.classList.contains('is-fullscreen') || sheetLoadFailed) {
+    setNowSummary('');
+    return;
+  }
+
+  const summaryState = getNowSummaryState();
+  if (!summaryState) {
+    setNowSummary('');
+    return;
+  }
+
+  const { dayKey, hour: summaryHour } = summaryState;
   const MAX_LINES = 6;
-  const visibleNowActs = acts
-    .filter(act => act.classList.contains('act-now'))
-    .map(act => ({ ...getActSummaryMeta(act), selected: act.classList.contains('selected') }))
-    .filter(meta => meta && meta.name && meta.selected)
+  const metas = getNowSummaryMetas(dayKey);
+  if (!metas.length) {
+    setNowSummary('');
+    return;
+  }
+
+  const visibleNowActs = metas
+    .filter(meta => summaryHour >= meta.start && summaryHour < meta.end)
     .sort((a, b) => stagePriority(a.stage) - stagePriority(b.stage) || a.name.localeCompare(b.name));
 
   let html = '';
@@ -1763,44 +2587,123 @@ function updateNowSummary(hour = null) {
     remaining -= 1 + nowSlice.length;
   }
 
-  for (const group of getUpcomingSummaryGroups(acts, hour, remaining)) {
+  for (const group of getUpcomingSummaryGroups(metas, summaryHour, remaining)) {
     html += renderNowSummarySection(group.kicker, group.acts);
   }
 
   setNowSummary(html);
 }
-function addActBehavior(div) {
-  div.addEventListener('click', () => {
-    div.classList.toggle('selected');
-    const selected = div.classList.contains('selected');
-    const discoColor = discoActColor(div);
 
-    if (selected) {
-      if (discoColor) {
-        div.style.background = '';
-        div.style.borderLeftColor = '#fff';
-      } else {
-        setNormalSelectedActStyle(div);
-      }
-    } else {
-      clearNormalSelectedActStyle(div);
-      div.style.borderLeftColor = '';
-    }
+function hasNormalFavForDay(dayKey, favs) {
+  const stages = getFavoriteCandidateStages(dayKey);
+  if (!stages.length) return false;
+  const validStages = new Set(stages.map(stage => stage.name));
+  const prefix = `${dayKey}-`;
+  if (favs.some(id => {
+    if (!id.startsWith(prefix)) return false;
+    const rest = id.slice(prefix.length);
+    const stage = rest.slice(0, rest.lastIndexOf('-'));
+    return validStages.has(stage);
+  })) return true;
+  return getFavStageActs(dayKey, favs).length > 0;
+}
 
-    if (!selected) {
-      div.style.borderLeftColor = discoColor || '';
-      div.style.borderTopColor = '';
-    }
+function getFavLayoutSignature(dayKey, favs) {
+  const day = DAYS[dayKey];
+  const stageActs = getFavStageActs(dayKey, favs);
+  if (!day || !stageActs.length) return 'empty';
 
-    const favs = getFavs();
-    saveFavs(selected ? [...favs, div.id] : favs.filter(f => f !== div.id));
-    updateStageHeaderSelectionState();
-    if (!document.body.classList.contains('is-fullscreen')) {
-      const summaryHour = getFestivalHour(discoMode ? 6 : 2);
-      updateNowSummary(summaryHour);
-    }
+  const allActs = stageActs.flatMap(stage => stage.acts);
+  let startHour = Math.floor(Math.min(...allActs.map(act => act.start)));
+  let endHour = Math.ceil(Math.max(...allActs.map(act => act.end)));
+  const MIN_RANGE = 2;
+
+  if (endHour - startHour < MIN_RANGE) {
+    const pad = (MIN_RANGE - (endHour - startHour)) / 2;
+    startHour = Math.max(day.startHour, Math.floor(startHour - pad));
+    endHour = Math.min(day.endHour, Math.ceil(endHour + pad));
+  }
+
+  return `${stageActs.map(stage => stage.stage.name).join('|')}@${startHour}-${endHour}`;
+}
+
+function syncFavoriteControlsAfterActToggle(oldFavs, newFavs, dayKey) {
+  const oldHasFavs = oldFavs.length > 0;
+  const newHasFavs = newFavs.length > 0;
+  const oldDayVisible = hasNormalFavForDay(dayKey, oldFavs);
+  const newDayVisible = hasNormalFavForDay(dayKey, newFavs);
+
+  if (oldHasFavs !== newHasFavs) {
     updateResetBtn();
-    if (favsOnly && !discoMode && !campingMode) renderFavsMode(normalDayKey);
+    return;
+  }
+
+  if (!discoMode && !campingMode && oldDayVisible !== newDayVisible) updateFavsBtn();
+}
+
+function syncFavoritesModeAfterActToggle(div, selected, oldFavs, newFavs) {
+  if (!favsOnly || discoMode || campingMode) return;
+
+  const oldSignature = getFavLayoutSignature(normalDayKey, oldFavs);
+  const newSignature = getFavLayoutSignature(normalDayKey, newFavs);
+  if (oldSignature !== newSignature || selected) {
+    renderFavsMode(normalDayKey);
+    return;
+  }
+
+  div.remove();
+  updateStageHeaderSelectionState();
+}
+
+function setActSelectedState(div, selected, discoColor) {
+  div.classList.toggle('selected', selected);
+  div.setAttribute('aria-pressed', selected ? 'true' : 'false');
+
+  if (selected) {
+    if (discoColor) {
+      div.style.background = '';
+      div.style.borderLeftColor = '#fff';
+    } else {
+      setNormalSelectedActStyle(div);
+    }
+    return;
+  }
+
+  clearNormalSelectedActStyle(div);
+  div.style.borderLeftColor = discoColor || '';
+  div.style.borderTopColor = '';
+}
+
+function addActBehavior(div) {
+  const toggleFavorite = () => {
+    const oldFavs = getFavs();
+    const selected = !div.classList.contains('selected');
+    const discoColor = discoActColor(div);
+    const aliases = getActFavoriteAliasesFromElement(div);
+    const primaryFavId = div.dataset.favId || div.id;
+    const newFavs = selected
+      ? [...new Set([...oldFavs.filter(id => !aliases.includes(id)), primaryFavId])]
+      : oldFavs.filter(id => !aliases.includes(id));
+
+    setActSelectedState(div, selected, discoColor);
+    saveFavs(newFavs);
+    document.dispatchEvent(new CustomEvent('favschange'));
+    updateStageHeaderSelectionState();
+    updateCrossSceneIndicators();
+
+    if (!document.body.classList.contains('is-fullscreen')) {
+      updateNowSummary(getFestivalHour(discoMode ? 6 : 2));
+    }
+
+    syncFavoriteControlsAfterActToggle(oldFavs, newFavs, normalDayKey);
+    syncFavoritesModeAfterActToggle(div, selected, oldFavs, newFavs);
+  };
+
+  div.addEventListener('click', toggleFavorite);
+  div.addEventListener('keydown', e => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    e.preventDefault();
+    toggleFavorite();
   });
 }
 
@@ -1808,32 +2711,48 @@ function escapeHTML(v) {
   return String(v || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
 }
 
+function formatActDisplayName(name) {
+  const clean = name === '?' ? '' : String(name || '');
+  return clean.replace(/_/g, ' ').replace(/-/g, '‑');
+}
+
 function createActNameHTML(name) {
-  const clean   = name === '?' ? '' : String(name || '');
-  const display = clean.replace(/_/g, ' ').replace(/-/g, '‑');
+  const display = formatActDisplayName(name);
   const safe    = escapeHTML(display);
   return `<div class="act-name" title="${safe}">${safe}</div>`;
 }
-function renderSheetError() {
+function renderSheetError(message = '') {
   const stageRow = $('stage-row'), axis = $('axis'), tl = $('tl');
+  const startHour = 14, endHour = 24;
   clearSchedule(stageRow, axis, tl);
   setScheduleGrid(stageRow, tl, '60px 1fr');
+  setTimelineWindow(tl, startHour, endHour);
+  axis.appendChild(buildAxisFragment(startHour, endHour));
+  tl.appendChild(buildGridLinesFragment(startHour, endHour));
   const msg = document.createElement('div');
   msg.id = 'sheet-error';
-  msg.textContent = 'PROGRAMME INDISPONIBLE';
+  msg.textContent = message || ({ fr: 'PROGRAMME INDISPONIBLE', en: 'SCHEDULE UNAVAILABLE', zh: '节目单不可用' }[currentLang] || 'PROGRAMME INDISPONIBLE');
   tl.appendChild(msg);
 }
 
 function getFavStageActs(dayKey, favs = getFavs(), overrideEntries = Object.entries(overrides)) {
-  const day = DAYS[dayKey];
-  if (!day) return [];
-  return day.stages
+  if (!DAYS[dayKey]) return [];
+  return getFavoriteCandidateStages(dayKey)
     .map(stage => ({
       stage,
       acts: getActsFromOverrides(dayKey, stage.name, overrideEntries)
-        .filter(act => favs.includes(`${dayKey}-${stage.name}-${act.start}`))
+        .filter(act => isActFavorite(favs, dayKey, stage.name, act))
     }))
-    .filter(s => s.acts.length > 0);
+    .filter(s => s.acts.length > 0)
+    .sort((a, b) => stagePriority(a.stage.name) - stagePriority(b.stage.name))
+    .slice(0, 5);
+}
+
+function getFavRenderActs(dayKey, stageName, favoriteActs, startHour, endHour, overrideEntries = Object.entries(overrides)) {
+  if (!showFavFillActs) return favoriteActs;
+  return getActsFromOverrides(dayKey, stageName, overrideEntries)
+    .filter(act => act.start >= startHour && act.end <= endHour)
+    .sort((a, b) => a.start - b.start);
 }
 
 function getFavDays(favs = getFavs()) {
@@ -1842,9 +2761,16 @@ function getFavDays(favs = getFavs()) {
 }
 
 function updateFavDayVisibility(favDays = getFavDays()) {
-  const visible = new Set(favsOnly ? favDays : DAY_KEYS);
+  const allowed = new Set(profileEnabledDays);
+  const base = DAY_KEYS.filter(d => allowed.has(d));
+  const visible = new Set(favsOnly ? favDays.filter(d => allowed.has(d)) : base);
+  const hideSecondaryUnavailableDay = secondaryStagesMode && !favsOnly && !discoMode && !campingMode && !profileMode;
+  const hideCampingUnavailableDay = campingStageMode && !profileCampingEnabled && !favsOnly && !discoMode && !campingMode && !profileMode;
+  const hideCampingViewDay = campingStageMode && !favsOnly && !discoMode && !campingMode && !profileMode;
   document.querySelectorAll('.day-item').forEach(el => {
-    el.style.display = visible.has(el.dataset.day) ? '' : 'none';
+    const dayKey = el.dataset.day;
+    const shouldHide = (hideSecondaryUnavailableDay && !hasSecondaryStages(dayKey)) || (hideCampingViewDay && !hasCampingStage(dayKey)) || hideCampingUnavailableDay;
+    el.style.display = visible.has(dayKey) && !shouldHide ? '' : 'none';
   });
 }
 
@@ -1859,7 +2785,7 @@ function renderFavsMode(preferredDay = normalDayKey) {
   updateFavDayVisibility();
   if (!dayKey) {
     favsOnly = false;
-    document.body.classList.remove('favs-only');
+    document.body.classList.remove('favs-only', 'camping-stage-mode');
     updateFavDayVisibility(DAY_KEYS);
     updateFavsBtn();
     const titleEl = document.querySelector('.label span');
@@ -1877,23 +2803,29 @@ function renderFavs(dayKey) {
   if (!day) return;
 
   const favs = getFavs();
-  const stageActs = getFavStageActs(dayKey, favs);
+  const overrideEntries = Object.entries(overrides);
+  const remainingActive = isRemainingModeActiveForDay(dayKey);
+  const stageActs = getFavStageActs(dayKey, favs, overrideEntries)
+    .map(stage => ({
+      stage: stage.stage,
+      acts: remainingActive
+        ? stage.acts.filter(act => shouldShowActForCurrentView(dayKey, stage.stage.name, act, favs))
+        : stage.acts
+    }))
+    .filter(stage => stage.acts.length > 0);
   if (!stageActs.length) {
     clearSchedule($('stage-row'), $('axis'), $('tl'));
+    updateNowLine();
     return;
   }
 
   const N = stageActs.length;
 
   const allSelected = stageActs.flatMap(s => s.acts);
-  let startHour = Math.floor(Math.min(...allSelected.map(a => a.start)));
-  let endHour   = Math.ceil(Math.max(...allSelected.map(a => a.end)));
-  const MIN_RANGE = 2;
-  if (endHour - startHour < MIN_RANGE) {
-    const pad = (MIN_RANGE - (endHour - startHour)) / 2;
-    startHour = Math.max(day.startHour, Math.floor(startHour - pad));
-    endHour   = Math.min(day.endHour,   Math.ceil(endHour   + pad));
-  }
+  const timeWindow = remainingActive
+    ? getRemainingTimelineWindow(day, allSelected)
+    : getCompactTimeWindow(day, allSelected);
+  const { startHour, endHour, axisEndHour = endHour, scaleHours = endHour - startHour } = timeWindow;
 
   const stageRow = $('stage-row'), tl = $('tl'), axis = $('axis');
   document.body.classList.remove(...DAY_KEYS.map(d => 'day-' + d));
@@ -1903,15 +2835,19 @@ function renderFavs(dayKey) {
   setTimelineWindow(tl, startHour, endHour);
 
   const stageFrag    = buildStageHeaderFragment(stageActs.map(s => s.stage), s => buildStageHeader(s.name, s.sub));
-  const axisFrag     = buildAxisFragment(startHour, endHour);
+  const axisFrag     = buildAxisFragment(startHour, axisEndHour, scaleHours);
   const timelineFrag = document.createDocumentFragment();
 
   stageActs.forEach(({ stage, acts }) => {
     const col = document.createElement('div');
     col.className = 'stage-col';
-    acts.forEach(act => {
+    const renderActs = getFavRenderActs(dayKey, stage.name, acts, startHour, endHour, overrideEntries)
+      .filter(act => !remainingActive || shouldShowActForCurrentView(dayKey, stage.name, act, favs));
+    renderActs.forEach(act => {
       const div = createActElement({
-        id: `${dayKey}-${stage.name}-${act.start}`,
+        id: makeLegacyActId(dayKey, stage.name, act.start),
+        favId: makeActFavoriteId(dayKey, stage.name, act),
+        legacyFavId: makeLegacyActId(dayKey, stage.name, act.start),
         name: act.name, start: act.start, end: act.end,
         className: 'act' + (act.name === 'RuneScape Rave' ? ' act-runescape' : ''),
         favs,
@@ -1922,7 +2858,7 @@ function renderFavs(dayKey) {
     timelineFrag.appendChild(col);
   });
 
-  swapSchedule(stageRow, axis, tl, stageFrag, axisFrag, timelineFrag, startHour, endHour);
+  swapSchedule(stageRow, axis, tl, stageFrag, axisFrag, timelineFrag, startHour, axisEndHour, timeWindow);
   updateNowLine();
   updateResetBtn();
 }
@@ -1935,37 +2871,63 @@ function renderDay(dayKey) {
   const favs = getFavs();
   const overrideEntries = Object.entries(overrides);
 
+  if (secondaryStagesMode && !hasSecondaryStages(dayKey)) secondaryStagesMode = false;
+  if (campingStageMode && !hasCampingStage(dayKey)) campingStageMode = false;
+  if (campingStageMode) secondaryStagesMode = false;
+
   document.body.classList.remove(...DAY_KEYS.map(d => 'day-' + d));
   document.body.classList.add('day-' + dayKey);
-  setScheduleGrid(stageRow, tl, day.gridCols);
-  setTimelineWindow(tl, day.startHour, day.endHour);
+  document.body.classList.toggle('secondary-stages-mode', !!secondaryStagesMode);
+  document.body.classList.toggle('camping-stage-mode', !!campingStageMode);
+  const stages = getNormalViewStages(dayKey);
+  const actsByStage = stages.map(stage => ({
+    stage,
+    acts: getActsFromOverrides(dayKey, stage.name, overrideEntries)
+      .filter(act => campingStageMode || shouldShowActForCurrentView(dayKey, stage.name, act, favs)),
+  }));
+  const remainingActive = !campingStageMode && isRemainingModeActiveForDay(dayKey);
+  const allVisibleActs = actsByStage.flatMap(s => s.acts);
+  const timeWindow = campingStageMode
+    ? { startHour: CAMPING_STAGE_HOURS.start, endHour: CAMPING_STAGE_HOURS.end, axisEndHour: CAMPING_STAGE_HOURS.end, scaleHours: CAMPING_STAGE_HOURS.end - CAMPING_STAGE_HOURS.start }
+    : remainingActive
+      ? getRemainingTimelineWindow(day, allVisibleActs)
+      : { startHour: day.startHour, endHour: day.endHour, axisEndHour: day.endHour, scaleHours: day.endHour - day.startHour };
+  const { startHour, endHour, axisEndHour, scaleHours } = timeWindow;
 
-  const stageFrag = buildStageHeaderFragment(day.stages, s => buildStageHeader(s.name, s.sub));
-  const axisFrag = buildAxisFragment(day.startHour, day.endHour);
+  setScheduleGrid(stageRow, tl, makeStageGridCols(stages));
+  setTimelineWindow(tl, startHour, endHour);
+
+  const layoutKey = dayKey + (campingStageMode ? '|camping' : secondaryStagesMode ? '|secondary' : '|primary') + (remainingActive ? '|remaining' : '');
+  const stageFrag = buildStageHeaderFragment(stages, s => buildStageHeader(s.name, s.sub));
+  const axisFrag = buildAxisFragment(startHour, axisEndHour, scaleHours);
   const timelineFrag = document.createDocumentFragment();
 
-  day.stages.forEach(stage => {
+  actsByStage.forEach(({ stage, acts }) => {
     const col = document.createElement('div');
     col.className = 'stage-col';
 
-    getActsFromOverrides(dayKey, stage.name, overrideEntries).forEach(act => {
+    acts.forEach(act => {
       const div = createActElement({
-        id: `${dayKey}-${stage.name}-${act.start}`,
+        id: makeLegacyActId(dayKey, stage.name, act.start),
+        favId: makeActFavoriteId(dayKey, stage.name, act),
+        legacyFavId: makeLegacyActId(dayKey, stage.name, act.start),
         name: act.name,
         start: act.start,
         end: act.end,
         className: 'act' + (act.name === 'RuneScape Rave' ? ' act-runescape' : ''),
         favs,
-        layoutKey: dayKey,
+        layoutKey,
+        alwaysShowTime: campingStageMode,
       });
-      positionAct(div, act.start, act.end, day.startHour, day.endHour);
+      positionAct(div, act.start, act.end, startHour, endHour);
       col.appendChild(div);
     });
 
     timelineFrag.appendChild(col);
   });
 
-  swapSchedule(stageRow, axis, tl, stageFrag, axisFrag, timelineFrag, day.startHour, day.endHour);
+  swapSchedule(stageRow, axis, tl, stageFrag, axisFrag, timelineFrag, startHour, axisEndHour, timeWindow);
+  if (!actTextLayoutsPrecomputing && !normalActTextLayoutsReady) queueActTextLayoutIfMissing();
   updateNowLine();
   updateResetBtn();
 }
@@ -1988,6 +2950,7 @@ function getDiscoActs(dayKey) {
       name: ov.name || '',
       start: rawStart < 6 ? rawStart + 24 : rawStart,
       end: rawEnd < 6 ? rawEnd + 24 : rawEnd,
+      stableId: ov.stableId || '',
     });
   });
 
@@ -2007,7 +2970,7 @@ function renderDisco(dayKey) {
     .map(([key, meta]) => ({ key, ...meta, label: meta.labels[currentLang], style: dayStyles[key] || '' }))
     .filter(stage => acts[stage.key].some(a => a.name !== ''));
 
-  const allActs = stages.flatMap(stage => acts[stage.key]);
+  const allActs = stages.flatMap(stage => acts[stage.key].filter(act => shouldShowActForCurrentView(dayKey, stage.key, act, favs, 6, DISCO_DAYS)));
   const gridCols = `60px ${'1fr '.repeat(Math.max(stages.length, 1)).trim()}`;
   setScheduleGrid(stageRow, tl, gridCols);
 
@@ -2030,10 +2993,14 @@ function renderDisco(dayKey) {
     const col = document.createElement('div');
     col.className = 'stage-col';
 
-    acts[stage.key].forEach(act => {
+    acts[stage.key]
+      .filter(act => shouldShowActForCurrentView(dayKey, stage.key, act, favs, 6, DISCO_DAYS))
+      .forEach(act => {
       if (!act.name) return;
       const div = createActElement({
-        id: `${dayKey}-${stage.key}-${act.start}`,
+        id: makeLegacyActId(dayKey, stage.key, act.start),
+        favId: makeActFavoriteId(dayKey, stage.key, act),
+        legacyFavId: makeLegacyActId(dayKey, stage.key, act.start),
         name: act.name,
         start: act.start,
         end: act.end,
@@ -2058,17 +3025,23 @@ function updateFavsBtn() {
   const btn = $('favs-btn');
   if (!btn) return;
   const show = favsOnly || (!discoMode && !campingMode && getFavDays().includes(normalDayKey));
-  btn.style.display = show ? 'flex' : 'none';
+  btn.style.display = 'flex';
+  btn.style.visibility = show ? 'visible' : 'hidden';
+  btn.style.pointerEvents = show ? 'auto' : 'none';
   setUtilityButtonState(btn, true, favsOnly);
 }
 
 function updateResetBtn() {
   const wrap = $('reset-wrap');
   const hasFavs = getFavs().length > 0;
-  if (wrap) wrap.style.display = hasFavs ? 'block' : 'none';
+  const hasProfileChange = !profileCampingEnabled || !profileDiscoEnabled || !profileDancefloorEnabled
+    || sunAutoMode || !showRemainingOnly || fsRemainingOnly || !showFavFillActs
+    || !fsShowTitles || !fsShowDay || !fsShowDate
+    || DAY_KEYS.some(d => !profileEnabledDays.includes(d));
+  if (wrap) wrap.style.display = (hasFavs || hasProfileChange) ? 'block' : 'none';
   if (!hasFavs && favsOnly) {
     favsOnly = false;
-    document.body.classList.remove('favs-only');
+    document.body.classList.remove('favs-only', 'camping-stage-mode');
     updateFavDayVisibility(DAY_KEYS);
     updateFavsBtn();
     if (!discoMode && !campingMode) renderDay(normalDayKey);
@@ -2088,12 +3061,97 @@ function getDefaultDay() {
   return getCurrentFestivalDay() || 'jeudi';
 }
 
+function getRemainingViewEnabledForCurrentRender() {
+  if (actTextLayoutsPrecomputing) return actTextLayoutsPrecomputeRemaining;
+  if (document.body.classList.contains('is-fullscreen')) return fsRemainingOnly;
+  return showRemainingOnly;
+}
+
+function isRemainingModeActiveForDay(dayKey, cutoffHour = REMAINING_DAY_CUTOFF_HOUR, dayMap = FESTIVAL_DAYS) {
+  if (!getRemainingViewEnabledForCurrentRender()) return false;
+  const currentDay = getJuly2026Day(cutoffHour, dayMap, null);
+  if (!currentDay || dayKey !== currentDay) return false;
+
+  const day = DAYS[dayKey];
+  if (!day) return false;
+  const h = getFestivalHour(cutoffHour);
+  return h >= day.startHour && h < day.endHour;
+}
+
+function getRemainingCutoffForDay(dayKey, cutoffHour = REMAINING_DAY_CUTOFF_HOUR, dayMap = FESTIVAL_DAYS) {
+  return isRemainingModeActiveForDay(dayKey, cutoffHour, dayMap) ? getFestivalHour(cutoffHour) : null;
+}
+
+function getCompactTimeWindow(day, acts) {
+  if (!day || !acts.length) return { startHour: day?.startHour ?? 14, endHour: day?.endHour ?? 24 };
+
+  let startHour = Math.floor(Math.min(...acts.map(a => a.start)));
+  let endHour   = Math.ceil(Math.max(...acts.map(a => a.end)));
+  const MIN_RANGE = 2;
+  if (endHour - startHour < MIN_RANGE) {
+    const pad = (MIN_RANGE - (endHour - startHour)) / 2;
+    startHour = Math.max(day.startHour, Math.floor(startHour - pad));
+    endHour   = Math.min(day.endHour,   Math.ceil(endHour   + pad));
+  }
+  return { startHour, endHour };
+}
+
+function getRemainingTimelineWindow(day, acts) {
+  const dayStart = day?.startHour ?? 14;
+  const dayEnd = day?.endHour ?? (dayStart + REMAINING_WINDOW_HOURS);
+  const nowHour = getFestivalHour(REMAINING_DAY_CUTOFF_HOUR);
+  const hasLiveNow = Number.isFinite(nowHour) && nowHour >= dayStart && nowHour < dayEnd;
+  const startHour = hasLiveNow
+    ? Math.max(dayStart, nowHour - REMAINING_PAST_HOURS)
+    : dayStart;
+  const endByDay = Math.max(dayEnd, startHour + REMAINING_WINDOW_HOURS);
+  const endByFuture = hasLiveNow ? nowHour + REMAINING_MIN_FUTURE_HOURS : endByDay;
+  const endHour = Math.max(endByDay, endByFuture);
+  const scaleHours = Math.max(REMAINING_WINDOW_HOURS, endHour - startHour);
+  const axisEndHour = endHour;
+
+  return {
+    startHour,
+    endHour,
+    axisEndHour,
+    scaleHours,
+    remainingTimeline: true,
+    remainingBaseStart: startHour,
+    remainingWindowHours: scaleHours,
+  };
+}
+
+function shouldShowActForCurrentView(dayKey, stageName, act, favs, cutoffHour = REMAINING_DAY_CUTOFF_HOUR, dayMap = FESTIVAL_DAYS) {
+  if (dayMap === DISCO_DAYS) return true;
+  const cutoff = getRemainingCutoffForDay(dayKey, cutoffHour, dayMap);
+  if (cutoff === null) return true;
+  const start = Number(act && act.start);
+  const end = Number(act && act.end);
+  if (!Number.isFinite(start) || !Number.isFinite(end)) return false;
+  if (end <= cutoff) return false;
+  if (start < cutoff - REMAINING_PAST_HOURS) return false;
+  return true;
+}
+
+function shouldShowInfoForCurrentView(dayKey, item) {
+  const cutoff = getRemainingCutoffForDay(dayKey, REMAINING_DAY_CUTOFF_HOUR, FESTIVAL_DAYS);
+  if (cutoff === null) return true;
+  const end = Number(item && item.end);
+  const start = Number(item && item.start);
+  return Number.isFinite(end) ? end > cutoff : !Number.isFinite(start) || start >= cutoff;
+}
+
 function setActiveDay(day) {
   document.querySelectorAll('.day-item').forEach(d => {
     const active = d.dataset.day === day;
     d.classList.toggle('active', active);
     if (active) $('current-date').textContent = d.dataset[activeDateKey()] || '';
   });
+}
+
+function ensureActiveDay(day = normalDayKey || getDefaultDay()) {
+  if (!day || document.querySelector('.day-item.active')) return;
+  setActiveDay(day);
 }
 
 function setUtilityButtonState(btn, isAvailable = true, isOpen = false) {
@@ -2156,6 +3214,7 @@ function updateDiscoBtn() {
   if (!btn) return false;
   const state = getCurrentDiscoState();
   setUtilityButtonState(btn, state.active, discoMode);
+  updateCrossSceneIndicators();
   return state.active;
 }
 
@@ -2183,7 +3242,9 @@ function renderCamping(dayKey) {
   const h = getFestivalHour(6);
 
   const todayKey = getCurrentInfoDay();
-  (infoData[dayKey] || []).forEach(item => {
+  (infoData[dayKey] || [])
+    .filter(item => shouldShowInfoForCurrentView(dayKey, item))
+    .forEach(item => {
     const isActive = todayKey === dayKey && isInfoItemActive(item, h);
     const card = document.createElement('div');
     card.className = 'camping-card' + (isActive ? ' camping-card-active' : '');
@@ -2197,31 +3258,59 @@ function renderCamping(dayKey) {
   updateResetBtn();
 }
 
-
 function updateNowLine() {
   const tl = $('tl');
   const existing = $('now-line');
   const isFullscreen = document.body.classList.contains('is-fullscreen');
 
-  if (isFullscreen) {
+  if (sheetLoadFailed) {
+    resetTimelineScrollTransform();
     if (existing) existing.remove();
     setNowSummary('');
     document.querySelectorAll('.act').forEach(act => {
-      act.classList.remove('act-now');
+      act.classList.remove('act-now', 'act-past');
     });
     updateStageHeaderSelectionState();
+    updateCrossSceneIndicators();
+    return;
+  }
+
+  if (isFullscreen) {
+    resetTimelineScrollTransform();
+    if (existing) existing.remove();
+    setNowSummary('');
+    document.querySelectorAll('.act').forEach(act => {
+      act.classList.remove('act-now', 'act-past');
+    });
+    updateStageHeaderSelectionState();
+    updateCrossSceneIndicators();
+    return;
+  }
+
+  updateNowSummary();
+
+  if (campingMode || profileMode) {
+    resetTimelineScrollTransform();
+    if (existing) existing.remove();
+    document.querySelectorAll('.act').forEach(act => {
+      act.classList.remove('act-now', 'act-past');
+    });
+    updateStageHeaderSelectionState();
+    updateCrossSceneIndicators();
     return;
   }
 
   if (discoMode) {
+    resetTimelineScrollTransform();
     const renderedDay = document.querySelector('.day-item.active')?.dataset.day;
     if (renderedDay && renderedDay !== getDiscoDay()) {
       if (existing) existing.remove();
-      setNowSummary('');
+      updateNowSummary();
       document.querySelectorAll('.act').forEach(act => {
         act.classList.remove('act-now', 'act-past');
       });
       updateStageHeaderSelectionState();
+      updateCrossSceneIndicators();
       return;
     }
     const p = getFestivalParts();
@@ -2230,12 +3319,13 @@ function updateNowLine() {
     if (h < 6) h += 24;
     if (!inFestival || h < discoHours.start || h >= discoHours.end) {
       if (existing) existing.remove();
-      setNowSummary('');
+      updateNowSummary();
       document.querySelectorAll('.act').forEach(act => {
         act.classList.remove('act-now');
         act.classList.remove('act-past');
       });
       updateStageHeaderSelectionState();
+      updateCrossSceneIndicators();
       return;
     }
     const totalMin = (discoHours.end - discoHours.start) * 60;
@@ -2256,43 +3346,33 @@ function updateNowLine() {
       act.classList.toggle('act-past', h >= e);
     });
     updateNowSummary(h);
+    updateCrossSceneIndicators();
     return;
   }
 
-  const festivalDay = getCurrentFestivalDay();
-  const activeDay = document.querySelector('.day-item.active');
-  const festivalIdx = festivalDay ? DAY_KEYS.indexOf(festivalDay) : -1;
-  const viewedIdx = activeDay ? DAY_KEYS.indexOf(activeDay.dataset.day) : -1;
+  if (campingStageMode) {
+    resetTimelineScrollTransform();
+    const renderedDay = document.querySelector('.day-item.active')?.dataset.day;
+    const festivalDayForCamping = getCurrentFestivalDay();
+    const h = getFestivalHour(2);
+    const validDay = renderedDay && renderedDay === festivalDayForCamping && hasCampingStage(renderedDay);
+    const inCampingHours = h >= CAMPING_STAGE_HOURS.start && h < CAMPING_STAGE_HOURS.end;
 
-  if (festivalDay && viewedIdx < festivalIdx) {
-    if (existing) existing.remove();
-    document.querySelectorAll('.act').forEach(act => {
-      act.classList.add('act-past');
-      act.classList.remove('act-now');
-    });
-    return;
-  }
+    if (!validDay || !inCampingHours) {
+      if (existing) existing.remove();
+      document.querySelectorAll('.act').forEach(act => {
+        const e = parseFloat(act.dataset.end);
+        act.classList.toggle('act-past', validDay && Number.isFinite(e) && h >= e);
+        act.classList.remove('act-now');
+      });
+      updateStageHeaderSelectionState();
+      updateNowSummary(h);
+      updateCrossSceneIndicators();
+      return;
+    }
 
-  if (!festivalDay || !activeDay || activeDay.dataset.day !== festivalDay) {
-    if (existing) existing.remove();
-    return;
-  }
-
-  const day = DAYS[festivalDay];
-  const h = getFestivalHour(2);
-
-  if (h < day.startHour || h >= day.endHour) {
-    if (existing) existing.remove();
-    setNowSummary('');
-    return;
-  }
-
-  const view = getTimelineWindow(tl, day.startHour, day.endHour);
-  const lineVisible = h >= view.startHour && h < view.endHour;
-
-  if (lineVisible) {
-    const totalMin = (view.endHour - view.startHour) * 60;
-    const topPct = ((h - view.startHour) * 60) / totalMin * 100;
+    const totalMin = (CAMPING_STAGE_HOURS.end - CAMPING_STAGE_HOURS.start) * 60;
+    const topPct = ((h - CAMPING_STAGE_HOURS.start) * 60) / totalMin * 100;
     const line = existing || document.createElement('div');
     line.id = 'now-line';
     if (!existing) {
@@ -2308,6 +3388,112 @@ function updateNowLine() {
     line.style.transform = 'translateY(-50%)';
     line.style.boxShadow = '0 0 16px var(--accent), 0 0 0 1px rgba(255,255,255,0.65)';
     line.style.top = topPct + '%';
+
+    document.querySelectorAll('.act').forEach(act => {
+      const s = parseFloat(act.dataset.start);
+      const e = parseFloat(act.dataset.end);
+      act.classList.toggle('act-now', h >= s && h < e);
+      act.classList.toggle('act-past', h >= e);
+    });
+    updateStageHeaderSelectionState();
+    updateNowSummary(h);
+    updateCrossSceneIndicators();
+    return;
+  }
+
+  const festivalDay = getCurrentFestivalDay();
+  const activeDay = document.querySelector('.day-item.active');
+  const festivalIdx = festivalDay ? DAY_KEYS.indexOf(festivalDay) : -1;
+  const viewedIdx = activeDay ? DAY_KEYS.indexOf(activeDay.dataset.day) : -1;
+
+  if (festivalDay && viewedIdx < festivalIdx) {
+    resetTimelineScrollTransform();
+    if (existing) existing.remove();
+    updateNowSummary();
+    document.querySelectorAll('.act').forEach(act => {
+      act.classList.add('act-past');
+      act.classList.remove('act-now');
+    });
+    updateCrossSceneIndicators();
+    return;
+  }
+
+  if (!festivalDay || !activeDay || activeDay.dataset.day !== festivalDay) {
+    resetTimelineScrollTransform();
+    if (existing) existing.remove();
+    updateNowSummary();
+    updateCrossSceneIndicators();
+    return;
+  }
+
+  const plainScheduleView = !profileMode && !discoMode && !campingMode && !favsOnly;
+  const renderedRemainingTimeline = tl.dataset.remainingTimeline === '1';
+  const shouldUseRemainingTimeline = isRemainingModeActiveForDay(activeDay.dataset.day);
+  const day = DAYS[festivalDay];
+  if (plainScheduleView && renderedRemainingTimeline !== shouldUseRemainingTimeline) {
+    renderDay(activeDay.dataset.day);
+    return;
+  }
+  if (plainScheduleView && shouldUseRemainingTimeline && renderedRemainingTimeline) {
+    const expectedWindow = getRemainingTimelineWindow(day, []);
+    const currentWindow = getTimelineWindow(tl, day.startHour, day.endHour);
+    const currentScale = parseFloat(tl.dataset.remainingWindowHours);
+    const windowChanged = Math.abs(currentWindow.startHour - expectedWindow.startHour) > 0.01
+      || Math.abs(currentWindow.endHour - expectedWindow.endHour) > 0.01
+      || Math.abs((Number.isFinite(currentScale) ? currentScale : REMAINING_WINDOW_HOURS) - expectedWindow.scaleHours) > 0.01;
+    if (windowChanged) {
+      renderDay(activeDay.dataset.day);
+      return;
+    }
+  }
+
+  const h = getFestivalHour(REMAINING_DAY_CUTOFF_HOUR);
+
+  if (h < day.startHour || h >= day.endHour) {
+    resetTimelineScrollTransform();
+    if (existing) existing.remove();
+    updateNowSummary();
+    return;
+  }
+
+  const view = getTimelineWindow(tl, day.startHour, day.endHour);
+  const isRemainingTimeline = tl.dataset.remainingTimeline === '1';
+  const remainingBaseStart = parseFloat(tl.dataset.remainingBaseStart);
+  const remainingWindowHours = parseFloat(tl.dataset.remainingWindowHours) || REMAINING_WINDOW_HOURS;
+  let lineVisible = h >= view.startHour && h < view.endHour;
+  let lineTopPct = null;
+
+  if (isRemainingTimeline && Number.isFinite(remainingBaseStart)) {
+    resetTimelineScrollTransform();
+    lineVisible = h >= view.startHour && h < day.endHour;
+    if (lineVisible) {
+      const totalMin = (view.endHour - view.startHour) * 60;
+      lineTopPct = ((h - view.startHour) * 60) / totalMin * 100;
+    }
+  } else {
+    resetTimelineScrollTransform();
+    if (lineVisible) {
+      const totalMin = (view.endHour - view.startHour) * 60;
+      lineTopPct = ((h - view.startHour) * 60) / totalMin * 100;
+    }
+  }
+
+  if (lineVisible && lineTopPct !== null) {
+    const line = existing || document.createElement('div');
+    line.id = 'now-line';
+    if (!existing) {
+      Object.assign(line.style, {
+        position: 'absolute', left: NOW_LINE_LEFT_PX + 'px', right: NOW_LINE_RIGHT_PX + 'px',
+        height: '6px', background: 'var(--accent)',
+        boxShadow: '0 0 16px var(--accent), 0 0 0 1px rgba(255,255,255,0.65)',
+        zIndex: '0', pointerEvents: 'none', transform: 'translateY(-50%)'
+      });
+      tl.appendChild(line);
+    }
+    line.style.height = '6px';
+    line.style.transform = 'translateY(-50%)';
+    line.style.boxShadow = '0 0 16px var(--accent), 0 0 0 1px rgba(255,255,255,0.65)';
+    line.style.top = lineTopPct + '%';
   } else if (existing) {
     existing.remove();
   }
@@ -2327,22 +3513,32 @@ function updateNowLine() {
   });
   updateStageHeaderSelectionState();
   updateNowSummary(h);
+  updateCrossSceneIndicators();
+}
+
+function waitForActLayoutFontsReady(timeoutMs = 3000) {
+  if (!document.fonts || !document.fonts.ready) return Promise.resolve();
+  return Promise.race([
+    document.fonts.ready.catch(() => {}),
+    new Promise(resolve => setTimeout(resolve, timeoutMs)),
+  ]);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   currentLang = localStorage.getItem('lang') || 'fr';
 
-  const _savedState = (() => {
-    try { return JSON.parse(sessionStorage.getItem('ui_state') || 'null'); } catch(e) { return null; }
-  })();
-  if (_savedState) sessionStorage.removeItem('ui_state');
-
-  normalDayKey  = (_savedState && _savedState.normalDayKey)  || getDefaultDay();
-  discoDayKey   = (_savedState && _savedState.discoDayKey)   || getDiscoDay();
-  campingDayKey = (_savedState && _savedState.campingDayKey) || normalDayKey;
-  discoMode     = (_savedState && _savedState.discoMode)     || false;
-  campingMode   = (_savedState && _savedState.campingMode)   || false;
-  favsOnly      = (_savedState && _savedState.favsOnly)      || false;
+  const _curFestDay = getCurrentFestivalDay();
+  normalDayKey = _curFestDay || 'jeudi';
+  discoDayKey   = getDiscoDay();
+  campingDayKey = normalDayKey;
+  discoMode     = false;
+  campingMode   = false;
+  favsOnly      = false;
+  secondaryStagesMode = false;
+  campingStageMode = false;
+  if (campingStageMode) secondaryStagesMode = false;
+  profileEnabledDays = JSON.parse(localStorage.getItem('profileEnabledDays') || '["jeudi","vendredi","samedi","dimanche"]');
+  profileDancefloorEnabled = localStorage.getItem('profileDancefloor') !== '0';
 
   if (discoMode)  document.body.classList.add('disco-mode');
   if (favsOnly)   document.body.classList.add('favs-only');
@@ -2368,6 +3564,8 @@ document.addEventListener('DOMContentLoaded', () => {
     el.classList.toggle('active', el.dataset.day === normalDayKey);
     el.textContent = el.dataset[currentLang];
   });
+  updateFavDayVisibility();
+  ensureActiveDay(normalDayKey);
   const activeDayEl = document.querySelector(`.day-item[data-day="${normalDayKey}"]`);
   if (activeDayEl) {
     $('current-date').textContent = activeDayEl.dataset[activeDateKey()];
@@ -2375,16 +3573,14 @@ document.addEventListener('DOMContentLoaded', () => {
   let pageRevealed = false;
   function revealPage() {
     if (pageRevealed) return;
+    ensureActiveDay(normalDayKey || getDefaultDay());
     pageRevealed = true;
     document.body.style.opacity = '1';
     document.documentElement.classList.add('page-revealed');
   }
-  setTimeout(revealPage, 2000);
+  setTimeout(revealPage, 4000);
 
   loadOverrides().then(() => {
-    const fontsLoaded = document.fonts &&
-      document.fonts.check('700 12px "Inter"') &&
-      document.fonts.check('12px "Bebas Neue"');
     const normalMode = !sheetLoadFailed && !discoMode && !campingMode && !favsOnly;
 
     if (sheetLoadFailed) {
@@ -2399,26 +3595,23 @@ document.addEventListener('DOMContentLoaded', () => {
       renderCamping(campingDayKey);
     } else if (favsOnly) {
       renderFavsMode(normalDayKey);
-    } else if (!fontsLoaded) {
-      precomputeNormalDayTextLayouts(normalDayKey); // passe 1 : approx sans fonts
     }
     updateNowLine();
     updateCampingBtn();
+    updateStageViewBtn();
 
-    if (normalMode && fontsLoaded) {
-      // fonts prêtes : une seule passe avec métriques correctes
-      requestAnimationFrame(() => {
-        precomputeNormalDayTextLayouts(normalDayKey);
-        revealPage();
-      });
-    } else {
-      // fonts absentes : attend 300ms puis passe 2
+    if (normalMode) {
       requestAnimationFrame(() => requestAnimationFrame(() => {
-        const fonts = (document.fonts && document.fonts.ready) || Promise.resolve();
-        Promise.race([fonts, new Promise(r => setTimeout(r, 300))]).then(() => {
+        waitForActLayoutFontsReady().then(() => {
+          setActiveDay(normalDayKey);
+          precomputeNormalDayTextLayouts(normalDayKey);
+          updateNowLine();
           revealPage();
-          if (normalMode) precomputeNormalDayTextLayouts(normalDayKey); // passe 2 : fonts correctes
         });
+      }));
+    } else {
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        revealPage();
       }));
     }
   });
@@ -2438,11 +3631,35 @@ document.addEventListener('DOMContentLoaded', () => {
   updateDiscoBtn();
   updateCampingBtn();
 
-  setInterval(() => { updateNowLine(); updateDiscoBtn(); updateCampingBtn(); }, 60000);
+  setInterval(refreshTimeSensitiveUI, 60000);
+
+  let bottomButtonsIdleTimer = 0;
+  function canAutoDimBottomButtons() {
+    return !document.body.classList.contains('profile-mode')
+      && !document.body.classList.contains('disco-mode')
+      && !document.body.classList.contains('camping-mode');
+  }
+
+  function scheduleBottomButtonsIdle() {
+    document.body.classList.remove('bottom-buttons-idle');
+    clearTimeout(bottomButtonsIdleTimer);
+    bottomButtonsIdleTimer = setTimeout(() => {
+      if (canAutoDimBottomButtons()) document.body.classList.add('bottom-buttons-idle');
+    }, 2000);
+  }
+  const bottomBarEl = $('bottom-bar');
+  if (bottomBarEl) {
+    ['pointerdown', 'keydown'].forEach(type => {
+      bottomBarEl.addEventListener(type, e => {
+        if (e.target.closest('.bottom-btn')) scheduleBottomButtonsIdle();
+      }, true);
+    });
+    scheduleBottomButtonsIdle();
+  }
 
   const setTitle = title => document.querySelector('.label span').textContent = title;
   const selectDefaultDay = () => { normalDayKey = getDefaultDay(); setActiveDay(normalDayKey); };
-  const showDefaultDay = () => { updateFavDayVisibility(DAY_KEYS); selectDefaultDay(); renderDay(normalDayKey); };
+  const showDefaultDay = () => { secondaryStagesMode = false; campingStageMode = false; updateFavDayVisibility(DAY_KEYS); selectDefaultDay(); if (!normalActTextLayoutsReady) precomputeNormalDayTextLayouts(normalDayKey); else renderDay(normalDayKey); updateStageViewBtn(); };
   function stopDisco(renderNormal = true) {
     discoMode = false;
     updateDiscoBtn();
@@ -2452,24 +3669,43 @@ document.addEventListener('DOMContentLoaded', () => {
     if (renderNormal) showDefaultDay();
   }
 
-  function saveUIState() {
-    sessionStorage.setItem('ui_state', JSON.stringify({
-      normalDayKey, discoMode, campingMode, discoDayKey, campingDayKey, favsOnly
-    }));
+  function refreshTimeSensitiveUI() {
+    updateNowLine();
+    updateDiscoBtn();
+    updateCampingBtn();
+    updateCrossSceneIndicators();
   }
 
-  localStorage.setItem('lastLoadTime', Date.now());
-  setTimeout(() => { saveUIState(); location.reload(); }, REFRESH_MS);
   document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) {
-      const last = parseInt(localStorage.getItem('lastLoadTime') || '0');
-      if (Date.now() - last > REFRESH_MS) { saveUIState(); location.reload(); }
-    }
+    if (!document.hidden) refreshTimeSensitiveUI();
   });
+  window.addEventListener('focus', refreshTimeSensitiveUI);
+
+  let daySwipeAnimationTimer = null;
+  function playDaySwipeAnimation(direction) {
+    const cls = direction > 0 ? 'day-swipe-enter-next' : 'day-swipe-enter-prev';
+    document.body.classList.remove('day-swipe-animating', 'day-swipe-enter-next', 'day-swipe-enter-prev');
+    void document.body.offsetWidth;
+    document.body.classList.add('day-swipe-animating', cls);
+    clearTimeout(daySwipeAnimationTimer);
+    daySwipeAnimationTimer = setTimeout(() => {
+      document.body.classList.remove('day-swipe-animating', 'day-swipe-enter-next', 'day-swipe-enter-prev');
+    }, 260);
+  }
 
   document.querySelectorAll('.day-item').forEach(el => {
     el.addEventListener('click', () => {
       const selectedDay = el.dataset.day;
+      if (!discoMode && !campingMode && !favsOnly) {
+        if (secondaryStagesMode && !hasSecondaryStages(selectedDay)) return;
+        if (campingStageMode && !hasCampingStage(selectedDay)) return;
+      }
+      if (profileMode) {
+        profileMode = false;
+        document.body.classList.remove('profile-mode');
+        updateProfileBtn();
+        setTitle('Rampage Open Air 2026');
+      }
       if (discoMode) {
         discoDayKey = selectedDay;
         setActiveDay(discoDayKey);
@@ -2487,67 +3723,234 @@ document.addEventListener('DOMContentLoaded', () => {
       setActiveDay(normalDayKey);
       if (favsOnly) { renderFavsMode(selectedDay); } else { renderDay(normalDayKey); }
       updateCampingBtn();
+      updateStageViewBtn();
     });
   });
 
-  const langBtn = $('lang-btn');
-  langBtn.textContent = currentLang.toUpperCase();
-  document.body.classList.toggle('lang-zh', currentLang === 'zh');
-  langBtn.addEventListener('click', e => {
-    e.stopPropagation();
-    if (langDidLong) { langDidLong = false; return; }
-    if (manualLangEaster && easterActive === manualLangEaster) {
-      triggerEaster(manualLangEaster);
-      manualLangEaster = null;
-      return;
-    }
-    currentLang = currentLang === 'fr' ? 'en' : currentLang === 'en' ? 'zh' : 'fr';
-    localStorage.setItem('lang', currentLang);
-    langBtn.textContent = currentLang.toUpperCase();
-    document.body.classList.toggle('lang-zh', currentLang === 'zh');
-    document.querySelectorAll('.day-item').forEach(el => {
-      el.textContent = el.dataset[currentLang];
+  function isSwipeBlocked(target) {
+    return sheetLoadFailed || profileMode
+      || Boolean(target && target.closest('#settings-popover, .color-menu, .profile-mode-col, button, input, textarea, select, a'));
+  }
+
+  function getCurrentSwipeDay() {
+    return discoMode ? discoDayKey : campingMode ? campingDayKey : normalDayKey;
+  }
+
+  function getSwipeDayKeys() {
+    return DAY_KEYS.filter(dayKey => {
+      const el = document.querySelector(`.day-item[data-day="${dayKey}"]`);
+      if (!el) return false;
+      return getComputedStyle(el).display !== 'none' && getComputedStyle(el).visibility !== 'hidden';
     });
-    const active = document.querySelector('.day-item.active');
-    if (active) {
-      $('current-date').textContent = active.dataset[activeDateKey()];
+  }
+
+  function changeDayBySwipe(direction) {
+    const keys = getSwipeDayKeys();
+    if (keys.length < 2) return false;
+
+    const current = getCurrentSwipeDay();
+    const index = keys.indexOf(current);
+    if (index === -1) return false;
+
+    const targetDay = keys[index + direction];
+    if (!targetDay) return false;
+
+    const targetEl = document.querySelector(`.day-item[data-day="${targetDay}"]`);
+    if (!targetEl) return false;
+
+    targetEl.click();
+    playDaySwipeAnimation(direction);
+    return true;
+  }
+
+  let daySwipeStart = null;
+  let suppressSwipeClickUntil = 0;
+  const SWIPE_MIN_DISTANCE = 86;
+  const SWIPE_FAST_DISTANCE = 56;
+  const SWIPE_MIN_VELOCITY = 0.42;
+  const SWIPE_MAX_VERTICAL = 145;
+  const SWIPE_AXIS_RATIO = 1.18;
+  const PEEK_START_DISTANCE = 18;
+  const PEEK_MAX_OFFSET = 260;
+
+  function setPeekOffset(px, dragging = false) {
+    const content = document.querySelector('.content');
+    if (!content) return;
+    const y = Math.max(-PEEK_MAX_OFFSET, Math.min(0, Math.round(px)));
+    content.style.setProperty('--peek-y', y + 'px');
+    document.body.classList.toggle('peek-dragging', dragging);
+  }
+
+  function resetPeekOffset() {
+    document.body.classList.remove('peek-dragging');
+    const content = document.querySelector('.content');
+    if (!content) return;
+    content.style.setProperty('--peek-y', '0px');
+  }
+
+  function startDaySwipe(clientX, clientY, target, pointerId = null) {
+    if (isSwipeBlocked(target)) return;
+    daySwipeStart = { x: clientX, y: clientY, pointerId, time: Date.now(), axis: null, peekMoved: false };
+  }
+
+  function moveDaySwipe(clientX, clientY, pointerId = null) {
+    if (!daySwipeStart) return false;
+    if (daySwipeStart.pointerId !== null && pointerId !== null && daySwipeStart.pointerId !== pointerId) return false;
+
+    const dx = clientX - daySwipeStart.x;
+    const dy = clientY - daySwipeStart.y;
+    const absX = Math.abs(dx);
+    const absY = Math.abs(dy);
+
+    if (!daySwipeStart.axis && Math.max(absX, absY) >= PEEK_START_DISTANCE) {
+      daySwipeStart.axis = absY > absX * 1.05 ? 'y' : 'x';
     }
+
+    if (daySwipeStart.axis !== 'y') return false;
+
+    if (dy < -PEEK_START_DISTANCE) {
+      const eased = Math.max(-PEEK_MAX_OFFSET, dy * 0.86);
+      daySwipeStart.peekMoved = true;
+      setPeekOffset(eased, true);
+      return true;
+    }
+
+    if (daySwipeStart.peekMoved) {
+      setPeekOffset(0, true);
+      return true;
+    }
+
+    return false;
+  }
+
+  function finishDaySwipe(clientX, clientY, pointerId = null) {
+    if (!daySwipeStart) return false;
+    if (daySwipeStart.pointerId !== null && pointerId !== null && daySwipeStart.pointerId !== pointerId) return false;
+
+    const dx = clientX - daySwipeStart.x;
+    const dy = clientY - daySwipeStart.y;
+    const dt = Math.max(1, Date.now() - daySwipeStart.time);
+    const wasVerticalPeek = daySwipeStart.axis === 'y' || daySwipeStart.peekMoved;
+    daySwipeStart = null;
+
+    if (wasVerticalPeek) {
+      resetPeekOffset();
+      if (Math.abs(dy) >= PEEK_START_DISTANCE) {
+        suppressSwipeClickUntil = Date.now() + 350;
+        return true;
+      }
+      return false;
+    }
+
+    const absX = Math.abs(dx);
+    const absY = Math.abs(dy);
+    const isHorizontal = absX > absY * SWIPE_AXIS_RATIO && absY < SWIPE_MAX_VERTICAL;
+    const isLongEnough = absX >= SWIPE_MIN_DISTANCE;
+    const isFastEnough = absX >= SWIPE_FAST_DISTANCE && absX / dt >= SWIPE_MIN_VELOCITY;
+    if (!isHorizontal || (!isLongEnough && !isFastEnough)) return false;
+
+    const direction = dx < 0 ? 1 : -1;
+    if (!changeDayBySwipe(direction)) return false;
+
+    suppressSwipeClickUntil = Date.now() + 450;
+    return true;
+  }
+
+  const swipeSurface = $('scaler') || document.body;
+  if ('PointerEvent' in window) {
+    swipeSurface.addEventListener('pointerdown', e => {
+      if (e.button !== 0 || e.isPrimary === false) return;
+      startDaySwipe(e.clientX, e.clientY, e.target, e.pointerId);
+    });
+    swipeSurface.addEventListener('pointermove', e => {
+      if (moveDaySwipe(e.clientX, e.clientY, e.pointerId)) e.preventDefault();
+    });
+    swipeSurface.addEventListener('pointerup', e => {
+      if (finishDaySwipe(e.clientX, e.clientY, e.pointerId)) e.preventDefault();
+    });
+    swipeSurface.addEventListener('pointercancel', () => { daySwipeStart = null; resetPeekOffset(); });
+  } else {
+    swipeSurface.addEventListener('touchstart', e => {
+      if (e.touches.length !== 1) return;
+      const t = e.touches[0];
+      startDaySwipe(t.clientX, t.clientY, e.target, null);
+    }, { passive: true });
+    swipeSurface.addEventListener('touchmove', e => {
+      const t = e.touches && e.touches[0];
+      if (!t) return;
+      if (moveDaySwipe(t.clientX, t.clientY, null)) e.preventDefault();
+    }, { passive: false });
+    swipeSurface.addEventListener('touchend', e => {
+      const t = e.changedTouches && e.changedTouches[0];
+      if (!t) return;
+      if (finishDaySwipe(t.clientX, t.clientY, null)) e.preventDefault();
+    }, { passive: false });
+    swipeSurface.addEventListener('touchcancel', () => { daySwipeStart = null; resetPeekOffset(); }, { passive: true });
+  }
+
+  document.addEventListener('click', e => {
+    if (Date.now() > suppressSwipeClickUntil) return;
+    e.preventDefault();
+    e.stopPropagation();
+  }, true);
+
+  function getSettingsTitle() {
+    return { fr: 'PARAMÈTRES', en: 'SETTINGS', zh: '设置' }[currentLang] || 'PARAMÈTRES';
+  }
+
+  function applyLanguageUI() {
+    document.body.classList.toggle('lang-zh', currentLang === 'zh');
+    document.querySelectorAll('.day-item').forEach(el => { el.textContent = el.dataset[currentLang]; });
+    const active = document.querySelector('.day-item.active');
+    if (active) $('current-date').textContent = active.dataset[activeDateKey()] || '';
+  }
+
+  function setLanguage(code, rerender = true) {
+    currentLang = code;
+    localStorage.setItem('lang', currentLang);
+    applyLanguageUI();
     updateDaysLeft();
+    setSheetStatus();
+    if (!rerender) return;
+
     if (discoMode) { renderDisco(discoDayKey); queueActTextLayout(); }
     else if (campingMode) renderCamping(campingDayKey);
+    else if (profileMode) { setTitle(getSettingsTitle()); renderProfile(); }
     else if (favsOnly) { setTitle({ fr: 'FAVORIS', en: 'FAVORITES', zh: '收藏' }[currentLang] || 'FAVORIS'); renderFavsMode(normalDayKey); }
     updateNowLine();
-  });
+  }
 
+  applyLanguageUI();
   const lightModeBtn = $('light-mode-btn');
-  let sunMode = localStorage.getItem('sunMode') === '1';
+  sunAutoMode = localStorage.getItem('sunAutoMode') === '1';
+
+  function getScheduledSunMode() {
+    const hour = getFestivalParts().hour;
+    return hour >= 8 && hour < 20;
+  }
+
+  function resolveInitialSunMode() {
+    return sunAutoMode ? getScheduledSunMode() : localStorage.getItem('sunMode') === '1';
+  }
+
+  let sunMode = resolveInitialSunMode();
+
   const applySunMode = () => {
     document.body.classList.toggle('light-mode', sunMode);
     document.body.classList.toggle('sun-mode', sunMode);
     setUtilityButtonState(lightModeBtn, true, sunMode);
     syncFullscreenSunActStyles();
-  }; 
+  };
+
   applySunMode();
+
   lightModeBtn.addEventListener('click', e => {
     e.stopPropagation();
     sunMode = !sunMode;
     localStorage.setItem('sunMode', sunMode ? '1' : '0');
     applySunMode();
+    if (profileMode) renderProfile();
   });
-
-  let langPressTimer = null, langDidLong = false, manualLangEaster = null;
-  langBtn.addEventListener('contextmenu', e => e.preventDefault());
-  langBtn.addEventListener('pointerdown', e => {
-    langBtn.setPointerCapture(e.pointerId);
-    langDidLong = false;
-    langPressTimer = setTimeout(() => {
-      langDidLong = true;
-      manualLangEaster = currentLang;
-      triggerEaster(currentLang);
-    }, 5000);
-  });
-  langBtn.addEventListener('pointerup',     () => clearTimeout(langPressTimer));
-  langBtn.addEventListener('pointercancel', () => clearTimeout(langPressTimer));
 
   const colorBtn = $('color-btn');
   const colorMenu = $('color-menu');
@@ -2564,6 +3967,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const bottomBar = $('bottom-bar');
   settingsBtn.addEventListener('click', e => {
     e.stopPropagation();
+    if (profileMode) {
+      profileMode = false;
+      document.body.classList.remove('profile-mode');
+      setTitle('Rampage Open Air 2026');
+      showDefaultDay();
+      updateProfileBtn();
+    }
     const open = bottomBar.classList.toggle('settings-open');
     settingsBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
     $('settings-popover').setAttribute('aria-hidden', open ? 'false' : 'true');
@@ -2575,12 +3985,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const discoBtn = $('disco-btn');
   discoBtn.addEventListener('click', e => {
     e.stopPropagation();
+    if (profileMode) { profileMode = false; document.body.classList.remove('profile-mode'); updateProfileBtn(); }
     if (campingMode) { campingMode = false; document.body.classList.remove('camping-mode'); updateCampingBtn(); }
 
     favsOnly = false;
-    document.body.classList.remove('favs-only');
+    secondaryStagesMode = false;
+    campingStageMode = false;
+    document.body.classList.remove('favs-only', 'camping-stage-mode');
     updateFavDayVisibility(DAY_KEYS);
     updateFavsBtn();
+    updateStageViewBtn();
 
     discoMode = !discoMode;
     if (!discoMode) { stopDisco(true); return; }
@@ -2593,17 +4007,22 @@ document.addEventListener('DOMContentLoaded', () => {
     renderDisco(discoDayKey);
     queueActTextLayout();
     updateDiscoBtn();
+    updateStageViewBtn();
   });
 
   const campingBtn = $('camping-btn');
   campingBtn.addEventListener('click', e => {
     e.stopPropagation();
+    if (profileMode) { profileMode = false; document.body.classList.remove('profile-mode'); updateProfileBtn(); }
     if (discoMode) { stopDisco(false); selectDefaultDay(); updateDiscoBtn(); }
 
     favsOnly = false;
-    document.body.classList.remove('favs-only');
+    secondaryStagesMode = false;
+    campingStageMode = false;
+    document.body.classList.remove('favs-only', 'camping-stage-mode');
     updateFavDayVisibility(DAY_KEYS);
     updateFavsBtn();
+    updateStageViewBtn();
 
     campingMode = !campingMode;
     document.body.classList.toggle('camping-mode', campingMode);
@@ -2612,18 +4031,483 @@ document.addEventListener('DOMContentLoaded', () => {
       campingDayKey = normalDayKey;
       setActiveDay(campingDayKey);
       renderCamping(campingDayKey);
+      updateStageViewBtn();
       return;
     }
 
     showDefaultDay();
     updateCampingBtn();
+    updateStageViewBtn();
+  });
+
+  profileCampingEnabled    = localStorage.getItem('profileCamping')    !== '0';
+  profileDiscoEnabled      = localStorage.getItem('profileDisco')      !== '0';
+  profileDancefloorEnabled = localStorage.getItem('profileDancefloor') !== '0';
+  profileEnabledDays = JSON.parse(localStorage.getItem('profileEnabledDays') || '["jeudi","vendredi","samedi","dimanche"]');
+  fsShowTitles = localStorage.getItem('fsShowTitles') !== '0';
+  fsShowDay = localStorage.getItem('fsShowDay') !== '0';
+  fsShowDate = localStorage.getItem('fsShowDate') !== '0';
+  sunAutoMode = localStorage.getItem('sunAutoMode') === '1';
+  showRemainingOnly = localStorage.getItem('showRemainingOnly') !== '0';
+  fsRemainingOnly = localStorage.getItem('fsRemainingOnly') === '1';
+  showFavFillActs = localStorage.getItem('showFavFillActs') !== '0';
+  document.body.classList.toggle('remaining-only', showRemainingOnly);
+
+  function applyFullscreenVisibilityPrefs() {
+    document.body.classList.toggle('fs-hide-titles', !fsShowTitles);
+    document.body.classList.toggle('fs-hide-day', !fsShowDay);
+    document.body.classList.toggle('fs-hide-date', !fsShowDate);
+  }
+  applyFullscreenVisibilityPrefs();
+
+  function setBottomSlotVisible(btn, visible) {
+    if (!btn) return;
+    btn.style.display = 'flex';
+    btn.style.visibility = visible ? 'visible' : 'hidden';
+    btn.style.pointerEvents = visible ? 'auto' : 'none';
+  }
+
+  function isPlainScheduleView() {
+    return !profileMode && !discoMode && !campingMode && !favsOnly;
+  }
+
+  function getNextStageViewState() {
+    const activeDay = document.querySelector('.day-item.active')?.dataset.day || normalDayKey;
+    const cycle = getStageViewCycleStages(activeDay);
+    const current = getCurrentStageViewState();
+    return cycle[(Math.max(0, cycle.indexOf(current)) + 1) % cycle.length] || 'primary';
+  }
+
+  function getStageViewIconSvg(targetState) {
+    const bars = {
+      primary: [
+        { x: 2, width: 2.8 },
+        { x: 6.3, width: 2.8 },
+        { x: 10.6, width: 2.8 },
+        { x: 14.9, width: 2.8 },
+        { x: 19.2, width: 2.8 },
+      ],
+      secondary: [
+        { x: 3, width: 5 },
+        { x: 9.5, width: 5 },
+        { x: 16, width: 5 },
+      ],
+      camping: [
+        { x: 8.75, width: 6.5 },
+      ],
+    }[targetState] || [
+      { x: 3, width: 5 },
+      { x: 9.5, width: 5 },
+      { x: 16, width: 5 },
+    ];
+
+    const rects = bars.map(bar => `<rect x="${bar.x}" y="4" width="${bar.width}" height="16" rx="1"/>`).join('');
+    return `<svg width="92" height="92" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${rects}</svg>`;
+  }
+
+  function updateStageViewIcon(btn, targetState) {
+    if (!btn || btn.dataset.stageIconTarget === targetState) return;
+    btn.dataset.stageIconTarget = targetState;
+    btn.innerHTML = getStageViewIconSvg(targetState);
+  }
+
+  function getStageViewTargetLabel() {
+    const next = getNextStageViewState();
+    const labels = {
+      primary: { fr: 'Scènes principales', en: 'Main stages', zh: '主舞台' },
+      secondary: { fr: 'Scènes secondaires', en: 'Secondary stages', zh: '副舞台' },
+      camping: { fr: 'Camping', en: 'Camping', zh: '营地' },
+    };
+    return labels[next]?.[currentLang] || labels[next]?.fr || 'Camping';
+  }
+
+  function updateStageViewBtn() {
+    const btn = $('stage-view-btn');
+    if (!btn) return;
+    const inSchedule = isPlainScheduleView();
+    const activeDay = document.querySelector('.day-item.active')?.dataset.day || normalDayKey;
+    const cycle = getStageViewCycleStages(activeDay);
+    const hasExtraView = cycle.length > 1;
+    const canUseStageView = inSchedule && hasExtraView;
+
+    if (!profileCampingEnabled && campingStageMode) {
+      campingStageMode = false;
+      secondaryStagesMode = hasSecondaryStages(activeDay);
+    }
+    if (inSchedule && !hasExtraView) setStageViewState('primary');
+    if (campingStageMode) secondaryStagesMode = false;
+
+    const currentState = getCurrentStageViewState();
+    const isExtraView = canUseStageView && currentState !== 'primary';
+    document.body.classList.toggle('secondary-stages-mode', canUseStageView && secondaryStagesMode);
+    document.body.classList.toggle('camping-stage-mode', canUseStageView && campingStageMode);
+    setUtilityButtonState(btn, canUseStageView, isExtraView);
+    updateCrossSceneIndicators();
+    btn.disabled = inSchedule && !hasExtraView;
+    btn.setAttribute('aria-disabled', btn.disabled ? 'true' : 'false');
+    const targetState = getNextStageViewState();
+    updateStageViewIcon(btn, targetState);
+    const label = getStageViewTargetLabel();
+    btn.setAttribute('aria-label', label);
+    btn.title = label;
+  }
+
+
+  function returnToPrimaryScheduleFromAnyMode() {
+    const activeDay = document.querySelector('.day-item.active')?.dataset.day;
+    if (activeDay && DAY_KEYS.includes(activeDay)) normalDayKey = activeDay;
+
+    if (profileMode) { profileMode = false; document.body.classList.remove('profile-mode'); updateProfileBtn(); }
+    if (discoMode) { stopDisco(false); }
+    if (campingMode) { campingMode = false; document.body.classList.remove('camping-mode'); updateCampingBtn(); }
+    if (favsOnly) { favsOnly = false; document.body.classList.remove('favs-only', 'camping-stage-mode'); updateFavsBtn(); }
+
+    secondaryStagesMode = false;
+    campingStageMode = false;
+    updateFavDayVisibility(DAY_KEYS);
+    setTitle('Rampage Open Air 2026');
+    setActiveDay(normalDayKey);
+    if (!normalActTextLayoutsReady) precomputeNormalDayTextLayouts(normalDayKey);
+    else renderDay(normalDayKey);
+    updateDiscoBtn();
+    updateCampingBtn();
+    updateFavsBtn();
+    updateStageViewBtn();
+  }
+
+  function applyProfileState() {
+    const cBtn = $('camping-btn');
+    const dBtn = $('disco-btn');
+    setBottomSlotVisible(cBtn, profileCampingEnabled);
+    setBottomSlotVisible(dBtn, profileCampingEnabled && profileDiscoEnabled);
+
+    if (!profileCampingEnabled && campingMode) {
+      campingMode = false;
+      document.body.classList.remove('camping-mode');
+      updateCampingBtn();
+      if (!profileMode) showDefaultDay();
+    }
+    if (!profileCampingEnabled && campingStageMode) {
+      campingStageMode = false;
+      secondaryStagesMode = hasSecondaryStages(normalDayKey);
+      if (!profileMode && isPlainScheduleView()) renderDay(normalDayKey);
+    }
+    if ((!profileCampingEnabled || !profileDiscoEnabled) && discoMode) {
+      stopDisco(!profileMode);
+    }
+    updateStageViewBtn();
+  }
+
+  let langPressTimer = null;
+  let langDidLong = false;
+  let manualLangEaster = null;
+
+  function isLangAction(action) {
+    return action && action.startsWith('lang-');
+  }
+
+  function clearLangPressTimer() {
+    if (!langPressTimer) return;
+    clearTimeout(langPressTimer);
+    langPressTimer = null;
+  }
+
+  function bindProfileLangEasters(col) {
+    col.addEventListener('contextmenu', e => {
+      if (e.target.closest('[data-profile-action^="lang-"]')) e.preventDefault();
+    });
+
+    col.addEventListener('pointerdown', e => {
+      const btn = e.target.closest('[data-profile-action^="lang-"]');
+      if (!btn) return;
+
+      clearLangPressTimer();
+      langDidLong = false;
+
+      const code = btn.dataset.profileAction.slice(5);
+      try { btn.setPointerCapture(e.pointerId); } catch (err) {}
+
+      langPressTimer = setTimeout(() => {
+        langPressTimer = null;
+        langDidLong = true;
+        manualLangEaster = code;
+        triggerEaster(code);
+      }, 5000);
+    });
+
+    ['pointerup', 'pointercancel', 'pointerleave'].forEach(type => {
+      col.addEventListener(type, clearLangPressTimer);
+    });
+  }
+
+  function renderProfile() {
+    const stageRow = $('stage-row'), tl = $('tl'), axis = $('axis');
+    clearSchedule(stageRow, axis, tl);
+    setScheduleGrid(stageRow, tl, '60px 1fr');
+    stageRow.appendChild(buildStageHeaderFragment([{ name: getSettingsTitle(), sub: '' }], s => buildStageHeader(s.name, s.sub)));
+
+    const tr = (map, fallback = '') => (map && (map[currentLang] || map.fr)) || fallback;
+    const labels = {
+      sections: {
+        display: { fr: 'AFFICHAGE', en: 'DISPLAY', zh: '显示' },
+        lang: { fr: 'LANGUE', en: 'LANGUAGE', zh: '语言' },
+        fullscreen: { fr: 'PLEIN ÉCRAN/FOND D’ÉCRAN', en: 'FULLSCREEN/WALLPAPER', zh: '全屏/壁纸' },
+        view: { fr: 'JOURNÉE', en: 'DAY VIEW', zh: '日程' },
+        favFill: { fr: 'FAVORIS', en: 'FAVORITES', zh: '收藏' },
+        sun: { fr: 'SOLEIL', en: 'SUN', zh: '阳光' },
+        filters: { fr: 'FILTRES', en: 'FILTERS', zh: '筛选' },
+        data: { fr: 'DONNÉES', en: 'DATA', zh: '数据' },
+      },
+      features: {
+        camping: { fr: 'CAMPING', en: 'CAMPING', zh: '营地' },
+        disco: { fr: 'SILENT DISCO', en: 'SILENT DISCO', zh: '无声迪斯科' },
+        dancefloor: { fr: 'DANCEFLOOR', en: 'DANCEFLOOR', zh: '舞池' },
+        update: { fr: 'UPDATE', en: 'UPDATE', zh: '更新' },
+      },
+      view: {
+        full: { fr: 'COMPLÈTE', en: 'FULL DAY', zh: '整天' },
+        remaining: { fr: 'À VENIR', en: 'UPCOMING', zh: '剩余' },
+      },
+      favFill: {
+        off: { fr: 'SEULS', en: 'ONLY', zh: '仅收藏' },
+        on: { fr: 'REMPLIR', en: 'FILL', zh: '填充' },
+      },
+      sun: {
+        auto: { fr: 'AUTO (8H-20H)', en: 'AUTO (8AM-8PM)', zh: '自动 (8点-20点)' },
+      },
+      days: {
+        jeudi: { fr: 'JEUDI', en: 'THURSDAY', zh: '周四' },
+        vendredi: { fr: 'VENDREDI', en: 'FRIDAY', zh: '周五' },
+        samedi: { fr: 'SAMEDI', en: 'SATURDAY', zh: '周六' },
+        dimanche: { fr: 'DIMANCHE', en: 'SUNDAY', zh: '周日' },
+      },
+      fs: {
+        titles: { fr: 'TITRES', en: 'TITLES', zh: '标题' },
+        day: { fr: 'JOUR', en: 'DAY', zh: '星期' },
+        date: { fr: 'DATE', en: 'DATE', zh: '日期' },
+        view: { fr: 'VUE', en: 'VIEW', zh: '视图' },
+      },
+    };
+
+    const col = document.createElement('div');
+    col.className = 'stage-col profile-mode-col';
+
+    const makeBtn = (className, action, text, active, disabled = false) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = className + (active ? ' active' : '') + (disabled ? ' feat-disabled' : '');
+      btn.dataset.profileAction = action;
+      btn.textContent = text;
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      if (disabled) {
+        btn.disabled = true;
+        btn.setAttribute('aria-disabled', 'true');
+      }
+      return btn;
+    };
+    const makeSection = (key, rows, titleId = '') => {
+      const section = document.createElement('div');
+      section.className = 'profile-mode-section';
+      const title = document.createElement('div');
+      title.className = 'profile-mode-section-title';
+      if (titleId) title.id = titleId;
+      title.textContent = tr(labels.sections[key]);
+      section.append(title, ...rows);
+      col.appendChild(section);
+    };
+    const makeRow = (items, className = 'profile-mode-row') => {
+      const row = document.createElement('div');
+      row.className = className;
+      items.forEach(item => row.appendChild(makeBtn(...item)));
+      return row;
+    };
+    const makeTitledButtonColumn = (titleText, btnSpec) => {
+      const block = document.createElement('div');
+      block.className = 'profile-mode-setting-col';
+      const title = document.createElement('div');
+      title.className = 'profile-mode-section-title';
+      title.textContent = titleText;
+      block.append(title, makeBtn(...btnSpec));
+      return block;
+    };
+    const makeDualSettingsRow = () => {
+      const row = document.createElement('div');
+      row.className = 'profile-mode-dual-settings-row';
+      row.append(
+        makeTitledButtonColumn(tr(labels.sections.view), ['profile-mode-sun-btn profile-mode-choice-btn', 'remaining-view', showRemainingOnly ? tr(labels.view.remaining) : tr(labels.view.full), true]),
+        makeTitledButtonColumn(tr(labels.sections.favFill), ['profile-mode-sun-btn', 'fav-fill', showFavFillActs ? tr(labels.favFill.on) : tr(labels.favFill.off), showFavFillActs]),
+        makeTitledButtonColumn(tr(labels.sections.sun), ['profile-mode-sun-btn', 'sun-auto', tr(labels.sun.auto), sunAutoMode])
+      );
+      return row;
+    };
+
+    makeSection('display', [
+      makeRow([
+        ['profile-mode-feat-btn', 'camping', tr(labels.features.camping), profileCampingEnabled],
+        ['profile-mode-feat-btn', 'disco', tr(labels.features.disco), profileDiscoEnabled, !profileCampingEnabled],
+      ]),
+      makeRow(DAY_KEYS.map(day => ['profile-mode-day-btn', 'day-' + day, tr(labels.days[day], day), profileEnabledDays.includes(day)])),
+    ]);
+    makeSection('lang', [makeRow([['fr','FR'],['en','EN'],['zh','ZH']].map(([code, label]) => ['profile-mode-day-btn', 'lang-' + code, label, currentLang === code]))]);
+    makeSection('fullscreen', [makeRow([
+      ['profile-mode-day-btn', 'fs-titles', tr(labels.fs.titles), fsShowTitles],
+      ['profile-mode-day-btn', 'fs-day', tr(labels.fs.day), fsShowDay],
+      ['profile-mode-day-btn', 'fs-date', tr(labels.fs.date), fsShowDate],
+      ['profile-mode-day-btn profile-mode-choice-btn', 'fs-view', fsRemainingOnly ? tr(labels.view.remaining) : tr(labels.view.full), true],
+    ])]);
+    col.appendChild(makeDualSettingsRow());
+    makeSection('filters', [makeRow([
+      ['profile-mode-day-btn', 'dancefloor', tr(labels.features.dancefloor), !profileDancefloorEnabled],
+    ], 'profile-mode-row profile-mode-filter-row')]);
+    makeSection('data', [makeRow([
+      ['profile-mode-sun-btn profile-mode-update-btn', 'sheet-refresh', tr(labels.features.update), !sheetRefreshBusy],
+    ], 'profile-mode-row profile-mode-update-row')], 'sheet-status');
+
+    tl.appendChild(col);
+    setSheetStatus();
+    setSheetRefreshBusy(sheetRefreshBusy);
+    col.addEventListener('click', handleProfileAction);
+    bindProfileLangEasters(col);
+    updateResetBtn();
+  }
+
+  function toggleStoredFlag(key, value) {
+    localStorage.setItem(key, value ? '1' : '0');
+  }
+
+  function handleProfileAction(e) {
+    const btn = e.target.closest('[data-profile-action]');
+    if (!btn) return;
+    const action = btn.dataset.profileAction;
+    const rerender = () => renderProfile();
+
+    if (action === 'fs-titles') { fsShowTitles = !fsShowTitles; toggleStoredFlag('fsShowTitles', fsShowTitles); applyFullscreenVisibilityPrefs(); return rerender(); }
+    if (action === 'fs-day')    { fsShowDay = !fsShowDay;       toggleStoredFlag('fsShowDay', fsShowDay);       applyFullscreenVisibilityPrefs(); return rerender(); }
+    if (action === 'fs-date')   { fsShowDate = !fsShowDate;     toggleStoredFlag('fsShowDate', fsShowDate);     applyFullscreenVisibilityPrefs(); return rerender(); }
+    if (action === 'fs-view') {
+      fsRemainingOnly = !fsRemainingOnly;
+      toggleStoredFlag('fsRemainingOnly', fsRemainingOnly);
+      return rerender();
+    }
+    if (action === 'remaining-view') {
+      showRemainingOnly = !showRemainingOnly;
+      toggleStoredFlag('showRemainingOnly', showRemainingOnly);
+      document.body.classList.toggle('remaining-only', showRemainingOnly);
+      return rerender();
+    }
+    if (action === 'fav-fill') {
+      showFavFillActs = !showFavFillActs;
+      toggleStoredFlag('showFavFillActs', showFavFillActs);
+      return rerender();
+    }
+    if (action === 'sun-auto') {
+      sunAutoMode = !sunAutoMode;
+      toggleStoredFlag('sunAutoMode', sunAutoMode);
+      if (sunAutoMode) sunMode = getScheduledSunMode();
+      toggleStoredFlag('sunMode', sunMode);
+      applySunMode();
+      return rerender();
+    }
+    if (action === 'camping') {
+      profileCampingEnabled = !profileCampingEnabled;
+      toggleStoredFlag('profileCamping', profileCampingEnabled);
+      applyProfileState();
+      return rerender();
+    }
+    if (action === 'disco') {
+      if (!profileCampingEnabled) return;
+      profileDiscoEnabled = !profileDiscoEnabled;
+      toggleStoredFlag('profileDisco', profileDiscoEnabled);
+      applyProfileState();
+      return rerender();
+    }
+    if (action === 'dancefloor') {
+      profileDancefloorEnabled = !profileDancefloorEnabled;
+      toggleStoredFlag('profileDancefloor', profileDancefloorEnabled);
+      btn.classList.toggle('active', !profileDancefloorEnabled);
+      btn.setAttribute('aria-pressed', !profileDancefloorEnabled ? 'true' : 'false');
+      if (!profileMode) rerenderSchedule();
+      return rerender();
+    }
+    if (action === 'sheet-refresh') {
+      if (sheetRefreshBusy) return;
+      refreshSheetManually();
+      return;
+    }
+    if (isLangAction(action)) {
+      const code = action.slice(5);
+      if (langDidLong) { langDidLong = false; return; }
+
+      if (manualLangEaster && easterActive === manualLangEaster) {
+        triggerEaster(manualLangEaster);
+        manualLangEaster = null;
+        if (code === currentLang) return rerender();
+      }
+
+      setLanguage(code, false);
+      setTitle(getSettingsTitle());
+      return rerender();
+    }
+    if (action.startsWith('day-')) {
+      const day = action.slice(4);
+      const idx = profileEnabledDays.indexOf(day);
+      if (idx === -1) profileEnabledDays.push(day);
+      else if (profileEnabledDays.length > 1) profileEnabledDays.splice(idx, 1);
+      profileEnabledDays.sort((a, b) => DAY_KEYS.indexOf(a) - DAY_KEYS.indexOf(b));
+      localStorage.setItem('profileEnabledDays', JSON.stringify(profileEnabledDays));
+      updateFavDayVisibility();
+      if (!profileEnabledDays.includes(normalDayKey)) {
+        const first = DAY_KEYS.find(d => profileEnabledDays.includes(d));
+        if (first) { normalDayKey = first; setActiveDay(first); }
+      }
+      applyProfileState();
+      return rerender();
+    }
+  }
+
+  function updateProfileBtn() {
+    setUtilityButtonState($('profile-btn'), true, profileMode);
+  }
+
+  applyProfileState();
+
+  const profileBtn = $('profile-btn');
+  profileBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    profileMode = !profileMode;
+    document.body.classList.toggle('profile-mode', profileMode);
+
+    if (profileMode) {
+      if (bottomBar) bottomBar.classList.remove('settings-open');
+      if (settingsBtn) settingsBtn.setAttribute('aria-expanded', 'false');
+      const popover = $('settings-popover');
+      if (popover) popover.setAttribute('aria-hidden', 'true');
+      if (colorMenu) colorMenu.classList.remove('open');
+      updateSettingsBtn();
+      updateColorMenuBtn();
+      if (discoMode)   { stopDisco(false); }
+      if (campingMode) { campingMode = false; document.body.classList.remove('camping-mode'); updateCampingBtn(); }
+      if (favsOnly)    { favsOnly = false; document.body.classList.remove('favs-only', 'camping-stage-mode'); updateFavsBtn(); updateFavDayVisibility(); }
+      secondaryStagesMode = false;
+      campingStageMode = false;
+      updateStageViewBtn();
+      setTitle(getSettingsTitle());
+      renderProfile();
+    } else {
+      setTitle('Rampage Open Air 2026');
+      showDefaultDay();
+    }
+    updateProfileBtn();
   });
 
   const favsBtn = $('favs-btn');
   favsBtn.addEventListener('click', e => {
     e.stopPropagation();
+    if (profileMode) { profileMode = false; document.body.classList.remove('profile-mode'); updateProfileBtn(); }
     favsOnly = !favsOnly;
     document.body.classList.toggle('favs-only', favsOnly);
+    secondaryStagesMode = false;
+    campingStageMode = false;
     if (favsOnly) {
       setTitle({ fr: 'FAVORIS', en: 'FAVORITES', zh: '收藏' }[currentLang] || 'FAVORIS');
       renderFavsMode(normalDayKey);
@@ -2633,7 +4517,41 @@ document.addEventListener('DOMContentLoaded', () => {
       renderDay(normalDayKey);
     }
     updateFavsBtn();
+    updateStageViewBtn();
   });
+
+  const stageViewBtn = $('stage-view-btn');
+  if (stageViewBtn) {
+    stageViewBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      if (!isPlainScheduleView()) {
+        returnToPrimaryScheduleFromAnyMode();
+        return;
+      }
+      const cycle = getStageViewCycleStages(normalDayKey);
+      if (cycle.length < 2) {
+        updateStageViewBtn();
+        return;
+      }
+      const currentState = getCurrentStageViewState();
+      const currentIndex = Math.max(0, cycle.indexOf(currentState));
+      setStageViewState(cycle[(currentIndex + 1) % cycle.length]);
+      setTitle('Rampage Open Air 2026');
+      const visibleDays = (secondaryStagesMode || campingStageMode)
+        ? DAY_KEYS.filter(day => getStageViewCycleStages(day).includes(getCurrentStageViewState()))
+        : DAY_KEYS;
+      updateFavDayVisibility(visibleDays);
+      if ((secondaryStagesMode || campingStageMode) && !visibleDays.includes(normalDayKey)) {
+        normalDayKey = visibleDays[0] || 'vendredi';
+      }
+      setActiveDay(normalDayKey);
+      if (!normalActTextLayoutsReady) precomputeNormalDayTextLayouts(normalDayKey);
+      else renderDay(normalDayKey);
+      updateStageViewBtn();
+    });
+    updateStageViewBtn();
+  }
+  document.addEventListener('favschange', () => { updateStageViewBtn(); updateCrossSceneIndicators(); });
 
   document.addEventListener('click', () => {
     colorMenu.classList.remove('open');
@@ -2701,7 +4619,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // padding proportionnel à virtualH (coords 1080px)
     const topPad = Math.round(clampValue(virtualH * 0.055, 90, 135));
     const bottomPad = Math.round(clampValue(virtualH * 0.048, 95, 135));
     const sidePad = 65;
@@ -2722,8 +4639,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function applyScale() {
     const scaler = $('scaler');
-    const vw = window.visualViewport ? window.visualViewport.width  : window.innerWidth;
-    const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    const vv = window.visualViewport;
+    const vw = (vv && vv.width)  ? vv.width  : window.innerWidth;
+    const vh = (vv && vv.height) ? vv.height : window.innerHeight;
     const baseW = 1080;
     const baseH = 1920;
     const viewportScale = Math.min(vw / baseW, vh / baseH);
@@ -2739,16 +4657,14 @@ document.addEventListener('DOMContentLoaded', () => {
       fullscreenPanX = 0;
       fullscreenPanY = 0;
     } else if (phoneCaptureFS) {
-      // capture téléphone : largeur device exacte, hauteur réelle
-      displayScale = vw / baseW;
-      virtualH = Math.max(baseH, Math.ceil(vh / displayScale));
-      fullscreenZoom = 1;
+      const phoneBaseScale = vw / baseW;
+      virtualH = Math.max(baseH, Math.ceil(vh / phoneBaseScale));
+      displayScale = phoneBaseScale * fullscreenZoom;
       fullscreenPanX = 0;
       fullscreenPanY = 0;
-      left = 0;
-      top = 0;
+      left = (vw - baseW * displayScale) / 2;
+      top = (vh - virtualH * displayScale) / 2;
     } else {
-      // desktop/tablette : comportement inchangé
       const fsMaxScale = Math.min(fullscreenBaseScale, (vh - CANVAS_MARGIN * 2) / baseH, (vw - CANVAS_MARGIN * 2) / baseW);
       displayScale = fsMaxScale * fullscreenZoom;
       clampFullscreenPan(displayScale, vw, vh, baseH);
@@ -2805,9 +4721,10 @@ function refreshFullscreenState() {
   document.addEventListener('touchstart', e => {
     if (!document.body.classList.contains('is-fullscreen')) return;
 
-    const vw = window.visualViewport ? window.visualViewport.width : window.innerWidth;
-    const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-    if (isPhoneLikeFullscreenViewport(vw, vh)) {
+    const vv = window.visualViewport;
+    const vw = (vv && vv.width) ? vv.width : window.innerWidth;
+    const vh = (vv && vv.height) ? vv.height : window.innerHeight;
+    if (isPhoneLikeFullscreenViewport(vw, vh) && e.touches.length !== 2) {
       resetFullscreenCaptureTransform();
       return;
     }
@@ -2830,9 +4747,10 @@ function refreshFullscreenState() {
   document.addEventListener('touchmove', e => {
     if (!document.body.classList.contains('is-fullscreen')) return;
 
-    const vw = window.visualViewport ? window.visualViewport.width : window.innerWidth;
-    const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-    if (isPhoneLikeFullscreenViewport(vw, vh)) {
+    const vv = window.visualViewport;
+    const vw = (vv && vv.width) ? vv.width : window.innerWidth;
+    const vh = (vv && vv.height) ? vv.height : window.innerHeight;
+    if (isPhoneLikeFullscreenViewport(vw, vh) && e.touches.length !== 2) {
       resetFullscreenCaptureTransform();
       applyScale();
       e.preventDefault();
@@ -2887,6 +4805,7 @@ function refreshFullscreenState() {
     appFS = true;
     resetFullscreenCaptureTransform();
     document.body.classList.add('is-fullscreen');
+    if (!profileMode && !discoMode && !campingMode && !favsOnly) renderDay(normalDayKey);
     applyScale();
     refreshFullscreenState();
     updateFullscreenBtn();
@@ -2906,9 +4825,11 @@ function refreshFullscreenState() {
   function leaveFS() {
     appFS = false;
     document.body.classList.remove('is-fullscreen', 'fs-safe-guides');
+    if (!profileMode && !discoMode && !campingMode && !favsOnly) renderDay(normalDayKey);
     resetFullscreenCaptureTransform();
     applyScale();
     refreshFullscreenState();
+    setTimeout(refreshFullscreenState, 0);
     updateFullscreenBtn();
     applyAccentToElements();
     queueActTextLayout();
@@ -2973,14 +4894,49 @@ function refreshFullscreenState() {
       resetTimer = setTimeout(resetDeactivate, 5000);
     } else {
       resetDeactivate();
-      localStorage.removeItem('favs');
-      localStorage.removeItem('rs_unlocked');
+
+      ['favs','rs_unlocked','color','lang','sunMode','sunAutoMode','showRemainingOnly','fsRemainingOnly','showFavFillActs','fsShowTitles','fsShowDay','fsShowDate','profileCamping','profileDisco','profileDancefloor','profileEnabledDays'].forEach(k => localStorage.removeItem(k));
+
       document.body.classList.remove('runescape-unlocked');
       document.querySelectorAll('.act.selected').forEach(el => {
         el.classList.remove('selected');
         clearNormalSelectedActStyle(el);
         el.style.borderLeftColor = '';
       });
+
+      applyColorOption(document.querySelector('.color-option'));
+
+      currentLang = 'fr';
+      manualLangEaster = null;
+      applyLanguageUI();
+      updateDaysLeft();
+
+      sunAutoMode = false;
+      showRemainingOnly = true;
+      fsRemainingOnly = false;
+      showFavFillActs = true;
+      document.body.classList.add('remaining-only');
+      sunMode = false;
+      applySunMode();
+
+      fsShowTitles = true;
+      fsShowDay = true;
+      fsShowDate = true;
+      applyFullscreenVisibilityPrefs();
+
+      profileCampingEnabled    = true;
+      profileDiscoEnabled      = true;
+      profileDancefloorEnabled = true;
+      profileEnabledDays       = ['jeudi', 'vendredi', 'samedi', 'dimanche'];
+      applyProfileState();
+      updateFavDayVisibility();
+
+      if (profileMode) { profileMode = false; document.body.classList.remove('profile-mode'); updateProfileBtn(); }
+      if (discoMode)   { stopDisco(false); }
+      if (campingMode) { campingMode = false; document.body.classList.remove('camping-mode'); updateCampingBtn(); }
+      if (favsOnly)    { favsOnly = false; document.body.classList.remove('favs-only', 'camping-stage-mode'); updateFavsBtn(); }
+      setTitle('Rampage Open Air 2026');
+      showDefaultDay();
       updateStageHeaderSelectionState();
       updateResetBtn();
     }
@@ -3119,7 +5075,7 @@ function refreshFullscreenState() {
         setEaster(key);
         if (cfg.comic) $('scaler').classList.add('comic-sans');
       } else if (!inWindow && easterActive === key) {
-        setEaster(key); // toggle off
+        setEaster(key);
         if (cfg.comic) $('scaler').classList.remove('comic-sans');
       }
     });
