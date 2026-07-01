@@ -1074,14 +1074,35 @@ const DISCO_STAGE_META = {
   DiscoG: { cssClass: 'act-disco-g', color: '#00c853', labels: { fr: 'VERT',  en: 'GREEN', zh: '绿' } },
 };
 const STAGE_ORDER = { mainstage: 0, storm: 1, dome: 2, church: 3, tunnel: 4, jungle: 5, mirror: 6, 'rave cave': 7, camping: 8 };
-const SECONDARY_STAGES = [
-  { name: 'Jungle', sub: '' },
-  { name: 'Mirror', sub: '' },
-  { name: 'Rave Cave', sub: '' },
-];
-const CAMPING_STAGES = [
-  { name: 'Camping', sub: '' },
-];
+const makeStageList = stages => stages.map(([name, sub = '']) => ({ name, sub }));
+const SECONDARY_STAGES_BY_DAY = {
+  vendredi: makeStageList([
+    ['Jungle', 'By Born on ROad | Mota'],
+    ['Mirror', ''],
+    ['Rave Cave', ''],
+  ]),
+  samedi: makeStageList([
+    ['Jungle', 'Star Warz 20 YRS | Mush, Nice, Tasty'],
+    ['Mirror', ''],
+    ['Rave Cave', ''],
+  ]),
+  dimanche: makeStageList([
+    ['Jungle', 'Etherwood presents:'],
+    ['Mirror', 'I.5.2.Y'],
+    ['Rave Cave', ''],
+  ]),
+};
+const CAMPING_STAGES_BY_DAY = {
+  vendredi: makeStageList([
+    ['Camping', ''],
+  ]),
+  samedi: makeStageList([
+    ['Camping', ''],
+  ]),
+  dimanche: makeStageList([
+    ['Camping', ''],
+  ]),
+};
 const CAMPING_STAGE_HOURS = { start: 11, end: 14 };
 const stagePriority = name => STAGE_ORDER[String(name || '').toLowerCase()] ?? 99;
 const FS_STAGE_ABBREV = { 'Mainstage': 'Main' };
@@ -2100,7 +2121,7 @@ function makeDay(startHour, endHour, stages) {
     gridCols: `60px ${'1fr '.repeat(stages.length).trim()}`,
     startHour,
     endHour,
-    stages: stages.map(([name, sub = '']) => ({ name, sub }))
+    stages: makeStageList(stages)
   };
 }
 
@@ -2146,11 +2167,11 @@ function hasCampingStage(dayKey) {
 }
 
 function getSecondaryStages(dayKey) {
-  return hasSecondaryStages(dayKey) ? SECONDARY_STAGES : [];
+  return hasSecondaryStages(dayKey) ? (SECONDARY_STAGES_BY_DAY[dayKey] || []) : [];
 }
 
 function getCampingStages(dayKey) {
-  return hasCampingStage(dayKey) ? CAMPING_STAGES : [];
+  return hasCampingStage(dayKey) ? (CAMPING_STAGES_BY_DAY[dayKey] || []) : [];
 }
 
 function getNormalViewStages(dayKey) {
