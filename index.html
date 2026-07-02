@@ -2212,7 +2212,9 @@ function getStageGroup(stageName) {
   if (!norm) return null;
   if (norm === 'discor' || norm === 'discob' || norm === 'discog') return 'disco';
   if (norm === 'camping') return profileCampingEnabled ? 'camping' : null;
-  if (SECONDARY_STAGES.some(stage => stage.name.toLowerCase() === norm)) return 'secondary';
+  const isSecondary = Object.values(SECONDARY_STAGES_BY_DAY)
+    .some(stages => stages.some(stage => stage.name.toLowerCase() === norm));
+  if (isSecondary) return 'secondary';
   if (norm === 'info') return 'info';
   return 'primary';
 }
